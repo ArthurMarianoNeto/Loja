@@ -1,13 +1,13 @@
+import 'package:loja/models/user.dart';
+import 'package:loja/models/user_manager.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:loja/helpers/validators.dart';
 
 class LoginScreen extends StatelessWidget {
-
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passController = TextEditingController();
-
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,7 +51,6 @@ class LoginScreen extends StatelessWidget {
                   alignment: Alignment.centerRight,
                   child: FlatButton(
                     onPressed: (){
-
                     },
                     padding: EdgeInsets.zero,
                     child: const Text(
@@ -65,7 +64,12 @@ class LoginScreen extends StatelessWidget {
                   child: RaisedButton(
                     onPressed: (){
                       if(formKey.currentState.validate()){
-                        print(emailController.text);
+                        context.read<UserManager>().signIn(
+                            User(
+                                email: emailController.text,
+                                password: passController.text
+                            )
+                        );
                       }
                     },
                     color: Theme.of(context).primaryColor,
