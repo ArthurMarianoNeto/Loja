@@ -41,6 +41,7 @@ class UserManager extends ChangeNotifier {
     final FirebaseUser currentUser = await auth.currentUser();
     if(currentUser != null){
       user = currentUser;
+ //     print(user.uid);
     }
     notifyListeners();
   }
