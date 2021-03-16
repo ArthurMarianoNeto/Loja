@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:loja/helpers/validators.dart';
 import 'package:loja/models/user.dart';
+import 'package:loja/models/user_manager.dart';
+import 'package:provider/provider.dart';
 
 class SignUpScreen extends StatelessWidget {
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-
   final User user = User();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -87,7 +87,6 @@ class SignUpScreen extends StatelessWidget {
                     onPressed: (){
                       if(formKey.currentState.validate()){
                         formKey.currentState.save();
-
                         if(user.password != user.confirmPassword){
                           scaffoldKey.currentState.showSnackBar(
                               SnackBar(
@@ -98,7 +97,21 @@ class SignUpScreen extends StatelessWidget {
                           return;
                         }
 
-                        // usermanager
+                        context.read<UserManager>().signUp(
+                            user: user,
+                            onSuccess: (){
+                              debugPrint('sucesso');
+                              // TODO: POP
+                            },
+                            onFail: (e){
+                              scaffoldKey.currentState.showSnackBar(
+                                  SnackBar(
+                                    content: Text('Falha ao cadastrar: $e'),
+                                    backgroundColor: Colors.red,
+                                  )
+                              );
+                            }
+                        );
                       }
                     },
                     child: const Text(
