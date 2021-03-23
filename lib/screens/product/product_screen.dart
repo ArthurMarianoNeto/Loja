@@ -1,17 +1,15 @@
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
 import 'package:loja/models/product.dart';
+import 'package:loja/screens/product/components/size_widget.dart';
 
 class ProductScreen extends StatelessWidget {
 
   const ProductScreen(this.product);
-
   final Product product;
-
   @override
   Widget build(BuildContext context) {
     final primaryColor = Theme.of(context).primaryColor;
-
     return Scaffold(
       appBar: AppBar(
         title: Text(product.name),
@@ -79,6 +77,23 @@ class ProductScreen extends StatelessWidget {
                       fontSize: 16
                   ),
                 ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 16, bottom: 8),
+                  child: Text(
+                    'Tamanhos',
+                    style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500
+                    ),
+                  ),
+                ),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: product.sizes.map((s){
+                    return SizeWidget(size: s);
+                  }).toList(),
+                )
               ],
             ),
           )
