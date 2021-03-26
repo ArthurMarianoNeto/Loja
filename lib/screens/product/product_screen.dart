@@ -1,6 +1,7 @@
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
 import 'package:loja/models/product.dart';
+import 'package:loja/models/user_manager.dart';
 import 'package:loja/screens/product/components/size_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -38,7 +39,7 @@ class ProductScreen extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
                   Text(
                     product.name,
@@ -97,7 +98,34 @@ class ProductScreen extends StatelessWidget {
                     children: product.sizes.map((s){
                       return SizeWidget(size: s);
                     }).toList(),
+                  ),
+                  const SizedBox(height: 20,),
+                  if(product.hasStock)
+                  Consumer2<UserManager, Product>(
+                      builder: (_, userManager, product, __ ){
+                    return SizedBox(
+                      height: 44,
+                        child: RaisedButton(
+                          onPressed: product.selectedSize != null ? (){
+                            if(userManager.isLoggedIn){
+                             //TODO: ADICIONAR AO CARRINHO
+                            } else
+                              Navigator.of(context).pushNamed('/login');
+                          } : null,
+                          color: primaryColor,
+                            textColor: Colors.white,
+                          child: Text(
+                            userManager.isLoggedIn
+                                ? 'Adicionar ao Carrinho'
+                                : 'Faça Login para Comprar',
+                            style: TextStyle(fontSize: 18),
+                          ),
+
+                        ),
+                    );
+                  }
                   )
+
                 ],
               ),
             )
