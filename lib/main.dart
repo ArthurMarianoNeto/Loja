@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:loja/models/cart_manager.dart';
 import 'package:loja/screens/base/base_screen.dart';
+import 'package:loja/screens/cart/cart_screen.dart';
 import 'package:loja/screens/product/product_screen.dart';
 import 'package:loja/screens/signup/signup_screen.dart';
 import 'package:provider/provider.dart';
@@ -23,7 +25,11 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (_) => ProductManager(),
           lazy: false,
-        )
+        ),
+        Provider(
+          create: (_) => CartManager(),
+          lazy: false,
+        ),
       ],
       child: MaterialApp(
         title: 'Loja do Daniel',
@@ -50,8 +56,12 @@ class MyApp extends StatelessWidget {
             case '/product':
               return MaterialPageRoute(
                   builder: (_) => ProductScreen(
-                    settings.arguments as Product
+                      settings.arguments as Product
                   )
+              );
+            case '/cart':
+              return MaterialPageRoute(
+                  builder: (_) => CartScreen()
               );
             case '/base':
             default:
