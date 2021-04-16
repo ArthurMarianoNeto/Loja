@@ -30,7 +30,6 @@ class CartProduct {
     if(product == null) return 0;
     return itemSize?.price ?? 0;
   }
-
   Map<String, dynamic> toCartItemMap(){
     return {
       'pid': productId,
@@ -38,8 +37,16 @@ class CartProduct {
       'size': size,
     };
   }
-
   bool stackable(Product product){
     return product.id == productId && product.selectedSize.name == size;
   }
+
+  void increment(){
+    quantity++;
+  }
+
+  void decrement(){
+    quantity--;
+  }
+
 }

@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:loja/common/custom_drawer/custom_icon_button.dart';
 import 'package:loja/models/cart_product.dart';
 
 class CartTile extends StatelessWidget {
-
   const CartTile(this.cartProduct);
   final CartProduct cartProduct;
-
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -13,17 +12,18 @@ class CartTile extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child: Row(
-          children: [
+          children: <Widget>[
             SizedBox(
               height: 80,
               width: 80,
               child: Image.network(cartProduct.product.images.first),
-             ),
+            ),
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.only(left: 16),
                 child: Column(
-                  children: [
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
                     Text(
                       cartProduct.product.name,
                       style: TextStyle(
@@ -35,24 +35,42 @@ class CartTile extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       child: Text(
                         'Tamanho: ${cartProduct.size}',
-                        style: TextStyle(fontWeight: FontWeight.w300)
+                        style: TextStyle(fontWeight: FontWeight.w300),
                       ),
                     ),
                     Text(
                       'R\$ ${cartProduct.unitPrice.toStringAsFixed(2)}',
                       style: TextStyle(
-                        color: Theme.of(context).primaryColor,
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.bold
+                          color: Theme.of(context).primaryColor,
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold
                       ),
-                    ),
+                    )
                   ],
-                )
+                ),
               ),
+            ),
+            Column(
+              children: <Widget>[
+                CustomIconButton(
+                  iconData: Icons.add,
+                  color: Theme.of(context).primaryColor,
+                  onTap: cartProduct.increment,
+                ),
+                Text(
+                  '${cartProduct.quantity}',
+                  style: const TextStyle(fontSize: 20),
+                ),
+                CustomIconButton(
+                  iconData: Icons.remove,
+                  color: Theme.of(context).primaryColor,
+                  onTap: cartProduct.decrement,
+                ),
+              ],
             )
           ],
         ),
-      )
+      ),
     );
   }
 }
