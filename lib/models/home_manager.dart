@@ -18,6 +18,7 @@ class HomeManager extends ChangeNotifier {
       for(final DocumentSnapshot document in snapshot.documents){
         sections.add(Section.fromDocument(document));
       }
+     print(sections);
       notifyListeners();
     });
   }
