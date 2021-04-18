@@ -5,6 +5,7 @@ import 'package:loja/screens/cart/cart_screen.dart';
 import 'package:loja/screens/product/product_screen.dart';
 import 'package:loja/screens/signup/signup_screen.dart';
 import 'package:provider/provider.dart';
+import 'models/home_manager.dart';
 import 'models/product.dart';
 import 'models/product_manager.dart';
 import 'models/user_manager.dart';
@@ -26,18 +27,14 @@ class MyApp extends StatelessWidget {
           create: (_) => ProductManager(),
           lazy: false,
         ),
+        Provider(
+          create: (_) => HomeManager,
+          lazy: false,
+        ),
         ChangeNotifierProxyProvider<UserManager, CartManager>(
           create: (_) => CartManager(),
           lazy: false,
           update: (_, userManager, cartManager) =>
-
-
-
-
-
-
-
-
           cartManager..updateUser(userManager),
         ),
       ],
