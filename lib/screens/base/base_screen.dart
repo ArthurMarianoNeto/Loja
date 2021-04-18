@@ -6,7 +6,6 @@ import 'package:loja/screens/login/login_screen.dart';
 import 'package:loja/screens/products/products_screen.dart';
 import 'package:provider/provider.dart';
 
-
 class BaseScreen extends StatelessWidget {
 
   final PageController pageController = PageController();

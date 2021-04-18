@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:loja/models/cart_manager.dart';
+import 'package:loja/models/home_manager.dart';
+import 'package:loja/models/product.dart';
+import 'package:loja/models/product_manager.dart';
+import 'package:loja/models/user_manager.dart';
 import 'package:loja/screens/base/base_screen.dart';
 import 'package:loja/screens/cart/cart_screen.dart';
+import 'package:loja/screens/login/login_screen.dart';
 import 'package:loja/screens/product/product_screen.dart';
 import 'package:loja/screens/signup/signup_screen.dart';
 import 'package:provider/provider.dart';
-import 'models/home_manager.dart';
-import 'models/product.dart';
-import 'models/product_manager.dart';
-import 'models/user_manager.dart';
-import 'package:loja/screens/login/login_screen.dart';
 
 void main() {
   runApp(MyApp());
 }
+
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -27,8 +28,8 @@ class MyApp extends StatelessWidget {
           create: (_) => ProductManager(),
           lazy: false,
         ),
-        Provider(
-          create: (_) => HomeManager,
+        ChangeNotifierProvider(
+          create: (_) => HomeManager(),
           lazy: false,
         ),
         ChangeNotifierProxyProvider<UserManager, CartManager>(
