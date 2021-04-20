@@ -33,6 +33,7 @@ class CustomDrawerHeader extends StatelessWidget {
               GestureDetector(
                 onTap: (){
                   if(userManager.isLoggedIn){
+                    context.read<PageManager>().setPage(0);
                     userManager.signOut();
                   } else {
                     Navigator.of(context).pushNamed('/login');

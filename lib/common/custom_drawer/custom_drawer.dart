@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:loja/common/custom_drawer/custom_drawer_header.dart';
 import 'drawer_tile.dart';
+import 'package:provider/provider.dart';
+import 'package:loja/models/user_manager.dart';
+
 
 class CustomDrawer extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -44,6 +48,29 @@ class CustomDrawer extends StatelessWidget {
                 title: 'Lojas',
                 page: 3,
               ),
+              Consumer<UserManager>(
+                builder: (_, userManager, __){
+                  if(userManager.adminEnabled){
+                    return Column(
+                      children: <Widget>[
+                        const Divider(),
+                        DrawerTile(
+                          iconData: Icons.perm_contact_calendar_outlined,
+                          title: 'Usuários',
+                          page: 4,
+                        ),
+                        DrawerTile(
+                          iconData: Icons.settings,
+                          title: 'Pedidos',
+                          page: 5,
+                        ),
+                      ],
+                    );
+                  } else {
+                    return Container();
+                  }
+                },
+              )
             ],
           ),
         ],
