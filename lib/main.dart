@@ -11,6 +11,7 @@ import 'package:loja/screens/product/product_screen.dart';
 import 'package:loja/screens/signup/signup_screen.dart';
 import 'package:loja/models/admin_users_manager.dart';
 import 'package:provider/provider.dart';
+import 'package:loja/screens/edit_product/edit_product_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -73,6 +74,10 @@ class MyApp extends StatelessWidget {
                   builder: (_) => ProductScreen(
                       settings.arguments as Product
                   )
+              );
+            case '/edit_product':
+              return MaterialPageRoute(
+                  builder: (_) => EditProductScreen()
               );
             case '/cart':
               return MaterialPageRoute(
