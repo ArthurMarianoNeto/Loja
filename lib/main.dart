@@ -9,6 +9,7 @@ import 'package:loja/screens/cart/cart_screen.dart';
 import 'package:loja/screens/login/login_screen.dart';
 import 'package:loja/screens/product/product_screen.dart';
 import 'package:loja/screens/signup/signup_screen.dart';
+import 'package:loja/models/admin_users_manager.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -38,6 +39,12 @@ class MyApp extends StatelessWidget {
           update: (_, userManager, cartManager) =>
           cartManager..updateUser(userManager),
         ),
+        ChangeNotifierProxyProvider<UserManager, AdminUsersManager>(
+          create: (_) => AdminUsersManager(),
+          lazy: false,
+          update: (_, userManager, adminUsersManager) =>
+          adminUsersManager..updateUser(userManager),
+        )
       ],
       child: MaterialApp(
         title: 'Loja',
