@@ -4,7 +4,7 @@ import 'package:loja/screens/edit_product/components/images_form.dart';
 
 class EditProductScreen extends StatelessWidget {
 
-  const EditProductScreen(this.product)
+  const EditProductScreen(this.product);
 
   final Product product;
 
@@ -16,7 +16,7 @@ class EditProductScreen extends StatelessWidget {
         centerTitle: true,
       ),
       body: ListView(
-        children: [
+        children: <Widget>[
           ImagesForm(product),
         ],
       ),
