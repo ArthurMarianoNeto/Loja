@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:loja/screens/edit_product/components/image_source_sheet.dart';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
@@ -13,8 +14,14 @@ class ImagesForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FormField<List<dynamic>>(
-      initialValue: product.images,
+      initialValue: List.from(product.images),
       builder: (state){
+        void onImageSelected(File file){
+          state.value.add(file);
+          state.didChange(state.value);
+          Navigator.of(context).pop();
+        }
+
         return AspectRatio(
           aspectRatio: 1,
           child: Carousel(
@@ -45,12 +52,22 @@ class ImagesForm extends StatelessWidget {
                   child: IconButton(
                     icon: Icon(Icons.add_a_photo),
                     color: Theme.of(context).primaryColor,
-                    iconSize: 80,
+                    iconSize: 50,
                     onPressed: (){
-                      showModalBottomSheet(
-                          context: context,
-                          builder: (_) => ImageSourceSheet()
-                      );
+                      if(Platform.isAndroid)
+                        showModalBottomSheet(
+                            context: context,
+                            builder: (_) => ImageSourceSheet(
+                              onImageSelected: onImageSelected,
+                            )
+                        );
+                      else
+                        showCupertinoModalPopup(
+                            context: context,
+                            builder: (_) => ImageSourceSheet(
+                              onImageSelected: onImageSelected,
+                            )
+                        );
                     },
                   ),
                 )
