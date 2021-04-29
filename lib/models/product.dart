@@ -6,7 +6,6 @@ import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import 'dart:io';
 
-
 class Product extends ChangeNotifier {
   Product({this.id, this.name, this.description, this.images, this.sizes}) {
     images = images ?? [];
@@ -36,6 +35,13 @@ class Product extends ChangeNotifier {
   List<ItemSize> sizes;
 
   List<dynamic> newImages;
+
+  bool _loading = false;
+  bool get loading => _loading;
+  set loading(bool value) {
+    _loading = value;
+    notifyListeners();
+  }
 
   ItemSize _selectedSize;
   ItemSize get selectedSize => _selectedSize;
@@ -77,6 +83,7 @@ class Product extends ChangeNotifier {
   }
 
   Future<void> save() async {
+    loading = true;
     final Map<String, dynamic> data = {
       'name': name,
       'description': description,
@@ -108,30 +115,32 @@ class Product extends ChangeNotifier {
 
     final List<String> updateImages = [];
 
-    for(final newImage in newImages){
-      if(images.contains(newImage)){
+    for (final newImage in newImages) {
+      if (images.contains(newImage)) {
         updateImages.add(newImage as String);
       } else {
-        final StorageUploadTask task = storageRef.child(Uuid().v1()).putFile(newImage as File);
+        final StorageUploadTask task =
+            storageRef.child(Uuid().v1()).putFile(newImage as File);
         final StorageTaskSnapshot snapshot = await task.onComplete;
         final String url = await snapshot.ref.getDownloadURL() as String;
         updateImages.add(url);
       }
     }
 
-    for(final image in images){
-      if(!newImages.contains(image)){
+    for (final image in images) {
+      if (!newImages.contains(image)) {
         try {
           final ref = await storage.getReferenceFromUrl(image);
           await ref.delete();
-        } catch (e){
+        } catch (e) {
           debugPrint('Falha ao deletar $image');
         }
       }
     }
 
     await firestoreRef.updateData({'images': updateImages});
-
+    images = updateImages;
+    loading = false;
   }
 
   Product clone() {
