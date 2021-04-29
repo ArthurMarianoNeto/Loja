@@ -21,7 +21,7 @@ class EditProductScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title:  Text(editing ? 'Editar Anúncio' : 'Criar Anúncio'),
+        title:  Text(editing ? 'Editar Produto' : 'Criar Anúncio'),
         centerTitle: true,
       ),
       backgroundColor: Colors.white,
@@ -38,7 +38,7 @@ class EditProductScreen extends StatelessWidget {
                   TextFormField(
                     initialValue: product.name,
                     decoration: const InputDecoration(
-                      hintText: 'Título',
+                      hintText: 'Tamanho',
                       border: InputBorder.none,
                     ),
                     style: TextStyle(
@@ -50,6 +50,7 @@ class EditProductScreen extends StatelessWidget {
                         return 'Título mínimo 6 caracteres';
                       return null;
                     },
+                    onSaved: (name) => product.name = name,
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 4),
@@ -92,6 +93,7 @@ class EditProductScreen extends StatelessWidget {
                         return 'Descrição mínimo 10 caracteres';
                       return null;
                     },
+                    onSaved: (desc) => product.description = desc,
                   ),
                   SizesForm(product),
                   const SizedBox(height: 20,),
@@ -100,6 +102,9 @@ class EditProductScreen extends StatelessWidget {
                     child: RaisedButton(
                       onPressed: (){
                         if(formKey.currentState.validate()){
+                          formKey.currentState.save();
+                          print(product);
+  //                        print(product.sizes);
                           print('válido!!!');
                         }
                       },
