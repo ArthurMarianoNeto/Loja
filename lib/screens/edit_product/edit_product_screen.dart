@@ -103,9 +103,10 @@ class EditProductScreen extends StatelessWidget {
                       onPressed: (){
                         if(formKey.currentState.validate()){
                           formKey.currentState.save();
-                          print(product);
+  //                        print(product);
   //                        print(product.sizes);
-                          print('válido!!!');
+  //                        print('válido!!!');
+                          product.save();
                         }
                       },
                       textColor: Colors.white,
