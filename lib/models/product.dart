@@ -119,6 +119,19 @@ class Product extends ChangeNotifier {
       }
     }
 
+    for(final image in images){
+      if(!newImages.contains(image)){
+        try {
+          final ref = await storage.getReferenceFromUrl(image);
+          await ref.delete();
+        } catch (e){
+          debugPrint('Falha ao deletar $image');
+        }
+      }
+    }
+
+    await firestoreRef.updateData({'images': updateImages});
+
   }
 
   Product clone() {
