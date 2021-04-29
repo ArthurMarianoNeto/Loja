@@ -9,6 +9,7 @@ class HomeManager extends ChangeNotifier {
   }
 
   List<Section> sections = [];
+  bool editing = false;
 
   final Firestore firestore = Firestore.instance;
 
@@ -21,5 +22,19 @@ class HomeManager extends ChangeNotifier {
      print(sections);
       notifyListeners();
     });
+  }
+  void enterEditing(){
+    editing = true;
+    notifyListeners();
+  }
+
+  void saveEditing(){
+    editing = false;
+    notifyListeners();
+  }
+
+  void discardEditing(){
+    editing = false;
+    notifyListeners();
   }
 }
