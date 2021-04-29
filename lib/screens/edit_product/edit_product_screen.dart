@@ -38,7 +38,7 @@ class EditProductScreen extends StatelessWidget {
                   TextFormField(
                     initialValue: product.name,
                     decoration: const InputDecoration(
-                      hintText: 'Tamanho',
+                      hintText: 'Título do Anúncio',
                       border: InputBorder.none,
                     ),
                     style: TextStyle(
