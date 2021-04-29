@@ -12,7 +12,7 @@ class SectionHeader extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Text(
-        section.name,
+        section.name ?? "Feira da Fruta",
         style: TextStyle(
           color: Colors.white,
           fontWeight: FontWeight.w800,

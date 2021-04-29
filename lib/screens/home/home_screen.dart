@@ -4,6 +4,7 @@ import 'package:loja/common/custom_drawer/custom_drawer.dart';
 import 'package:loja/models/home_manager.dart';
 import 'package:loja/screens/home/components/section_list.dart';
 import 'package:loja/screens/home/components/section_staggered.dart';
+import 'package:loja/screens/home/components/add_section_widget.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -81,15 +82,21 @@ class HomeScreen extends StatelessWidget {
                   final List<Widget> children = homeManager.sections.map<Widget>(
                           (section) {
                         switch(section.type){
-                          case 'Staggered':
-                            return SectionStaggered(section);
+
                           case 'List':
                             return SectionList(section);
+                          case 'Staggered':
+                            return SectionStaggered(section);
+
                           default:
                             return Container();
                         }
                       }
                   ).toList();
+
+                  if(homeManager.editing)
+                    children.add(AddSectionWidget(homeManager));
+
 
                   return SliverList(
                     delegate: SliverChildListDelegate(children),

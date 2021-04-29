@@ -22,9 +22,13 @@ class HomeManager extends ChangeNotifier {
       for(final DocumentSnapshot document in snapshot.documents){
         _sections.add(Section.fromDocument(document));
       }
-     print(sections);
       notifyListeners();
     });
+  }
+
+  void addSection(Section section){
+    _editingSections.add(section);
+    notifyListeners();
   }
 
   List<Section> get sections {
@@ -36,12 +40,14 @@ class HomeManager extends ChangeNotifier {
 
   void enterEditing(){
     editing = true;
+
+    _editingSections = _sections.map((s) => s.clone()).toList();
+
     notifyListeners();
   }
 
   void saveEditing(){
     editing = false;
-    _editingSections = _sections.map((s) => s.clone()).toList();
     notifyListeners();
   }
 
@@ -49,4 +55,5 @@ class HomeManager extends ChangeNotifier {
     editing = false;
     notifyListeners();
   }
+
 }
