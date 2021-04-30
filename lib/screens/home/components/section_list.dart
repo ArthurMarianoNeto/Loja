@@ -5,6 +5,7 @@ import 'package:loja/screens/home/components/item_tile.dart';
 import 'package:loja/screens/home/components/section_header.dart';
 import 'package:loja/screens/home/home_screen.dart';
 import 'package:loja/screens/home/components/add_tile_widget.dart';
+import 'package:loja/screens/home/components/section_header.dart';
 import 'package:provider/provider.dart';
 
 class SectionList extends StatelessWidget {

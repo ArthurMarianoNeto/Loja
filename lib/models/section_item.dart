@@ -14,12 +14,11 @@ class SectionItem {
     return SectionItem(
       image: image,
       product: product,
-
     );
   }
 
   @override
   String toString() {
-    return 'SectionItem{image: $image, paroduct: $product}';
+    return 'SectionItem{image: $image, product: $product}';
   }
 }
