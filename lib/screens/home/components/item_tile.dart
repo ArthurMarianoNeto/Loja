@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:loja/models/product_manager.dart';
 import 'package:loja/models/section_item.dart';
@@ -20,17 +21,17 @@ class ItemTile extends StatelessWidget {
           if(product != null){
             Navigator.of(context).pushNamed('/product', arguments: product);
           }
-
         }
       },
       child: AspectRatio(
-
-          aspectRatio: 1,
-          child: FadeInImage.memoryNetwork(
-              placeholder: kTransparentImage,
-              image: item.image,
-              fit: BoxFit.cover,
-          )
+        aspectRatio: 1,
+        child: item.image is String
+            ? FadeInImage.memoryNetwork(
+          placeholder: kTransparentImage,
+          image: item.image as String,
+          fit: BoxFit.cover,
+        )
+            : Image.file(item.image as File, fit: BoxFit.cover,),
       ),
     );
   }

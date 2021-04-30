@@ -12,7 +12,7 @@ class HomeManager extends ChangeNotifier {
 
   List<Section> _editingSections = [];
 
-  bool editing = false;
+  bool editing = false; // Verificando se estamos editando ou não
 
   final Firestore firestore = Firestore.instance;
 

@@ -82,12 +82,10 @@ class HomeScreen extends StatelessWidget {
                   final List<Widget> children = homeManager.sections.map<Widget>(
                           (section) {
                         switch(section.type){
-
                           case 'List':
                             return SectionList(section);
                           case 'Staggered':
                             return SectionStaggered(section);
-
                           default:
                             return Container();
                         }
@@ -96,7 +94,6 @@ class HomeScreen extends StatelessWidget {
 
                   if(homeManager.editing)
                     children.add(AddSectionWidget(homeManager));
-
 
                   return SliverList(
                     delegate: SliverChildListDelegate(children),
