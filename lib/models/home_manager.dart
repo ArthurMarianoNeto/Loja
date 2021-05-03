@@ -70,8 +70,8 @@ class HomeManager extends ChangeNotifier {
 
     // todo: validadção de campos
 
-//    editing = false;
-//    notifyListeners();
+   editing = false;
+   notifyListeners();
   }
 
   void discardEditing(){
