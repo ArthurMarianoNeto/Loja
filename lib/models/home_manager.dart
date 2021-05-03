@@ -48,10 +48,11 @@ class HomeManager extends ChangeNotifier {
 
     _editingSections = _sections.map((s) => s.clone()).toList();
 
+
     notifyListeners();
   }
 
-  void saveEditing(){
+  Future<void> saveEditing() async {
 
     bool valid = true;
 
@@ -61,9 +62,13 @@ class HomeManager extends ChangeNotifier {
 
     if(!valid) return;
 
-    print('Salvar');
+    for(final section in _editingSections){
+    await section.save();
+    }
 
-    // todo: validadção
+//    print('Salvar');
+
+    // todo: validadção de campos
 
 //    editing = false;
 //    notifyListeners();
