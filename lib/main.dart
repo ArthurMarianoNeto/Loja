@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:loja/screens/address/address_screen.dart';
 import 'package:loja/models/cart_manager.dart';
 import 'package:loja/models/home_manager.dart';
 import 'package:loja/models/product.dart';
 import 'package:loja/models/product_manager.dart';
 import 'package:loja/models/user_manager.dart';
+import 'package:loja/screens/address/address_screen.dart';
 import 'package:loja/screens/base/base_screen.dart';
 import 'package:loja/screens/cart/cart_screen.dart';
 import 'package:loja/screens/login/login_screen.dart';
@@ -86,6 +88,11 @@ class MyApp extends StatelessWidget {
               return MaterialPageRoute(
                   builder: (_) => CartScreen()
               );
+            case '/address':
+              return MaterialPageRoute(
+                  builder: (_) => AddressScreen()
+              );
+
             case '/select_product':
               return MaterialPageRoute(
                   builder: (_) => SelectProductScreen()
