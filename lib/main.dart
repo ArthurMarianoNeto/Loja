@@ -13,11 +13,13 @@ import 'package:loja/screens/product/product_screen.dart';
 import 'package:loja/screens/select_product/select_product_screen.dart';
 import 'package:loja/screens/signup/signup_screen.dart';
 import 'package:loja/models/admin_users_manager.dart';
+import 'package:loja/services/cep_aberto_service.dart';
 import 'package:provider/provider.dart';
 import 'package:loja/screens/edit_product/edit_product_screen.dart';
 
 void main() {
   runApp(MyApp());
+  CepAbertoService().getAddressFromCep('13.087-000').then((address) => print(address));
 }
 
 class MyApp extends StatelessWidget {
