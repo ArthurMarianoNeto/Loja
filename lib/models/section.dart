@@ -63,6 +63,7 @@ class Section extends ChangeNotifier {
     } else {
       await firestoreRef.updateData(data);
     }
+    // transormando imagens do celular em url
     for (final item in items) {
       if (item.image is File) {
         final StorageUploadTask task =
@@ -78,8 +79,8 @@ class Section extends ChangeNotifier {
           final ref = await storage.getReferenceFromUrl(
               original.image as String
           );
-          await ref.delete();
-          // ignore: empty_catches
+          await ref.delete(); // deletando do Storage
+          // ignore: empty_catches "supress"
         } catch (e){}
       }
     }
