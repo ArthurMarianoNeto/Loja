@@ -19,7 +19,7 @@ import 'package:loja/screens/edit_product/edit_product_screen.dart';
 
 void main() {
   runApp(MyApp());
-  CepAbertoService().getAddressFromCep('13.087-000').then((address) => print(address));
+ // CepAbertoService().getAddressFromCep('13.087-000').then((address) => print(address));
 }
 
 class MyApp extends StatelessWidget {

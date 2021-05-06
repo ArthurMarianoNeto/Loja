@@ -3,6 +3,7 @@ import 'package:loja/models/product.dart';
 import 'package:loja/models/user.dart';
 import 'package:loja/models/user_manager.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:loja/services/cep_aberto_service.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -84,4 +85,18 @@ class CartManager extends ChangeNotifier {
     }
     return true;
     }
+
+    //ADDRESS
+
+Future<void> getAddress(String cep) async {
+    final cepAbertoService = CepAbertoService();
+
+    try {
+    final address = await cepAbertoService.getAddressFromCep(cep);
+    print(address);
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+}
+
 }
