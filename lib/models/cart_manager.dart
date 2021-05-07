@@ -96,6 +96,7 @@ class CartManager extends ChangeNotifier {
     final cepAbertoService = CepAbertoService(); // específico do ceb aberto
 
     try {
+      // caso tenha outra API para busca de endereço basta trocar estas linhas abaxio
       final cepAbertoAddress =
         await cepAbertoService.getAddressFromCep(cep); // tratando do address do app geral
 
