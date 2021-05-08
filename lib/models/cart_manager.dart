@@ -1,13 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:loja/models/address.dart';
 import 'package:loja/models/cart_product.dart';
+import 'package:loja/models/cep_aberto_address.dart';
 import 'package:loja/models/product.dart';
 import 'package:loja/models/user.dart';
 import 'package:loja/models/user_manager.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:loja/services/cep_aberto_service.dart';
 import 'package:loja/screens/address/address_screen.dart';
-import 'package:provider/provider.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:loja/services/cep_aberto_service.dart';
+
 
 class CartManager extends ChangeNotifier {
 
@@ -17,6 +19,8 @@ class CartManager extends ChangeNotifier {
   Address address;
 
   num productsPrice = 0.0;
+
+  final Firestore firestore = Firestore.instance;
 
   void updateUser(UserManager userManager){
     user = userManager.user;
@@ -93,12 +97,10 @@ class CartManager extends ChangeNotifier {
   // ADDRESS
 
   Future<void> getAddress(String cep) async {
-    final cepAbertoService = CepAbertoService(); // específico do ceb aberto
+    final cepAbertoService = CepAbertoService();
 
     try {
-      // caso tenha outra API para busca de endereço basta trocar estas linhas abaxio
-      final cepAbertoAddress =
-        await cepAbertoService.getAddressFromCep(cep); // tratando do address do app geral
+      final cepAbertoAddress = await cepAbertoService.getAddressFromCep(cep);
 
       if(cepAbertoAddress != null){
         address = Address(
@@ -117,9 +119,31 @@ class CartManager extends ChangeNotifier {
     }
   }
 
+  void setAddress(Address address){
+    this.address = address;
+
+    calculateDelivery(address.lat, address.long);
+  }
+
   void removeAddress(){
     address = null;
     notifyListeners();
+  }
+
+  Future<void> calculateDelivery(double lat, double long) async {
+    final DocumentSnapshot doc = await firestore.document('aux/delivery').get();
+
+    final latStore = doc.data['lat'] as double;
+    final longStore = doc.data['long'] as double;
+
+    final maxkm = doc.data['maxkm'] as num;
+
+    double dis =
+    await Geolocator().distanceBetween(latStore, longStore, lat, long);
+
+    dis /= 1000.0;
+
+    print('Distance $dis');
   }
 
 }

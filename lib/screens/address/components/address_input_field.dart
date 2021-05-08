@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:loja/models/address.dart';
+import 'package:loja/models/cart_manager.dart';
+import 'package:provider/provider.dart';
 
 class AddressInputField extends StatelessWidget {
 
@@ -24,7 +26,7 @@ class AddressInputField extends StatelessWidget {
             decoration: const InputDecoration(
               isDense: true,
               labelText: 'Rua/Avenida',
-              hintText: 'Nome da Rua/Avenida',
+              hintText: 'Av. Brasil',
             ),
             validator: emptyValidator,
             onSaved: (t) => address.street = t,
@@ -37,7 +39,7 @@ class AddressInputField extends StatelessWidget {
                   decoration: const InputDecoration(
                     isDense: true,
                     labelText: 'Número',
-                    hintText: '999',
+                    hintText: '123',
                   ),
                   inputFormatters: [
                     WhitelistingTextInputFormatter.digitsOnly,
@@ -68,7 +70,7 @@ class AddressInputField extends StatelessWidget {
             decoration: const InputDecoration(
               isDense: true,
               labelText: 'Bairro',
-              hintText: 'Nome do Bairro',
+              hintText: 'Guanabara',
             ),
             validator: emptyValidator,
             onSaved: (t) => address.district = t,
@@ -83,7 +85,7 @@ class AddressInputField extends StatelessWidget {
                   decoration: const InputDecoration(
                     isDense: true,
                     labelText: 'Cidade',
-                    hintText: 'Nome da Cidade',
+                    hintText: 'Campinas',
                   ),
                   validator: emptyValidator,
                   onSaved: (t) => address.city = t,
@@ -101,7 +103,7 @@ class AddressInputField extends StatelessWidget {
                   decoration: const InputDecoration(
                     isDense: true,
                     labelText: 'UF',
-                    hintText: 'Estado',
+                    hintText: 'SP',
                     counterText: '',
                   ),
                   maxLength: 2,
@@ -124,7 +126,10 @@ class AddressInputField extends StatelessWidget {
             disabledColor: primaryColor.withAlpha(100),
             textColor: Colors.white,
             onPressed: (){
-
+              if(Form.of(context).validate()){
+                Form.of(context).save();
+                context.read<CartManager>().setAddress(address);
+              }
             },
             child: const Text('Calcular Frete'),
           ),
