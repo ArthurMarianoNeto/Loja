@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:loja/models/address.dart';
 import 'package:loja/models/cart_product.dart';
@@ -22,6 +23,8 @@ class CartManager extends ChangeNotifier {
 
   num productsPrice = 0.0;
   num devliveryPrice;
+
+  num get totalPrice => productsPrice + (devliveryPrice ?? 0);
 
   final Firestore firestore = Firestore.instance;
 
@@ -97,6 +100,8 @@ class CartManager extends ChangeNotifier {
     return true;
   }
 
+  bool get isAddressValid => address != null && devliveryPrice != null;
+
   // ADDRESS
 
   Future<void> getAddress(String cep) async {
@@ -127,6 +132,7 @@ class CartManager extends ChangeNotifier {
 
     if( await calculateDelivery(address.lat, address.long)){
       print('price $devliveryPrice');
+      notifyListeners();
     } else {
       return Future.error('Endereço fora do raio de entrega!');
     }
@@ -134,6 +140,7 @@ class CartManager extends ChangeNotifier {
 
   void removeAddress(){
     address = null;
+    devliveryPrice = null;
     notifyListeners();
   }
 
