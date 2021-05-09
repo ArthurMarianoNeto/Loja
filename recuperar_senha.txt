@@ -1,0 +1,46 @@
+No UserManager, adicione:
+
+void recoverPass(String email) {
+  auth.sendPasswordResetEmail(email: email);
+  notifyListeners();
+}
+
+
+
+
+
+Na LoginScreen: a partir do Align do Botão de "Recuperar a senha"!
+
+Align(
+  alignment: Alignment.centerRight,
+  child: Consumer<UserManager>(
+    builder: (_, userManager, __) {
+      return FlatButton(
+        onPressed: () {
+          if (emailController.text.isEmpty) {
+            scaffoldKey.currentState.showSnackBar(SnackBar(
+              content: const Text(
+                  'Insira seu e-mail para recuperação'
+              ),
+              backgroundColor: Colors.redAccent,
+              duration: Duration(seconds: 4),
+            ));
+          } else {
+            userManager.recoverPass(emailController.text);
+            scaffoldKey.currentState.showSnackBar(SnackBar(
+              content: const Text(
+                  'Confira seu e-mail.'
+              ),
+              backgroundColor: Theme.of(context).primaryColor,
+              duration: Duration(seconds: 4),
+            ));
+          }
+        },
+        padding: EdgeInsets.zero,
+        child: const Text(
+          'Esqueci minha senha',
+        ),
+      );
+    },
+  ),
+)

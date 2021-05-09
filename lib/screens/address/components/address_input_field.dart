@@ -26,7 +26,7 @@ class AddressInputField extends StatelessWidget {
             decoration: const InputDecoration(
               isDense: true,
               labelText: 'Rua/Avenida',
-              hintText: 'Av. Brasil',
+              hintText: 'Nome Rua/Avenida',
             ),
             validator: emptyValidator,
             onSaved: (t) => address.street = t,
@@ -39,7 +39,7 @@ class AddressInputField extends StatelessWidget {
                   decoration: const InputDecoration(
                     isDense: true,
                     labelText: 'Número',
-                    hintText: '123',
+                    hintText: '999',
                   ),
                   inputFormatters: [
                     WhitelistingTextInputFormatter.digitsOnly,
@@ -70,7 +70,7 @@ class AddressInputField extends StatelessWidget {
             decoration: const InputDecoration(
               isDense: true,
               labelText: 'Bairro',
-              hintText: 'Guanabara',
+              hintText: 'Nome Bairro',
             ),
             validator: emptyValidator,
             onSaved: (t) => address.district = t,
@@ -85,7 +85,7 @@ class AddressInputField extends StatelessWidget {
                   decoration: const InputDecoration(
                     isDense: true,
                     labelText: 'Cidade',
-                    hintText: 'Campinas',
+                    hintText: 'Nome Cidade',
                   ),
                   validator: emptyValidator,
                   onSaved: (t) => address.city = t,
@@ -103,7 +103,7 @@ class AddressInputField extends StatelessWidget {
                   decoration: const InputDecoration(
                     isDense: true,
                     labelText: 'UF',
-                    hintText: 'SP',
+                    hintText: 'Estado',
                     counterText: '',
                   ),
                   maxLength: 2,
@@ -111,7 +111,7 @@ class AddressInputField extends StatelessWidget {
                     if (e.isEmpty) {
                       return 'Campo obrigatório';
                     } else if (e.length != 2) {
-                      return 'Inválido';
+                      return 'Numero digitos inválido';
                     }
                     return null;
                   },

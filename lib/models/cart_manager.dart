@@ -4,11 +4,13 @@ import 'package:geolocator/geolocator.dart';
 import 'package:loja/models/address.dart';
 import 'package:loja/models/cart_product.dart';
 import 'package:loja/models/cep_aberto_address.dart';
+import 'package:loja/services/cep_aberto_service.dart';
 import 'package:loja/models/product.dart';
 import 'package:loja/models/user.dart';
 import 'package:loja/models/user_manager.dart';
 import 'package:loja/screens/address/address_screen.dart';
-import 'package:loja/services/cep_aberto_service.dart';
+
+
 
 
 class CartManager extends ChangeNotifier {
@@ -139,7 +141,9 @@ class CartManager extends ChangeNotifier {
     final maxkm = doc.data['maxkm'] as num;
 
     double dis =
-    await Geolocator().distanceBetween(latStore, longStore, lat, long);
+   await Geolocator().distanceBetween(latStore, longStore, lat, long);
+ //      await Geolocator().distanceBetween(double 52.2165157, double 6.9437819, 52.3546274, 4.8285838);
+//    await GeolocatorPlatform.instance.distanceBetween(latStore, longStore, lat, long);
 
     dis /= 1000.0;
 

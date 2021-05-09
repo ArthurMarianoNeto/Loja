@@ -28,7 +28,7 @@ class CepInputField extends StatelessWidget {
             decoration: const InputDecoration(
                 isDense: true,
                 labelText: 'CEP',
-                hintText: '99.999.999'
+                hintText: '12.345-678'
             ),
             inputFormatters: [
               WhitelistingTextInputFormatter.digitsOnly,
@@ -39,7 +39,7 @@ class CepInputField extends StatelessWidget {
               if(cep.isEmpty)
                 return 'Campo obrigatório';
               else if(cep.length != 10)
-                return 'CEP número de digitos incorreto';
+                return 'CEP Inválido';
               return null;
             },
           ),
@@ -71,9 +71,9 @@ class CepInputField extends StatelessWidget {
               ),
             ),
             CustomIconButton(
-              iconData: Icons.clear,
+              iconData: Icons.edit,
               color: primaryColor,
-              size: 29,
+              size: 20,
               onTap: (){
                 context.read<CartManager>().removeAddress();
               },
