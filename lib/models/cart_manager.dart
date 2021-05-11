@@ -131,7 +131,7 @@ class CartManager extends ChangeNotifier {
 
       if(cepAbertoAddress != null){
         address = Address(
-            complement: cepAbertoAddress.complemento,
+//            complement: cepAbertoAddress.complemento,
             street: cepAbertoAddress.logradouro,
             district: cepAbertoAddress.bairro,
             zipCode: cepAbertoAddress.cep,
