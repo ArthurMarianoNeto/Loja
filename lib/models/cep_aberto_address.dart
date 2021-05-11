@@ -8,20 +8,22 @@ class CepAbertoAddress {
   final String bairro;
   final Cidade cidade;
   final Estado estado;
+  final String complemento;
 
   CepAbertoAddress.fromMap(Map<String, dynamic> map) :
-        altitude = map['altitude'] as double,
-        cep = map['cep'] as String,
-        latitude = double.tryParse(map['latitude'] as String),
-        longitude = double.tryParse(map['longitude'] as String),
-        logradouro = map['logradouro'] as String,
-        bairro = map['bairro'] as String,
-        cidade = Cidade.fromMap(map['cidade'] as Map<String, dynamic>),
-        estado = Estado.fromMap(map['estado'] as Map<String, dynamic>);
+        altitude    = map['altitude'] as double,
+        cep         = map['cep'] as String,
+        latitude    = double.tryParse(map['latitude'] as String),
+        longitude   = double.tryParse(map['longitude'] as String),
+        logradouro  = map['logradouro'] as String,
+        bairro      = map['bairro'] as String,
+        cidade      = Cidade.fromMap(map['cidade'] as Map<String, dynamic>),
+        estado      = Estado.fromMap(map['estado'] as Map<String, dynamic>),
+        complemento  = map['complemento'] as String;
 
   @override
   String toString() {
-    return 'CepAbertoAddress{altitude: $altitude, cep: $cep, latitude: $latitude, longitude: $longitude, logradouro: $logradouro, bairro: $bairro, cidade: $cidade, estado: $estado}';
+    return 'CepAbertoAddress{altitude: $altitude, cep: $cep, latitude: $latitude, longitude: $longitude, complemento: $complemento, logradouro: $logradouro, bairro: $bairro, cidade: $cidade, estado: $estado}';
   }
 }
 

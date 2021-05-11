@@ -131,6 +131,7 @@ class CartManager extends ChangeNotifier {
 
       if(cepAbertoAddress != null){
         address = Address(
+            complement: cepAbertoAddress.complemento,
             street: cepAbertoAddress.logradouro,
             district: cepAbertoAddress.bairro,
             zipCode: cepAbertoAddress.cep,
@@ -190,7 +191,7 @@ class CartManager extends ChangeNotifier {
 
     dis /= 1000.0;
 
-    debugPrint('Distance $dis');
+//    debugPrint('Distance $dis');
 
     if(dis > maxkm){
       return false;
