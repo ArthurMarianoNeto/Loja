@@ -20,7 +20,6 @@ import 'package:loja/screens/edit_product/edit_product_screen.dart';
 
 void main() {
   runApp(MyApp());
- // CepAbertoService().getAddressFromCep('13.087-000').then((address) => print(address));
 }
 
 class MyApp extends StatelessWidget {
@@ -54,7 +53,7 @@ class MyApp extends StatelessWidget {
         )
       ],
       child: MaterialApp(
-        title: 'Loja',
+        title: 'Loja do Daniel',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primaryColor: const Color.fromARGB(255, 4, 125, 141),
@@ -81,32 +80,29 @@ class MyApp extends StatelessWidget {
                       settings.arguments as Product
                   )
               );
+            case '/cart':
+              return MaterialPageRoute(
+                  builder: (_) => CartScreen(),
+                  settings: settings
+              );
+            case '/address':
+              return MaterialPageRoute(
+                  builder: (_) => AddressScreen()
+              );
+            case '/checkout':
+              return MaterialPageRoute(
+                  builder: (_) => CheckoutScreen()
+              );
             case '/edit_product':
               return MaterialPageRoute(
                   builder: (_) => EditProductScreen(
                       settings.arguments as Product
                   )
               );
-            case '/cart':
-              return MaterialPageRoute(
-                  builder: (_) => CartScreen()
-              );
-            case '/address':
-              return MaterialPageRoute(
-                  builder: (_) => AddressScreen()
-              );
-
-            case '/checkout':
-              return MaterialPageRoute(
-                  builder: (_) => CheckoutScreen()
-              );
-
-
             case '/select_product':
               return MaterialPageRoute(
                   builder: (_) => SelectProductScreen()
               );
-
             case '/base':
             default:
               return MaterialPageRoute(

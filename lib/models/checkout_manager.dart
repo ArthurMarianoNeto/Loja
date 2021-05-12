@@ -14,10 +14,11 @@ class CheckoutManager extends ChangeNotifier {
     this.cartManager = cartManager;
   }
 
-  Future<void> checkout() async {
+  Future<void> checkout({Function onStockFail}) async {
     try {
       await _decrementStock();
     } catch (e){
+      onStockFail(e);
       debugPrint(e.toString());
     }
 
@@ -41,7 +42,7 @@ class CheckoutManager extends ChangeNotifier {
     }
   }
 
-  Future<void> _decrementStock(){ // verificando estoque
+  Future<void> _decrementStock(){
     // 1. Ler todos os estoques 3xM
     // 2. Decremento localmente os estoques 2xM
     // 3. Salvar os estoques no firebase 2xM
