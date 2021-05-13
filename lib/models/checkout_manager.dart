@@ -7,6 +7,12 @@ import 'package:loja/models/product.dart';
 class CheckoutManager extends ChangeNotifier {
 
   CartManager cartManager;
+  bool _loading = false;
+  bool get loading => _loading;
+  set loading(bool value){
+    _loading = value;
+    notifyListeners();
+  }
 
   final Firestore firestore = Firestore.instance;
 
@@ -15,28 +21,37 @@ class CheckoutManager extends ChangeNotifier {
     this.cartManager = cartManager;
   }
 
-  Future<void> checkout({Function onStockFail}) async {
+  // Verificando se temos estoque diponível
+  Future<void> checkout({Function onStockFail, Function onSuccess}) async {
+    loading = true;
     try {
-      await _decrementStock();
+      await _decrementStock(); // decrementando estoque
     } catch (e){
       onStockFail(e);
+      loading = false;
  //     debugPrint(e.toString());
       return;
     }
 
     //todo processar pagamento
 
-    final orderId = await _getOrderId();
+    final orderId = await _getOrderId(); // gerando número unico do pedido
 
-    final order = Order.fromCartManager(cartManager);
-    order.orderId = orderId.toString();
+    final order = Order.fromCartManager(cartManager); // gerando objeto do pedido
+    order.orderId = orderId.toString(); // salvando ID do pedido no objeto do pedido
 
-    await order.save();
+    await order.save(); // pedido está se salvando
+
+    cartManager.clear();
+
+    onSuccess();
+
+    loading = false;
 
  //   _getOrderId().then((value) => print(value));
   }
 
-  Future<int> _getOrderId() async {
+  Future<int> _getOrderId() async { // salvando o firebase
     final ref = firestore.document('aux/ordercounter');
 
     try {
