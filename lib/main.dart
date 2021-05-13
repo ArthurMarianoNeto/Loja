@@ -5,7 +5,7 @@ import 'package:loja/models/home_manager.dart';
 import 'package:loja/models/product.dart';
 import 'package:loja/models/product_manager.dart';
 import 'package:loja/models/user_manager.dart';
-import 'package:loja/screens/address/address_screen.dart';
+
 import 'package:loja/screens/base/base_screen.dart';
 import 'package:loja/screens/cart/cart_screen.dart';
 import 'package:loja/screens/checkout/checkout_screen.dart';
@@ -14,7 +14,7 @@ import 'package:loja/screens/product/product_screen.dart';
 import 'package:loja/screens/select_product/select_product_screen.dart';
 import 'package:loja/screens/signup/signup_screen.dart';
 import 'package:loja/models/admin_users_manager.dart';
-import 'package:loja/services/cep_aberto_service.dart';
+
 import 'package:provider/provider.dart';
 import 'package:loja/screens/edit_product/edit_product_screen.dart';
 

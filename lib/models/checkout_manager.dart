@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:loja/models/cart_manager.dart';
+import 'package:loja/models/order.dart';
 import 'package:loja/models/product.dart';
 
 class CheckoutManager extends ChangeNotifier {
@@ -19,10 +20,20 @@ class CheckoutManager extends ChangeNotifier {
       await _decrementStock();
     } catch (e){
       onStockFail(e);
-      debugPrint(e.toString());
+ //     debugPrint(e.toString());
+      return;
     }
 
-    _getOrderId().then((value) => print(value));
+    //todo processar pagamento
+
+    final orderId = await _getOrderId();
+
+    final order = Order.fromCartManager(cartManager);
+    order.orderId = orderId.toString();
+
+    await order.save();
+
+ //   _getOrderId().then((value) => print(value));
   }
 
   Future<int> _getOrderId() async {

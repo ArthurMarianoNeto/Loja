@@ -59,6 +59,15 @@ class CartProduct extends ChangeNotifier {
       'pid': productId,
       'quantity': quantity,
       'size': size,
+
+    };
+  }
+
+  Map<String, dynamic> toOrderItemMap(){
+    return {
+      'pid': productId,
+      'quantity': quantity,
+      'size': size,
     };
   }
 
