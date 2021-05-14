@@ -48,6 +48,11 @@ class CustomDrawer extends StatelessWidget {
                 title: 'Lojas',
                 page: 3,
               ),
+              DrawerTile(
+                iconData: Icons.chat,
+                title: 'Fale Conosco',
+                page: 6,
+              ),
               Consumer<UserManager>(
                 builder: (_, userManager, __){
                   if(userManager.adminEnabled){

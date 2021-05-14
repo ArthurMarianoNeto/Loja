@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:loja/models/user.dart';
+import 'package:loja/models/orders_manager.dart';
 import 'package:loja/screens/address/address_screen.dart';
 import 'package:loja/models/cart_manager.dart';
 import 'package:loja/models/home_manager.dart';
 import 'package:loja/models/product.dart';
 import 'package:loja/models/product_manager.dart';
 import 'package:loja/models/user_manager.dart';
-
 import 'package:loja/screens/base/base_screen.dart';
 import 'package:loja/screens/cart/cart_screen.dart';
 import 'package:loja/screens/checkout/checkout_screen.dart';
@@ -14,7 +15,6 @@ import 'package:loja/screens/product/product_screen.dart';
 import 'package:loja/screens/select_product/select_product_screen.dart';
 import 'package:loja/screens/signup/signup_screen.dart';
 import 'package:loja/models/admin_users_manager.dart';
-
 import 'package:provider/provider.dart';
 import 'package:loja/screens/edit_product/edit_product_screen.dart';
 
@@ -45,6 +45,12 @@ class MyApp extends StatelessWidget {
           update: (_, userManager, cartManager) =>
           cartManager..updateUser(userManager),
         ),
+        ChangeNotifierProxyProvider<UserManager, OrdersManager>(
+          create: (_) => OrdersManager(),
+          lazy: false,
+          update: (_, userManager, ordersManager) =>
+          ordersManager..updateUser(userManager.user),
+        ),
         ChangeNotifierProxyProvider<UserManager, AdminUsersManager>(
           create: (_) => AdminUsersManager(),
           lazy: false,
@@ -53,7 +59,7 @@ class MyApp extends StatelessWidget {
         )
       ],
       child: MaterialApp(
-        title: 'Loja do Daniel',
+        title: 'Mega Moda',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primaryColor: const Color.fromARGB(255, 4, 125, 141),
