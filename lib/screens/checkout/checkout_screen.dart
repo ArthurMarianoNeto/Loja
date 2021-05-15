@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:loja/common/custom_drawer/price_card.dart';
 import 'package:loja/models/cart_manager.dart';
 import 'package:loja/models/checkout_manager.dart';
+import 'package:loja/models/page_manager.dart';
 import 'package:provider/provider.dart';
 
 class CheckoutScreen extends StatelessWidget {
@@ -57,6 +58,7 @@ class CheckoutScreen extends StatelessWidget {
                       onSuccess: (){
                         Navigator.of(context).popUntil(
                                 (route) => route.settings.name == '/base');
+//                        context.read<PageManager>().setPage(2)
                       }
                     );
                   },

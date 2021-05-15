@@ -49,7 +49,7 @@ class Order {
 
   Timestamp date;
 
-  String get formatedId => '#${orderId.padLeft(6, '0')}'; // quantidade de caracteres do lado esquerdo
+  String get formatedId => 'Num Pedido ${orderId.padLeft(6, '0')}'; // quantidade de caracteres do lado esquerdo
 
   @override
   String toString() {
