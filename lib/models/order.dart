@@ -49,8 +49,11 @@ class Order {
 
   Timestamp date;
 
+  String get formatedId => '#${orderId.padLeft(6, '0')}'; // quantidade de caracteres do lado esquerdo
+
   @override
   String toString() {
-    return 'Order{firestore: $firestore, orderId: $orderId, items: $items, price: $price, userId: $userId, address: $address, date: $date}';
+    return 'Order{firestore: $firestore, orderId: $orderId, items: $items, price: $price, userId: $userId, '
+        'address: $address, date: $date}';
   }
 }
