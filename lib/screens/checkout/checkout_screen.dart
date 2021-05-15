@@ -55,10 +55,11 @@ class CheckoutScreen extends StatelessWidget {
                           Navigator.of(context).popUntil(
                                   (route) => route.settings.name == '/cart');
                         },
-                      onSuccess: (){
+                      onSuccess: (order){
                         Navigator.of(context).popUntil(
                                 (route) => route.settings.name == '/base');
 //                        context.read<PageManager>().setPage(2)
+                      Navigator.of(context).pushNamed('/confirmation', arguments: order);
                       }
                     );
                   },
