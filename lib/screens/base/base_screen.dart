@@ -35,12 +35,6 @@ class _BaseScreenState extends State<BaseScreen> {
               Scaffold(
                 drawer: CustomDrawer(),
                 appBar: AppBar(
-                  title: const Text('Meus Pedidos'),
-                ),
-              ),
-              Scaffold(
-                drawer: CustomDrawer(),
-                appBar: AppBar(
                   title: const Text('Nossas Lojas'),
                 ),
               ),
@@ -50,7 +44,7 @@ class _BaseScreenState extends State<BaseScreen> {
                   Scaffold(
                     drawer: CustomDrawer(),
                     appBar: AppBar(
-                      title: const Text('Expedir Pedidos'),
+                      title: const Text('ADM Pedidos'),
                     ),
                   ),
                 ]
