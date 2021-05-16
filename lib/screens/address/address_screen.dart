@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:loja/common/custom_drawer/price_card.dart';
+import 'package:loja/common/price_card.dart';
 import 'package:loja/models/cart_manager.dart';
 import 'package:loja/screens/address/components/address_card.dart';
 import 'package:provider/provider.dart';

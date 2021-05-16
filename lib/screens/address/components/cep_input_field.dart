@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:brasil_fields/brasil_fields.dart';
-import 'package:loja/common/custom_drawer/custom_icon_button.dart';
+import 'package:loja/common/custom_icon_button.dart';
 import 'package:loja/models/cart_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:loja/models/address.dart';

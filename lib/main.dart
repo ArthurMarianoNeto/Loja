@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:loja/models/admin_orders_manager.dart';
 import 'package:loja/models/order.dart';
 import 'package:loja/models/user.dart';
 import 'package:loja/models/orders_manager.dart';
@@ -58,7 +59,15 @@ class MyApp extends StatelessWidget {
           lazy: false,
           update: (_, userManager, adminUsersManager) =>
           adminUsersManager..updateUser(userManager),
-        )
+        ),
+      ChangeNotifierProxyProvider<UserManager, AdminOrdersManager>(
+          create: (_) => AdminOrdersManager(),
+          lazy: false,
+          update: (_, userManager, adminOrdersManager) =>
+          adminOrdersManager..updateAdmin(
+          adminEnabled: userManager.adminEnabled
+        ),
+    )
       ],
       child: MaterialApp(
         title: 'Mega Moda',

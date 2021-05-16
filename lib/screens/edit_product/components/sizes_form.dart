@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:loja/common/custom_drawer/custom_icon_button.dart';
+import 'package:loja/common/custom_icon_button.dart';
 import 'package:loja/models/item_size.dart';
 import 'package:loja/models/product.dart';
 import 'package:loja/screens/edit_product/components/edit_item_size.dart';
