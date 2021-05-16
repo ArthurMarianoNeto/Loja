@@ -38,6 +38,12 @@ class _BaseScreenState extends State<BaseScreen> {
                   title: const Text('Nossas Lojas'),
                 ),
               ),
+              Scaffold(
+                drawer: CustomDrawer(),
+                appBar: AppBar(
+                  title: const Text('Fale Conosco'),
+                ),
+              ),
               if(userManager.adminEnabled)
                 ...[
                   AdminUsersScreen(),

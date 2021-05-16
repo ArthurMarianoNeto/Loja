@@ -51,7 +51,7 @@ class CustomDrawer extends StatelessWidget {
               DrawerTile(
                 iconData: Icons.chat,
                 title: 'Fale Conosco',
-                page: 6,
+                page: 4,
               ),
               Consumer<UserManager>(
                 builder: (_, userManager, __){
@@ -62,12 +62,12 @@ class CustomDrawer extends StatelessWidget {
                         DrawerTile(
                           iconData: Icons.perm_contact_calendar_outlined,
                           title: 'Usuários',
-                          page: 4,
+                          page: 5,
                         ),
                         DrawerTile(
                           iconData: Icons.settings,
-                          title: 'Pedidos',
-                          page: 5,
+                          title: 'ADM Pedidos',
+                          page: 6,
                         ),
                       ],
                     );
