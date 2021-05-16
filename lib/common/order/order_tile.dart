@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:loja/models/order.dart';
-import 'package:loja/screens/orders/components/order_product_tile.dart';
+import 'file:///C:/Users/thies/OneDrive/Desktop/Flutter/Flutter%20Projetos/loja/lib/common/order/order_product_tile.dart';
 
 class OrderTile extends StatelessWidget {
 
-  const OrderTile(this.order);
+  const OrderTile(this.order, {this.showControls = false});
 
   final Order order;
+  final bool showControls;
 
   @override
   Widget build(BuildContext context) {
@@ -39,10 +40,12 @@ class OrderTile extends StatelessWidget {
               ],
             ),
             Text(
-              'Em transporte',
+              order.statusText,
+              //'Em transporte',
               style: TextStyle(
                   fontWeight: FontWeight.w400,
-                  color: primaryColor,
+                  color: order.status == Status.canceled ?
+                  Colors.red : primaryColor,
                   fontSize: 14
               ),
             )
@@ -53,7 +56,41 @@ class OrderTile extends StatelessWidget {
             children: order.items.map((e){
               return OrderProductTile(e);
             }).toList(),
-          )
+          ),
+
+          //------------------- botões--------------------------
+
+          if(showControls && order.status != Status.canceled)
+            SizedBox(
+              height: 50,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: <Widget>[
+                  FlatButton(
+                    onPressed: (){
+
+                    },
+                    textColor: Colors.red,
+                    child: const Text('Cancelar'),
+                  ),
+                  FlatButton(
+                    onPressed: order.back,
+                    child: const Text('Recuar'),
+                  ),
+                  FlatButton(
+                    onPressed: order.advance,
+                    child: const Text('Avançar'),
+                  ),
+                  FlatButton(
+                    onPressed: (){
+
+                    },
+                    textColor: primaryColor,
+                    child: const Text('Endereço'),
+                  )
+                ],
+              ),
+            )
         ],
       ),
     );

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:loja/common/custom_drawer/custom_drawer.dart';
-import 'file:///C:/Users/thies/OneDrive/Desktop/Flutter/Flutter%20Projetos/loja/lib/common/order_tile.dart';
 import 'package:loja/common/empty_card.dart';
 import 'package:loja/common/login_card.dart';
+import 'package:loja/common/order/order_tile.dart';
 import 'package:loja/models/orders_manager.dart';
 import 'package:provider/provider.dart';
 

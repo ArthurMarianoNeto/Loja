@@ -4,7 +4,7 @@ import 'package:loja/models/cart_manager.dart';
 import 'package:loja/models/cart_product.dart';
 
 
-enum Status {canceled, preparing, transporting, delivered}
+enum Status { canceled, preparing, transporting, delivered }
 
 class Order {
 
@@ -47,6 +47,24 @@ class Order {
     );
   }
 
+  Function() get back {
+     return status.index >= Status.transporting.index ? (){
+        status = Status.values[status.index -1];
+        firestore.collection('orders').document(orderId).updateData(
+          {'status' : status.index}
+        );
+     } : null;
+  }
+
+  Function get advance {
+    return status.index <= Status.transporting.index ? (){
+      status = Status.values[status.index +1];
+      firestore.collection('orders').document(orderId).updateData(
+          {'status' : status.index}
+      );
+    } : null;
+  }
+
   String orderId;
   List<CartProduct> items;
   num price;
@@ -59,7 +77,7 @@ class Order {
 
  // String get formatedId => 'Pedido ';
 
-  String get formatedId => 'Num Pedido ${orderId.padLeft(6, '0')}'; // quantidade de caracteres do lado esquerdo
+  String get formatedId => 'Num Pedido ${orderId.padLeft(5, '0')}'; // quantidade de caracteres do lado esquerdo
 
   String get statusText => getStatusText(status);
 
@@ -68,9 +86,9 @@ class Order {
       case Status.canceled:
         return 'Cancelado';
       case Status.preparing:
-        return 'Em preparação';
+        return 'em Preparação';
       case Status.transporting:
-        return 'Em transporte';
+        return 'em Transporte';
       case Status.delivered:
         return 'Entregue';
       default:

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:loja/common/custom_drawer/custom_drawer.dart';
-import 'file:///C:/Users/thies/OneDrive/Desktop/Flutter/Flutter%20Projetos/loja/lib/common/order_tile.dart';
-import 'file:///C:/Users/thies/OneDrive/Desktop/Flutter/Flutter%20Projetos/loja/lib/common/empty_card.dart';
+import 'package:loja/common/empty_card.dart';
+import 'package:loja/common/order/order_tile.dart';
 import 'package:loja/models/admin_orders_manager.dart';
 import 'package:provider/provider.dart';
 
@@ -26,7 +26,8 @@ class AdminOrdersScreen extends StatelessWidget {
               itemCount: ordersManager.orders.length,
               itemBuilder: (_, index){
                 return OrderTile(
-                    ordersManager.orders.reversed.toList()[index]
+                    ordersManager.orders.reversed.toList()[index],
+                  showControls: true,
                 );
               }
           );
