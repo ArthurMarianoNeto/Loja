@@ -37,7 +37,9 @@ class AdminUsersScreen extends StatelessWidget {
                   context.read<AdminOrdersManager>().setUserFilter(
                       adminUsersManager.users[index]
                   );
+                  //----------------------------------------------------------
                   context.read<PageManager>().setPage(6);
+                  //-----------------------------------------------------------
                 },
               );
             },
