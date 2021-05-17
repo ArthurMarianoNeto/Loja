@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:loja/models/order.dart';
 
+
 class CancelOrderDialog extends StatelessWidget {
 
   const CancelOrderDialog(this.order);
@@ -11,7 +12,7 @@ class CancelOrderDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text('Cancelar ${order.formatedId}?'),
-      content: const Text('Esta ação não poderá ser defeita!'),
+      content: const Text('Esta ação não poderá ser desfeita!'),
       actions: <Widget>[
         FlatButton(
           onPressed: (){
