@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:loja/common/custom_drawer/custom_drawer.dart';
 import 'package:loja/models/page_manager.dart';
 import 'package:loja/screens/admin_orders/admin_orders_screen.dart';
@@ -19,6 +20,16 @@ class BaseScreen extends StatefulWidget {
 class _BaseScreenState extends State<BaseScreen> {
 
   final PageController pageController = PageController();
+
+// App funciona apenas em visualização vertical
+  @override
+  void initState() {
+    super.initState();
+
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp
+    ]);
+  }
 
   @override
   Widget build(BuildContext context) {

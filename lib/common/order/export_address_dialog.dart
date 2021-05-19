@@ -22,7 +22,7 @@ class ExportAddressDialog extends StatelessWidget {
           color: Colors.white,
           child: Text(
             '${address.street}, ${address.number}\n'
-            ' ${address.complement}\n'
+                ' ${address.complement}\n'
                 '${address.district}\n'
                 '${address.city} / ${address.state}\n'
                 '${address.zipCode}',

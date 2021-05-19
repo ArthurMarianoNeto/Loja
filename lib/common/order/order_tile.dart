@@ -43,7 +43,6 @@ class OrderTile extends StatelessWidget {
             ),
             Text(
               order.statusText,
-              //'Em transporte',
               style: TextStyle(
                   fontWeight: FontWeight.w400,
                   color: order.status == Status.canceled ?
@@ -59,9 +58,6 @@ class OrderTile extends StatelessWidget {
               return OrderProductTile(e);
             }).toList(),
           ),
-
-          //------------------- botões--------------------------
-
           if(showControls && order.status != Status.canceled)
             SizedBox(
               height: 50,
@@ -71,7 +67,7 @@ class OrderTile extends StatelessWidget {
                   FlatButton(
                     onPressed: (){
                       showDialog(context: context,
-                      builder: (_) => CancelOrderDialog(order)
+                          builder: (_) => CancelOrderDialog(order)
                       );
                     },
                     textColor: Colors.red,
@@ -87,9 +83,9 @@ class OrderTile extends StatelessWidget {
                   ),
                   FlatButton(
                     onPressed: (){
-                        showDialog(context: context,
-                            builder: (_) => ExportAddressDialog(order.address)
-                        );
+                      showDialog(context: context,
+                          builder: (_) => ExportAddressDialog(order.address)
+                      );
                     },
                     textColor: primaryColor,
                     child: const Text('Endereço'),

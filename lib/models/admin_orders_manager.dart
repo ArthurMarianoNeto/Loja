@@ -9,7 +9,8 @@ class AdminOrdersManager extends ChangeNotifier {
   final List<Order> _orders = [];
 
   User userFilter;
-  List<Status> statusFilter = [Status.preparing];
+//  List<Status> statusFilter = [Status.preparing, Status.transporting, Status.delivered];
+  List<Status> statusFilter = [Status.preparing, Status.transporting];
 
   final Firestore firestore = Firestore.instance;
 
@@ -50,7 +51,7 @@ class AdminOrdersManager extends ChangeNotifier {
                 modOrder.updateFromDocument(change.document);
                 break;
               case DocumentChangeType.removed:
-                debugPrint('Deu problema sério!!!');
+                debugPrint('Erro Crítico!'); // nunca um documento cancelado será excluído
                 break;
             }
           }
