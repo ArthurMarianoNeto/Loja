@@ -26,13 +26,14 @@ class EditProductScreen extends StatelessWidget {
         appBar: AppBar(
           title: Text(editing ? 'Editar Produto' : 'Criar Produto'),
           centerTitle: true,
-          actions: [
+          actions: <Widget>[
             if(editing)
               IconButton(
                 icon: Icon(Icons.delete),
                 onPressed: (){
                   context.read<ProductManager>().delete(product);
-                  Navigator.of(context).pop();
+//                 Navigator.of(context).pop();
+                  Navigator.of(context).pushNamed('/');
                 },
               )
           ],
@@ -60,7 +61,7 @@ class EditProductScreen extends StatelessWidget {
                       ),
                       validator: (name){
                         if(name.length < 6)
-                          return 'Título muito curto';
+                          return 'Título mínimo 6 caracteres';
                         return null;
                       },
                       onSaved: (name) => product.name = name,
@@ -103,7 +104,7 @@ class EditProductScreen extends StatelessWidget {
                       maxLines: null,
                       validator: (desc){
                         if(desc.length < 10)
-                          return 'Descrição muito curta';
+                          return 'Descrição mínimo 10 caracteres';
                         return null;
                       },
                       onSaved: (desc) => product.description = desc,

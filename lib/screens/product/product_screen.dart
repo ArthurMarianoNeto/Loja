@@ -9,12 +9,14 @@ import 'package:provider/provider.dart';
 class ProductScreen extends StatelessWidget {
 
   const ProductScreen(this.product);
+
   final Product product;
+
   @override
   Widget build(BuildContext context) {
     final primaryColor = Theme.of(context).primaryColor;
+
     return ChangeNotifierProvider.value(
- //     lazy: true,
       value: product,
       child: Scaffold(
         appBar: AppBar(
@@ -23,13 +25,13 @@ class ProductScreen extends StatelessWidget {
           actions: <Widget>[
             Consumer<UserManager>(
               builder: (_, userManager, __){
-                if(userManager.adminEnabled){
+                if(userManager.adminEnabled && !product.deleted){
                   return IconButton(
                     icon: Icon(Icons.edit),
                     onPressed: (){
-                      Navigator.of(context)
-                          .pushNamed('/edit_product',
-                      arguments: product
+                      Navigator.of(context).pushReplacementNamed(
+                          '/edit_product',
+                          arguments: product
                       );
                     },
                   );
@@ -102,64 +104,70 @@ class ProductScreen extends StatelessWidget {
                         fontSize: 16
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 16, bottom: 8),
-                    child: Text(
-                      'Tamanhos',
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500
+                  if(product.deleted)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 16, bottom: 8),
+                      child: Text(
+                        'Este produto não faz mais parte de nosso catálogo!',
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.red
+                        ),
                       ),
-                    ),
-                  ),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: product.sizes.map((s){
-                      return SizeWidget(size: s);
-                    }).toList(),
-                  ),
+                    )
+                  else
+                    ...[
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16, bottom: 8),
+                        child: Text(
+                          'Tamanhos',
+                          style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500
+                          ),
+                        ),
+                      ),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: product.sizes.map((s){
+                          return SizeWidget(size: s);
+                        }).toList(),
+                      ),
+                    ],
                   const SizedBox(height: 20,),
                   if(product.hasStock)
-                  Consumer2<UserManager, Product>(
-                      builder: (_, userManager, product, __ ){
-                    return SizedBox(
-                      height: 44,
-                        child: RaisedButton(
-                          onPressed: product.selectedSize != null ? (){
-                            if(userManager.isLoggedIn){
-                              context.read<CartManager>().addToCart(product);
-                            Navigator.of(context).pushNamed('/cart');
-                            } else
-                              Navigator.of(context).pushNamed('/login');
-                          } : null,
-                          color: primaryColor,
+                    Consumer2<UserManager, Product>(
+                      builder: (_, userManager, product, __){
+                        return SizedBox(
+                          height: 44,
+                          child: RaisedButton(
+                            onPressed: product.selectedSize != null ? (){
+                              if(userManager.isLoggedIn){
+                                context.read<CartManager>().addToCart(product);
+                                Navigator.of(context).pushNamed('/cart');
+                              } else {
+                                Navigator.of(context).pushNamed('/login');
+                              }
+                            } : null,
+                            color: primaryColor,
                             textColor: Colors.white,
-                          child: Text(
-                            userManager.isLoggedIn
-                                ? 'Adicionar ao Carrinho'
-                                : 'Faça Login para Comprar',
-                            style: TextStyle(fontSize: 18),
+                            child: Text(
+                              userManager.isLoggedIn
+                                  ? 'Adicionar ao Carrinho'
+                                  : 'Entre para Comprar',
+                              style: const TextStyle(fontSize: 18),
+                            ),
                           ),
-
-                        ),
-                    );
-                  }
-                  )
-
+                        );
+                      },
+                    )
                 ],
               ),
             )
           ],
         ),
-        /*floatingActionButton: FloatingActionButton(
-          backgroundColor: Colors.white,
-          foregroundColor: Theme.of(context).primaryColor,
-          onPressed: (){
-            Navigator.of(context).pushNamed('/cart');
-          },
-          child: Icon(Icons.shopping_cart_outlined),
-        ),*/
       ),
     );
   }

@@ -8,7 +8,8 @@ import 'dart:io';
 
 class Product extends ChangeNotifier {
 
-  Product({this.id, this.name, this.description, this.images, this.sizes, this.deleted = false}){
+  Product({this.id, this.name, this.description, this.images, this.sizes,
+    this.deleted = false}){
     images = images ?? [];
     sizes = sizes ?? [];
   }
@@ -62,13 +63,13 @@ class Product extends ChangeNotifier {
   }
 
   bool get hasStock {
-    return totalStock > 0;
+    return totalStock > 0 && !deleted;
   }
 
   num get basePrice {
     num lowest = double.infinity;
     for(final size in sizes){
-      if(size.price < lowest && size.hasStock)
+      if(size.price < lowest)
         lowest = size.price;
     }
     return lowest;
@@ -93,7 +94,7 @@ class Product extends ChangeNotifier {
       'name': name,
       'description': description,
       'sizes': exportSizeList(),
-      'deleted' : deleted
+      'deleted': deleted
     };
 
     if(id == null){
@@ -135,8 +136,7 @@ class Product extends ChangeNotifier {
   }
 
   void delete(){
-    firestoreRef.updateData({'deleted' : true});
-
+    firestoreRef.updateData({'deleted': true});
   }
 
   Product clone(){
