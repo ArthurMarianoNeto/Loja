@@ -5,9 +5,12 @@ import 'package:loja/models/user_manager.dart';
 import 'package:provider/provider.dart';
 
 class SignUpScreen extends StatelessWidget {
+
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+
   final User user = User();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -82,52 +85,50 @@ class SignUpScreen extends StatelessWidget {
                       onSaved: (pass) => user.confirmPassword = pass,
                     ),
                     const SizedBox(height: 16,),
-                    SizedBox(
-                      height: 44,
-                      child: RaisedButton(
-                        color: Theme.of(context).primaryColor,
-                        disabledColor: Theme.of(context).primaryColor
-                            .withAlpha(100),
-                        textColor: Colors.white,
-                        onPressed: userManager.loading ? null : (){
-                          if(formKey.currentState.validate()){
-                            formKey.currentState.save();
+                    RaisedButton(
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      color: Theme.of(context).primaryColor,
+                      disabledColor: Theme.of(context).primaryColor
+                          .withAlpha(100),
+                      textColor: Colors.white,
+                      onPressed: userManager.loading ? null : (){
+                        if(formKey.currentState.validate()){
+                          formKey.currentState.save();
 
-                            if(user.password != user.confirmPassword){
-                              scaffoldKey.currentState.showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Senhas não coincidem!'),
-                                    backgroundColor: Colors.red,
-                                  )
-                              );
-                              return;
-                            }
-
-                            userManager.signUp(
-                                user: user,
-                                onSuccess: (){
-                                  Navigator.of(context).pop();
-                                },
-                                onFail: (e){
-                                  scaffoldKey.currentState.showSnackBar(
-                                      SnackBar(
-                                        content: Text('Falha ao cadastrar: $e'),
-                                        backgroundColor: Colors.red,
-                                      )
-                                  );
-                                }
+                          if(user.password != user.confirmPassword){
+                            scaffoldKey.currentState.showSnackBar(
+                                const SnackBar(
+                                  content: Text('Senhas não coincidem!'),
+                                  backgroundColor: Colors.red,
+                                )
                             );
+                            return;
                           }
-                        },
-                        child: userManager.loading ?
-                        CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation(Colors.white),
-                        )
-                            : const Text(
-                          'Criar Conta',
-                          style: TextStyle(
-                              fontSize: 18
-                          ),
+
+                          userManager.signUp(
+                              user: user,
+                              onSuccess: (){
+                                Navigator.of(context).pop();
+                              },
+                              onFail: (e){
+                                scaffoldKey.currentState.showSnackBar(
+                                    SnackBar(
+                                      content: Text('Falha ao cadastrar: $e'),
+                                      backgroundColor: Colors.red,
+                                    )
+                                );
+                              }
+                          );
+                        }
+                      },
+                      child: userManager.loading ?
+                      CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation(Colors.white),
+                      )
+                          : const Text(
+                        'Criar Conta',
+                        style: TextStyle(
+                            fontSize: 15
                         ),
                       ),
                     )

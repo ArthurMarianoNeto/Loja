@@ -42,10 +42,12 @@ dependencies:
   uuid: ^2.0.4
   dio: ^3.0.9
   brasil_fields: ^0.2.0
-  geolocator: ^5.3.2+2
+  geolocator: ^6.2.1
   sliding_up_panel: ^1.0.2
   screenshot: ^0.1.1
   gallery_saver: ^2.0.1
+  flutter_signin_button: ^1.0.0
+  flutter_facebook_login: ^3.0.0
 
 dev_dependencies:
   flutter_test:

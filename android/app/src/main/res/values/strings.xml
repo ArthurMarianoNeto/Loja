@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Mega Moda - App.</string>
+
+    <string name="facebook_app_id">1847918312041645</string>
+
+    <string name="fb_login_protocol_scheme">fb1847918312041645</string>
+
+</resources>
