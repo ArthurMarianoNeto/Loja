@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "783737300587",
+    "project_id": "loja-eeab9",
+    "storage_bucket": "loja-eeab9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:783737300587:android:8587228e649bb01f81332e",
+        "android_client_info": {
+          "package_name": "br.com.arthurmariano.loja"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "783737300587-lh6a55blrnh7v5cvqcq9dpen65dnbvg4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAluXo8cbATH3pjvVW1FfgLhx5Hmbl3OJo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "783737300587-lh6a55blrnh7v5cvqcq9dpen65dnbvg4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -7,12 +7,16 @@ import 'package:loja/helpers/firebase_errors.dart';
 import 'package:loja/models/user.dart';
 
 class UserManager extends ChangeNotifier {
+
   UserManager(){
     _loadCurrentUser();
   }
+
   final FirebaseAuth auth = FirebaseAuth.instance;
   final Firestore firestore = Firestore.instance;
+
   User user;
+
   bool _loading = false;
   bool get loading => _loading;
 
@@ -23,6 +27,7 @@ class UserManager extends ChangeNotifier {
     try {
       final AuthResult result = await auth.signInWithEmailAndPassword(
           email: user.email, password: user.password);
+
       await _loadCurrentUser(firebaseUser: result.user);
 
       onSuccess();
@@ -31,22 +36,6 @@ class UserManager extends ChangeNotifier {
     }
     loading = false;
   }
-  Future<void> signUp({User user, Function onFail, Function onSuccess}) async {
-    loading = true;
-    try {
-      final AuthResult result = await auth.createUserWithEmailAndPassword(
-          email: user.email, password: user.password);
-      user.id = result.user.uid;
-      this.user = user;
-      await user.saveData();
-      onSuccess();
-    } on PlatformException catch (e){
-      onFail(getErrorString(e.code));
-    }
-    loading = false;
-  }
-
-
 
   Future<void> facebookLogin({Function onFail, Function onSuccess}) async {
     loading = true;
@@ -83,7 +72,24 @@ class UserManager extends ChangeNotifier {
     }
 
     loading = false;
+  }
 
+  Future<void> signUp({User user, Function onFail, Function onSuccess}) async {
+    loading = true;
+    try {
+      final AuthResult result = await auth.createUserWithEmailAndPassword(
+          email: user.email, password: user.password);
+
+      user.id = result.user.uid;
+      this.user = user;
+
+      await user.saveData();
+
+      onSuccess();
+    } on PlatformException catch (e){
+      onFail(getErrorString(e.code));
+    }
+    loading = false;
   }
 
   void signOut(){
@@ -96,6 +102,7 @@ class UserManager extends ChangeNotifier {
     _loading = value;
     notifyListeners();
   }
+
   Future<void> _loadCurrentUser({FirebaseUser firebaseUser}) async {
     final FirebaseUser currentUser = firebaseUser ?? await auth.currentUser();
     if(currentUser != null){
@@ -103,18 +110,15 @@ class UserManager extends ChangeNotifier {
           .document(currentUser.uid).get();
       user = User.fromDocument(docUser);
 
-      // verificando se é administrador
+      // verificando se é admin
       final docAdmin = await firestore.collection('admins').document(user.id).get();
       if(docAdmin.exists){
         user.admin = true;
       }
-
-   //   print(user.id);
 
       notifyListeners();
     }
   }
 
   bool get adminEnabled => user != null && user.admin;
-
 }
