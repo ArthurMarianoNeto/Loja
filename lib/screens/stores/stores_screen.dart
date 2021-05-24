@@ -10,7 +10,7 @@ class StoresScreen extends StatelessWidget {
     return Scaffold(
       drawer: CustomDrawer(),
       appBar: AppBar(
-        title: const Text('Lojas'),
+        title: const Text('Nossas Lojas'),
         centerTitle: true,
       ),
       body: Consumer<StoresManager>(

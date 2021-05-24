@@ -24,6 +24,7 @@ class StoreCard extends StatelessWidget {
               children: <Widget>[
                 Expanded(
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
@@ -38,6 +39,12 @@ class StoreCard extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                         maxLines: 2,
                       ),
+                      Text(
+                        store.openingText,
+                        style: const TextStyle(
+                          fontSize: 12,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -45,7 +52,7 @@ class StoreCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     CustomIconButton(
-                      iconData: Icons.map,
+                      iconData: Icons.location_on,
                       color: primaryColor,
                       onTap: (){
 
@@ -53,6 +60,13 @@ class StoreCard extends StatelessWidget {
                     ),
                     CustomIconButton(
                       iconData: Icons.phone,
+                      color: primaryColor,
+                      onTap: (){
+
+                      },
+                    ),
+                    CustomIconButton(
+                      iconData: Icons.chat,
                       color: primaryColor,
                       onTap: (){
 

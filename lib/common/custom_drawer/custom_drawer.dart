@@ -45,7 +45,7 @@ class CustomDrawer extends StatelessWidget {
               ),
               DrawerTile(
                 iconData: Icons.location_on,
-                title: 'Lojas',
+                title: 'Nossas Lojas',
                 page: 3,
               ),
               DrawerTile(
