@@ -21,6 +21,8 @@ import 'package:loja/models/admin_users_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:loja/screens/edit_product/edit_product_screen.dart';
 
+import 'models/stores_maager.dart';
+
 void main() {
   runApp(MyApp());
 }
@@ -41,6 +43,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (_) => HomeManager(),
           lazy: false,
+        ),
+        ChangeNotifierProvider(
+          create: (_) => StoresManager(),
         ),
         ChangeNotifierProxyProvider<UserManager, CartManager>(
           create: (_) => CartManager(),
