@@ -65,6 +65,8 @@ class Store {
     return '${period['from'].formatted()} - ${period['to'].formatted()}';
   }
 
+  String get cleanPhone => phone.replaceAll(RegExp(r"[^\d]"), "");
+
   void updateStatus(){
     final weekDay = DateTime.now().weekday;
 
