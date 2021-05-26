@@ -3,6 +3,7 @@ import 'package:loja/common/price_card.dart';
 import 'package:loja/models/cart_manager.dart';
 import 'package:loja/models/checkout_manager.dart';
 import 'package:loja/models/page_manager.dart';
+import 'package:loja/screens/checkout/components/credit_card_widget.dart';
 import 'package:provider/provider.dart';
 
 class CheckoutScreen extends StatelessWidget {
@@ -47,6 +48,7 @@ class CheckoutScreen extends StatelessWidget {
             }
             return ListView(
               children: <Widget>[
+                CreditCardWidget(),
                 PriceCard(
                   buttonText: 'Finalizar Pedido',
                   onPressed: (){
