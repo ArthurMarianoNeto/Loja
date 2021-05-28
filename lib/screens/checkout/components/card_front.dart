@@ -7,9 +7,16 @@ import 'package:flutter/services.dart';
 
 class CardFront extends StatelessWidget {
 
+  CardFront({this.numberFocus, this.dateFocus, this.nameFocus, this.finished});
+
   final MaskTextInputFormatter dateFormatter = MaskTextInputFormatter(
       mask: '!#/####', filter: {'#': RegExp('[0-9]'), '!': RegExp('[0-1]')}
   );
+
+  final VoidCallback finished;
+  final FocusNode numberFocus;
+  final FocusNode dateFocus;
+  final FocusNode nameFocus;
 
   @override
   Widget build(BuildContext context) {
@@ -37,31 +44,43 @@ class CardFront extends StatelessWidget {
                       CartaoBancarioInputFormatter()
                     ],
                     validator: (number){
-                      if(number.length != 19) return 'Número de dígitos inválido';
+                      if(number.length != 19) return 'Inválido';
                       else if(detectCCType(number) == CreditCardType.unknown)
                         return 'Inválido';
                       return null;
                     },
+                    onSubmitted: (_){
+                      dateFocus.requestFocus();
+                    },
+                    focusNode: numberFocus,
                   ),
                   CardTextField(
                     title: 'Validade',
-                    hint: '11/2028',
+                    hint: '11/2029',
                     textInputType: TextInputType.number,
                     inputFormatters: [dateFormatter],
                     validator: (date){
-                      if(date.length != 7) return 'Data inválida. ';
+                      if(date.length != 7) return 'Inválido';
                       return null;
                     },
+                    onSubmitted: (_){
+                      nameFocus.requestFocus();
+                    },
+                    focusNode: dateFocus,
                   ),
                   CardTextField(
                     title: 'Títular',
-                    hint: 'Pedro Silva Ferreira',
+                    hint: 'Joaquim Pereira Silva',
                     textInputType: TextInputType.text,
                     bold: true,
                     validator: (name){
-                      if(name.isEmpty) return 'Inválido, campo vazio';
+                      if(name.isEmpty) return 'Inválido';
                       return null;
                     },
+                    onSubmitted: (_){
+                      finished();
+                    },
+                    focusNode: nameFocus,
                   ),
                 ],
               ),
