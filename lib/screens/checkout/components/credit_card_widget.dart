@@ -1,5 +1,6 @@
 import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
+import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:loja/screens/checkout/components/card_back.dart';
 import 'package:loja/screens/checkout/components/card_front.dart';
 
@@ -24,7 +25,7 @@ class CreditCardWidget extends StatelessWidget {
             key: cardKey,
             direction: FlipDirection.HORIZONTAL,
             speed: 700,
-            flipOnTouch: false, // função para virar o cartão
+            flipOnTouch: false, // Função para virar o cartão
             front: CardFront(
               numberFocus: numberFocus,
               dateFocus: dateFocus,

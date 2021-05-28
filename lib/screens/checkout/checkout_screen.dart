@@ -47,6 +47,7 @@ class CheckoutScreen extends StatelessWidget {
                 ),
               );
             }
+
             return Form(
               key: formKey,
               child: ListView(
