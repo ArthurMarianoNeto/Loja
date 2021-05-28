@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Loja Mega Moda</string>
+    <string name="app_name">Loja Mega Moda.</string>
 
-    <string name="facebook_app_id">224117422500766</string>
+    <string name="facebook_app_id">339151310887539</string>
 
-    <string name="fb_login_protocol_scheme">fb224117422500766</string>
+    <string name="fb_login_protocol_scheme">fb339151310887539</string>
 
 </resources>
