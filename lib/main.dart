@@ -27,7 +27,10 @@ import 'models/stores_maager.dart';
 void main() async {
   runApp(MyApp());
 
-  final response = await CloudFunctions.instance.getHttpsCallable(functionName: 'getUserData').call();
+  final response = await CloudFunctions.instance.getHttpsCallable(
+      functionName: 'addMessage').call(
+      {"teste": "Matheuzito"}
+  );
   print(response.data);
 }
 
