@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:loja/models/cart_manager.dart';
+import 'package:loja/models/credit_card.dart';
 import 'package:loja/models/order.dart';
 import 'package:loja/models/product.dart';
 
@@ -22,7 +23,7 @@ class CheckoutManager extends ChangeNotifier {
   }
 
   // Verificando se temos estoque diponível
-  Future<void> checkout({Function onStockFail, Function onSuccess}) async {
+  Future<void> checkout({CreditCard creditCard, onStockFail, Function onSuccess}) async {
     loading = true;
     try {
       await _decrementStock(); // decrementando estoque
