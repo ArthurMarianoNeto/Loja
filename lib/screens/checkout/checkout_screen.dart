@@ -3,6 +3,7 @@ import 'package:loja/common/price_card.dart';
 import 'package:loja/models/cart_manager.dart';
 import 'package:loja/models/checkout_manager.dart';
 import 'package:loja/models/page_manager.dart';
+import 'package:loja/screens/checkout/components/cpf_field.dart';
 import 'package:loja/screens/checkout/components/credit_card_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -53,10 +54,12 @@ class CheckoutScreen extends StatelessWidget {
               child: ListView(
                 children: <Widget>[
                   CreditCardWidget(),
+                  CpfField(),
                   PriceCard(
                     buttonText: 'Finalizar Pedido',
                     onPressed: (){
                       if(formKey.currentState.validate()){
+                        formKey.currentState.save();
                         print('enviar');
                         /*checkoutManager.checkout(
                             onStockFail: (e){
