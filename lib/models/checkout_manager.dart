@@ -4,6 +4,7 @@ import 'package:loja/models/cart_manager.dart';
 import 'package:loja/models/credit_card.dart';
 import 'package:loja/models/order.dart';
 import 'package:loja/models/product.dart';
+import 'package:loja/services/cielo_payment.dart';
 
 class CheckoutManager extends ChangeNotifier {
 
@@ -16,6 +17,8 @@ class CheckoutManager extends ChangeNotifier {
   }
 
   final Firestore firestore = Firestore.instance;
+  final CieloPayment cieloPayment = CieloPayment();
+
 
   // ignore: use_setters_to_change_properties
   void updateCart(CartManager cartManager){
@@ -25,7 +28,19 @@ class CheckoutManager extends ChangeNotifier {
   // Verificando se temos estoque diponível
   Future<void> checkout({CreditCard creditCard, onStockFail, Function onSuccess}) async {
     loading = true;
-    try {
+
+    final orderId = await _getOrderId(); // gerando número unico do pedido
+
+  cieloPayment.authorize(
+
+    creditCard: creditCard,
+    price: cartManager.totalPrice,
+    orderId: orderId.toString(),
+    user: cartManager.user,
+
+  );
+
+/*    try {
       await _decrementStock(); // decrementando estoque
     } catch (e){
       onStockFail(e);
@@ -34,18 +49,15 @@ class CheckoutManager extends ChangeNotifier {
       return;
     }
 
-    //todo processar pagamento
-
-    final orderId = await _getOrderId(); // gerando número unico do pedido
 
     final order = Order.fromCartManager(cartManager); // gerando objeto do pedido
     order.orderId = orderId.toString(); // salvando ID do pedido no objeto do pedido
 
     await order.save(); // pedido está se salvando
 
-    cartManager.clear();
+    cartManager.clear(); */
 
-    onSuccess(order);
+ //   onSuccess(order);
 
     loading = false;
 
