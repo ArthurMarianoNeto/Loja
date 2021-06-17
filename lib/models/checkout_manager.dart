@@ -51,6 +51,8 @@ class CheckoutManager extends ChangeNotifier {
       return;
     }
 
+    //CAPTURAR O PAGAMENTO
+
 
     final order = Order.fromCartManager(cartManager); // gerando objeto do pedido
     order.orderId = orderId.toString(); // salvando ID do pedido no objeto do pedido
