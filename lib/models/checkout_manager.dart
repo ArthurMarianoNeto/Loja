@@ -26,21 +26,33 @@ class CheckoutManager extends ChangeNotifier {
   }
 
   // Verificando se temos estoque diponível
-  Future<void> checkout({CreditCard creditCard, onStockFail, Function onSuccess}) async {
+  Future<void> checkout({CreditCard creditCard,
+    Function onStockFail,
+    Function onSuccess,
+    Function onPayFail}) async {
+
     loading = true;
 
 //    print(creditCard.toJson());
 
     final orderId = await _getOrderId(); // gerando número unico do pedido
 
-  cieloPayment.authorize(
 
-    creditCard: creditCard,
-    price: cartManager.totalPrice,
-    orderId: orderId.toString(),
-    user: cartManager.user,
+    try {
+      String payId = await cieloPayment.authorize(
+        creditCard: creditCard,
+        price: cartManager.totalPrice,
+        orderId: orderId.toString(),
+        user: cartManager.user,
+      );
 
-  );
+      debugPrint('success $payId');
+
+    } catch (e) {
+      onPayFail(e);
+      loading = false;
+      return;
+    }
 
 /*    try {
       await _decrementStock(); // decrementando estoque
