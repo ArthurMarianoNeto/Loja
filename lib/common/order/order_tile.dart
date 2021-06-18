@@ -25,7 +25,7 @@ class OrderTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  order.formatedId,
+                  order.formattedId,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     color: primaryColor,
@@ -66,7 +66,9 @@ class OrderTile extends StatelessWidget {
                 children: <Widget>[
                   FlatButton(
                     onPressed: (){
-                      showDialog(context: context,
+                      showDialog(
+                          context: context,
+                          barrierDismissible: false,
                           builder: (_) => CancelOrderDialog(order)
                       );
                     },

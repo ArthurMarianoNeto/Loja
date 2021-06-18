@@ -12,7 +12,7 @@ class ConfirmationScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title:  Text('${order.formatedId} Confirmado'),
+        title:  Text('${order.formattedId} Confirmado'),
         centerTitle: true,
       ),
       body: Center(
@@ -27,7 +27,7 @@ class ConfirmationScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      order.formatedId,
+                      order.formattedId,
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
                         color: Theme.of(context).primaryColor,

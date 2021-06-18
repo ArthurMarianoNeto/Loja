@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:loja/models/address.dart';
 import 'package:loja/models/cart_manager.dart';
 import 'package:loja/models/cart_product.dart';
+import 'package:loja/services/cielo_payment.dart';
 
 
 enum Status { canceled, preparing, transporting, delivered }
@@ -30,11 +32,13 @@ class Order {
 
     status = Status.values[doc.data['status'] as int];
 
+    payId = doc.data['payId'] as String;
   }
 
   final Firestore firestore = Firestore.instance;
+
   DocumentReference get firestoreRef =>
-  firestore.collection('orders').document(orderId);
+      firestore.collection('orders').document(orderId);
 
   void updateFromDocument(DocumentSnapshot doc){
     status = Status.values[doc.data['status'] as int];
@@ -43,54 +47,60 @@ class Order {
   Future<void> save() async {
     firestore.collection('orders').document(orderId).setData(
         {
-          'items'   : items.map((e) => e.toOrderItemMap()).toList(),
-          'price'   : price,
-          'user'    : userId,
-          'address' : address.toMap(),
-          'status'  : status.index,
-          'date'    : Timestamp.now(),
+          'items': items.map((e) => e.toOrderItemMap()).toList(),
+          'price': price,
+          'user': userId,
+          'address': address.toMap(),
+          'status': status.index,
+          'date': Timestamp.now(),
+          'payId': payId,
         }
     );
   }
 
   Function() get back {
-     return status.index >= Status.transporting.index ? (){
-        status = Status.values[status.index -1];
-        firestoreRef.updateData(
-          {'status' : status.index}
-        );
-     } : null;
-  }
-
-  Function get advance {
-    return status.index <= Status.transporting.index ? (){
-      status = Status.values[status.index +1];
-      firestoreRef.updateData(
-          {'status' : status.index}
-      );
+    return status.index >= Status.transporting.index ?
+        (){
+      status = Status.values[status.index - 1];
+      firestoreRef.updateData({'status': status.index});
     } : null;
   }
 
-  void cancel(){
-    status = Status.canceled;
-    firestoreRef.updateData(
-        {'status' : status.index}
-    );
+  Function() get advance {
+    return status.index <= Status.transporting.index ?
+        (){
+      status = Status.values[status.index + 1];
+      firestoreRef.updateData({'status': status.index});
+    } : null;
+  }
+
+  Future<void> cancel() async {
+    try {
+      await CieloPayment().cancel(payId);
+
+      status = Status.canceled;
+      firestoreRef.updateData({'status': status.index});
+    } catch (e){
+      debugPrint('Erro ao cancelar pedido');
+      return Future.error('Falha ao cancelar pedido');
+    }
   }
 
   String orderId;
+  String payId;
+
   List<CartProduct> items;
   num price;
+
   String userId;
+
   Address address;
 
   Status status;
 
   Timestamp date;
 
- // String get formatedId => 'Pedido ';
-
-  String get formatedId => 'Num Pedido ${orderId.padLeft(5, '0')}'; // quantidade de caracteres do lado esquerdo
+  String get formattedId => '#${orderId.padLeft(5, '0')}'; // numero de caracteres a esquerda
 
   String get statusText => getStatusText(status);
 
@@ -99,9 +109,9 @@ class Order {
       case Status.canceled:
         return 'Cancelado';
       case Status.preparing:
-        return 'em Preparação';
+        return 'Em preparação';
       case Status.transporting:
-        return 'em Transporte';
+        return 'Em transporte';
       case Status.delivered:
         return 'Entregue';
       default:
@@ -111,7 +121,6 @@ class Order {
 
   @override
   String toString() {
-    return 'Order{firestore: $firestore, orderId: $orderId, items: $items, price: $price, userId: $userId, '
-        'address: $address, date: $date}';
+    return 'Order{firestore: $firestore, orderId: $orderId, items: $items, price: $price, userId: $userId, address: $address, date: $date}';
   }
 }
