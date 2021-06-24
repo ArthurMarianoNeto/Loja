@@ -57,6 +57,7 @@ class CheckoutManager extends ChangeNotifier {
     try {
       await _decrementStock(); // decrementando estoque
     } catch (e){
+      cieloPayment.cancel(payId);
       onStockFail(e);
       loading = false;
  //     debugPrint(e.toString());
