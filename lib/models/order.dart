@@ -81,8 +81,8 @@ class Order {
       status = Status.canceled;
       firestoreRef.updateData({'status': status.index});
     } catch (e){
-      debugPrint('Erro ao cancelar pedido');
-      return Future.error('Falha ao cancelar pedido');
+      debugPrint('Erro ao cancelar');
+      return Future.error('Falha ao cancelar');
     }
   }
 
@@ -100,7 +100,7 @@ class Order {
 
   Timestamp date;
 
-  String get formattedId => '#${orderId.padLeft(5, '0')}'; // numero de caracteres a esquerda
+  String get formattedId => '#${orderId.padLeft(6, '0')}';
 
   String get statusText => getStatusText(status);
 
