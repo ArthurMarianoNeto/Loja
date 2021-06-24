@@ -332,16 +332,35 @@ export const onNewOrder = functions.firestore.document("/orders/{orderId}").onCr
         'Novo Pedido',
         'Nova venda realizada. Pedido: ' + orderId
     );
+});
 
+const orderStatus = new Map([
+    [0, "Cancelado"],
+    [1, "Em Preparação"],
+    [2, "Em Transporte"],
+    [3, "Entregue"]
+])
+
+export const onOrderStatusChanged = functions.firestore.document("/orders/{orderId}").onUpdate(async (snapshot, context) => {
+    const beforeStatus = snapshot.before.data().status;
+    const afterStatus = snapshot.after.data().status;
+
+    if(beforeStatus !== afterStatus){
+        const tokensUser = await getDeviceTokens(snapshot.after.data().user)
+
+        await sendPushFCM(
+            tokensUser,
+            'Pedido: ' + context.params.orderId,
+            'Status atualizado para: ' + orderStatus.get(afterStatus),
+        )
+    }
 });
 
 async function getDeviceTokens(uid: string){
     const querySnapshot = await admin.firestore().collection("users").doc(uid).collection("tokens").get();
     const tokens = querySnapshot.docs.map(doc => doc.id);
-
     return tokens;
 }
-
 async function sendPushFCM(tokens: string[], title: string, message: string){
     if(tokens.length > 0){
         const payload = {
