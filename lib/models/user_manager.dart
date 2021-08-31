@@ -110,7 +110,12 @@ class UserManager extends ChangeNotifier {
     user = null;
     notifyListeners();
   }
-
+//--------
+  void recoverPass(String email) {
+    auth.sendPasswordResetEmail(email: email);
+    notifyListeners();
+  }
+//---------
   Future<void> _loadCurrentUser({FirebaseUser firebaseUser}) async {
     final FirebaseUser currentUser = firebaseUser ?? await auth.currentUser();
     if(currentUser != null){

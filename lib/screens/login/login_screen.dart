@@ -143,18 +143,39 @@ class LoginScreen extends StatelessWidget {
                   ],
                 );
               },
-              child: Align(
+              child: Align( // Procedimento de esqueci minha senha
                 alignment: Alignment.centerRight,
-                child: FlatButton(
-                  onPressed: (){
-
+                child: Consumer<UserManager>(
+                  builder: (_, userManager, __) {
+                    return FlatButton(
+                      onPressed: () {
+                        if (emailController.text.isEmpty) {
+                          scaffoldKey.currentState.showSnackBar(SnackBar(
+                            content: const Text(
+                                'Insira seu e-mail para recuperação'
+                            ),
+                            backgroundColor: Colors.redAccent,
+                            duration: Duration(seconds: 4),
+                          ));
+                        } else {
+                          userManager.recoverPass(emailController.text);
+                          scaffoldKey.currentState.showSnackBar(SnackBar(
+                            content: const Text(
+                                'Confira seu e-mail.'
+                            ),
+                            backgroundColor: Theme.of(context).primaryColor,
+                            duration: Duration(seconds: 4),
+                          ));
+                        }
+                      },
+                      padding: EdgeInsets.zero,
+                      child: const Text(
+                        'Esqueci minha senha',
+                      ),
+                    );
                   },
-                  padding: EdgeInsets.zero,
-                  child: const Text(
-                      'Esqueci minha senha'
-                  ),
                 ),
-              ),
+              )
             ),
           ),
         ),
