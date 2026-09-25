@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:loja/common/custom_icon_button.dart';
 import 'package:loja/models/cart_product.dart';
 import 'package:provider/provider.dart';
-
+//testando 
 class CartTile extends StatelessWidget {
 
   const CartTile(this.cartProduct);
