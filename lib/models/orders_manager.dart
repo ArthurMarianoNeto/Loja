@@ -1,18 +1,18 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart' hide Order;
 import 'package:flutter/foundation.dart';
 import 'package:loja/models/order.dart';
-import 'package:loja/models/user.dart';
+import 'package:loja/models/app_user.dart';
 import 'dart:async';
 
 class OrdersManager extends ChangeNotifier {
-  User? user;
+  AppUser? user;
 
   List<Order> orders = [];
 
-  final Firestore firestore = Firestore.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
   StreamSubscription? _subscription; // import 'dart:async';
 
-  void updateUser(User? user) {
+  void updateUser(AppUser? user) {
     this.user = user;
     orders.clear(); // sempre que atualizar usuário devemos limpar pedidos;
 
@@ -30,7 +30,7 @@ class OrdersManager extends ChangeNotifier {
         .snapshots()
         .listen((event) {
       orders.clear();
-      for (final doc in event.documents) {
+      for (final doc in event.docs) {
         orders.add(Order.fromDocument(doc));
       }
     notifyListeners();

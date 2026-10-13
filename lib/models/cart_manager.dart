@@ -5,7 +5,7 @@ import 'package:loja/models/address.dart';
 import 'package:loja/models/cart_product.dart';
 import 'package:loja/services/cep_aberto_service.dart';
 import 'package:loja/models/product.dart';
-import 'package:loja/models/user.dart';
+import 'package:loja/models/app_user.dart';
 import 'package:loja/models/user_manager.dart';
 
 
@@ -13,7 +13,7 @@ class CartManager extends ChangeNotifier {
 
   List<CartProduct> items = [];
 
-  User? user;
+  AppUser? user;
   Address? address;
 
   num productsPrice = 0.0;
@@ -28,7 +28,7 @@ class CartManager extends ChangeNotifier {
     notifyListeners();
   }
 
-  final Firestore firestore = Firestore.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   void updateUser(UserManager userManager){
     user = userManager.user;
@@ -43,9 +43,9 @@ class CartManager extends ChangeNotifier {
   }
 
   Future<void> _loadCartItems() async {
-    final QuerySnapshot cartSnap = await user!.cartReference.getDocuments();
+    final QuerySnapshot<Map<String, dynamic>> cartSnap = await user!.cartReference.get();
 
-    items = cartSnap.documents.map(
+    items = cartSnap.docs.map(
             (d) => CartProduct.fromDocument(d)..addListener(_onItemUpdated)
     ).toList();
   }
@@ -68,7 +68,7 @@ class CartManager extends ChangeNotifier {
       cartProduct.addListener(_onItemUpdated);
       items.add(cartProduct);
       user!.cartReference.add(cartProduct.toCartItemMap())
-          .then((doc) => cartProduct.id = doc.documentID);
+          .then((doc) => cartProduct.id = doc.id);
       _onItemUpdated();
     }
     notifyListeners();
@@ -76,7 +76,7 @@ class CartManager extends ChangeNotifier {
 
   void removeOfCart(CartProduct cartProduct){
     items.removeWhere((p) => p.id == cartProduct.id);
-    user!.cartReference.document(cartProduct.id).delete();
+    user!.cartReference.doc(cartProduct.id).delete();
     cartProduct.removeListener(_onItemUpdated);
     notifyListeners();
   }
@@ -103,8 +103,8 @@ class CartManager extends ChangeNotifier {
 
   void _updateCartProduct(CartProduct cartProduct){
     if(cartProduct.id != null) {
-      user!.cartReference.document(cartProduct.id)
-          .updateData(cartProduct.toCartItemMap());
+      user!.cartReference.doc(cartProduct.id)
+          .update(cartProduct.toCartItemMap());
     }
   }
 
@@ -159,7 +159,7 @@ class CartManager extends ChangeNotifier {
 
   void clear(){
     for(final cartProduct in items){
-      user!.cartReference.document(cartProduct.id).delete();
+      user!.cartReference.doc(cartProduct.id).delete();
     }
     items.clear();
     notifyListeners();
@@ -174,15 +174,15 @@ class CartManager extends ChangeNotifier {
   Future<bool> calculateDelivery(double? lat, double? long) async {
     if(lat == null || long == null) return false;
 
-    final DocumentSnapshot doc = await firestore.document('aux/delivery').get();
+    final DocumentSnapshot<Map<String, dynamic>> doc = await firestore.doc('aux/delivery').get();
 
-    final latStore = doc.data['lat'] as double;
-    final longStore = doc.data['long'] as double;
+    final latStore = doc.data()!['lat'] as double;
+    final longStore = doc.data()!['long'] as double;
 
-    final base = doc.data['base'] as num;
-    final km = doc.data['km'] as num;
+    final base = doc.data()!['base'] as num;
+    final km = doc.data()!['km'] as num;
 
-    final maxkm = doc.data['maxkm'] as num;
+    final maxkm = doc.data()!['maxkm'] as num;
 
     double dis = Geolocator.distanceBetween(latStore, longStore, lat, long);
 

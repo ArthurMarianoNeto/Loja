@@ -4,6 +4,9 @@ import 'package:loja/models/store.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:map_launcher/map_launcher.dart';
 
+// só os mapas listados aqui entram no app (map_launcher 6)
+const supportedMaps = <MapApp>[MapApp.google, MapApp.apple, MapApp.waze];
+
 class StoreCard extends StatelessWidget {
 
   const StoreCard(this.store, {super.key});
@@ -37,8 +40,9 @@ class StoreCard extends StatelessWidget {
     }
 
     Future<void> openPhone() async {
-      if(await canLaunch('tel:${store.cleanPhone}')){
-        launch('tel:${store.cleanPhone}');
+      final uri = Uri(scheme: 'tel', path: store.cleanPhone);
+      if(await canLaunchUrl(uri)){
+        launchUrl(uri);
       } else {
         showError();
       }
@@ -46,7 +50,12 @@ class StoreCard extends StatelessWidget {
 
     Future<void > openMap() async {
       try {
-        final availableMaps = await MapLauncher.installedMaps;
+        final marker = MapLauncher.marker(LocationCoords(
+          store.address.lat ?? 0,
+          store.address.long ?? 0,
+          title: store.name,
+        ));
+        final availableMaps = await marker.getSupportedMaps(supportedMaps);
 
         showModalBottomSheet(
             context: context,
@@ -58,16 +67,12 @@ class StoreCard extends StatelessWidget {
                     for(final map in availableMaps)
                       ListTile(
                         onTap: (){
-                          map.showMarker(
-                            coords: Coords(store.address.lat, store.address.long),
-                            title: store.name,
-                            description: store.addressText,
-                          );
+                          map.show();
                           Navigator.of(context).pop();
                         },
-                        title: Text(map.mapName),
-                        leading: Image(
-                          image: map.icon,
+                        title: Text(map.name),
+                        leading: Image.memory(
+                          map.iconBytes,
                           width: 30,
                           height: 30,
                         ),

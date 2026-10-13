@@ -12,21 +12,21 @@ class Product extends ChangeNotifier {
       : images = images ?? [],
         sizes = sizes ?? [];
 
-  Product.fromDocument(DocumentSnapshot document){
-    id = document.documentID;
+  Product.fromDocument(DocumentSnapshot<Map<String, dynamic>> document){
+    id = document.id;
     name = document['name'] as String? ?? '';
     description = document['description'] as String? ?? '';
-    images = List<String>.from(document.data['images'] as List<dynamic>? ?? []);
-    deleted = (document.data['deleted'] ?? false) as bool;
-    sizes = (document.data['sizes'] as List<dynamic>? ?? []).map(
+    images = List<String>.from(document.data()!['images'] as List<dynamic>? ?? []);
+    deleted = (document.data()!['deleted'] ?? false) as bool;
+    sizes = (document.data()!['sizes'] as List<dynamic>? ?? []).map(
             (s) => ItemSize.fromMap(s as Map<String, dynamic>)).toList();
   }
 
-  final Firestore firestore = Firestore.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
   final FirebaseStorage storage = FirebaseStorage.instance;
 
-  DocumentReference get firestoreRef => firestore.document('products/$id');
-  StorageReference get storageRef => storage.ref().child('products').child(id!);
+  DocumentReference<Map<String, dynamic>> get firestoreRef => firestore.doc('products/$id');
+  Reference get storageRef => storage.ref().child('products').child(id!);
 
   String? id;
   String name = '';
@@ -99,9 +99,9 @@ class Product extends ChangeNotifier {
 
     if(id == null){
       final doc = await firestore.collection('products').add(data);
-      id = doc.documentID;
+      id = doc.id;
     } else {
-      await firestoreRef.updateData(data);
+      await firestoreRef.update(data);
     }
 
     final List<String> updateImages = [];
@@ -111,9 +111,9 @@ class Product extends ChangeNotifier {
       if(images.contains(newImage)){
         updateImages.add(newImage as String);
       } else {
-        final StorageUploadTask task = storageRef.child(const Uuid().v1()).putFile(newImage as File);
-        final StorageTaskSnapshot snapshot = await task.onComplete;
-        final String url = await snapshot.ref.getDownloadURL() as String;
+        final TaskSnapshot snapshot =
+            await storageRef.child(const Uuid().v1()).putFile(newImage as File);
+        final String url = await snapshot.ref.getDownloadURL();
         updateImages.add(url);
       }
     }
@@ -121,7 +121,7 @@ class Product extends ChangeNotifier {
     for(final image in images){
       if(!selectedImages.contains(image) && image.contains('firebase')){
         try {
-          final ref = await storage.getReferenceFromUrl(image);
+          final ref = storage.refFromURL(image);
           await ref.delete();
         } catch (e){
           debugPrint('Falha ao deletar $image');
@@ -129,7 +129,7 @@ class Product extends ChangeNotifier {
       }
     }
 
-    await firestoreRef.updateData({'images': updateImages});
+    await firestoreRef.update({'images': updateImages});
 
     images = updateImages;
 
@@ -137,7 +137,7 @@ class Product extends ChangeNotifier {
   }
 
   void delete(){
-    firestoreRef.updateData({'deleted': true});
+    firestoreRef.update({'deleted': true});
   }
 
   Product clone(){

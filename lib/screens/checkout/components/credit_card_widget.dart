@@ -1,6 +1,5 @@
 import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
-import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:loja/models/credit_card.dart';
 import 'package:loja/screens/checkout/components/card_back.dart';
 import 'package:loja/screens/checkout/components/card_front.dart';

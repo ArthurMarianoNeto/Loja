@@ -62,7 +62,7 @@ docker compose run --rm --service-ports web            # http://localhost:8080
 | 1 | Ambiente Docker (Flutter 3.47.5 + Android SDK 36) | ✅ concluído |
 | 2 | Dependências / `pubspec.yaml` atualizados (trocar pacotes descontinuados) | ✅ concluído |
 | 3 | Migração para null safety | ✅ concluído (merge em `modernizacao`) |
-| 4 | Renomeações da API do Firebase (`FirebaseAuth`, `FirebaseFirestore`, etc.) | ⏳ |
+| 4 | Renomeações da API do Firebase (`FirebaseAuth`, `FirebaseFirestore`, etc.) + APIs dos pacotes novos | ✅ concluído (merge em `modernizacao`) |
 | 5 | Inicialização do Firebase (`flutterfire configure` dentro do Docker) | ⏳ |
 | 6 | Widgets / tema (Material 3) | ⏳ |
 | 7 | Testes | ⏳ |
@@ -71,17 +71,35 @@ docker compose run --rm --service-ports web            # http://localhost:8080
 
 ## Estado atual
 
-- Último passo concluído: **Dia 3** (null safety), mergeado em `modernizacao`.
-  - Models com campos `late`/nullable, parâmetros `required`, callbacks
-    tipados; widgets com `super.key`; validators tratando `null`.
-  - Imports `file:///C:/Users/thies/...` trocados por `package:loja/...`.
-  - `CartTile`/`OrderProductTile` esperam o produto (carregado de forma
-    assíncrona) em vez de quebrar com `null`; `Section.fromDocument` agora
-    preenche `originalItems`; coordenadas/estoque lidos como `num` do Firestore.
-  - `flutter analyze`: 504 → 203 erros (319 issues). Restantes: API antiga
-    do Firebase e dos pacotes trocados (Dia 4) e widgets removidos (Dia 6).
-- **Próximo passo:** Dia 4 — APIs do Firebase e dos pacotes novos (branch
-  `dia-4-firebase-api`).
+- Último passo concluído: **Dia 4** (APIs do Firebase e dos pacotes), mergeado
+  em `modernizacao`.
+  - Firestore: `FirebaseFirestore`, `doc`/`docs`/`id`/`data()`/`set`/`update`,
+    snapshots tipados `<Map<String, dynamic>>`; `Order` do app conflita com o
+    `Order` do Firestore → `import ... cloud_firestore.dart' hide Order`.
+  - Auth: `UserCredential`, `User` do firebase_auth, `currentUser` síncrono,
+    `FirebaseAuthException` com códigos novos (`invalid-credential` etc.).
+    Model `User` → `AppUser` (`lib/models/app_user.dart`).
+  - Storage: `Reference`, `putFile` aguardado direto, `refFromURL`.
+  - Functions: `FirebaseFunctions.instance.httpsCallable(nome, options:
+    HttpsCallableOptions(timeout: 60 s))`. Messaging: `FirebaseMessaging.instance`,
+    `requestPermission`, streams `onMessage`/`onMessageOpenedApp`.
+  - Pacotes: login Facebook com `flutter_facebook_auth`
+    (`FacebookAuthProvider.credential`), `sign_in_button`, `another_flushbar`,
+    `gal` (salva o print do endereço), `image_picker.pickImage` +
+    `ImageCropper().cropImage(uiSettings: [...])`, `StaggeredGrid.count`,
+    `AlphabetListView` (usuários agrupados pela inicial), `url_launcher`
+    com `Uri`, `map_launcher` 6 (Google Maps, Apple Maps, Waze), `DioException`.
+  - Carrossel próprio `lib/common/image_carousel.dart` (PageView + pontos) no
+    lugar do `carousel_pro`; `carousel_slider`, `cpf_cnpj_validator` (o
+    `brasil_fields` já tem `CPFValidator`) e `keyboard_actions` (só importado)
+    removidos do pubspec.
+  - Bandeira do cartão: `credit_card_type_detector` 3 devolve
+    `american_express`/`diners_club`; convertido para `AMEX`/`DINERSCLUB`
+    porque a Cloud Function `authorizeCreditCard` espera esses nomes.
+  - `flutter analyze`: 203 → 39 erros (134 issues); restantes são widgets
+    removidos do Flutter (`RaisedButton`, `FlatButton`, `showSnackBar`,
+    `WhitelistingTextInputFormatter`) → Dia 6.
+- **Próximo passo:** Dia 5 — inicialização do Firebase (`flutterfire configure`).
 - Pendências conhecidas:
   - `main()` chama a Cloud Function de teste `addMessage` a cada abertura.
   - `recuperar_senha.txt` na raiz: anotação do curso; a recuperação de senha já
@@ -99,3 +117,6 @@ docker compose run --rm --service-ports web            # http://localhost:8080
 - **2026-10-13** — Dia 3: null safety em `lib/` (branch `dia-3-null-safety`),
   imports `file:///` corrigidos; analyze de 504 para 203 erros. Mergeado em
   `modernizacao` (usuário pediu para executar todos os Dias no mesmo dia).
+- **2026-10-13** — Dia 4: APIs do Firebase e dos pacotes trocados (branch
+  `dia-4-firebase-api`), `User` → `AppUser`, carrossel próprio; analyze de 203
+  para 39 erros. Mergeado em `modernizacao`.

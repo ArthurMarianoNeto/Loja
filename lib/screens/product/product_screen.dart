@@ -1,5 +1,5 @@
-import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
+import 'package:loja/common/image_carousel.dart';
 import 'package:loja/models/cart_manager.dart';
 import 'package:loja/models/product.dart';
 import 'package:loja/models/user_manager.dart';
@@ -47,15 +47,11 @@ class ProductScreen extends StatelessWidget {
           children: <Widget>[
             AspectRatio(
               aspectRatio: 1,
-              child: Carousel(
-                images: product.images.map((url){
-                  return NetworkImage(url);
-                }).toList(),
-                dotSize: 4,
-                dotSpacing: 15,
-                dotBgColor: Colors.transparent,
+              child: ImageCarousel(
                 dotColor: primaryColor,
-                autoplay: false,
+                children: product.images.map((url){
+                  return Image.network(url, fit: BoxFit.cover);
+                }).toList(),
               ),
             ),
             Padding(

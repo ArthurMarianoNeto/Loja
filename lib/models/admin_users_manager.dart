@@ -1,14 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:async';
 import 'package:flutter/foundation.dart';
-import 'package:loja/models/user.dart';
+import 'package:loja/models/app_user.dart';
 import 'package:loja/models/user_manager.dart';
 
 class AdminUsersManager extends ChangeNotifier {
 
-  List<User> users = [];
+  List<AppUser> users = [];
 
-  final Firestore firestore = Firestore.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   StreamSubscription? _subscription;
 
@@ -25,7 +25,7 @@ class AdminUsersManager extends ChangeNotifier {
   void _listenToUsers(){
     _subscription = firestore.collection('users').snapshots()
         .listen((snapshot){
-      users = snapshot.documents.map((d) => User.fromDocument(d)).toList();
+      users = snapshot.docs.map((d) => AppUser.fromDocument(d)).toList();
       users.sort((a, b) =>
           (a.name ?? '').toLowerCase().compareTo((b.name ?? '').toLowerCase()));
       notifyListeners();

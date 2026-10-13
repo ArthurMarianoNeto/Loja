@@ -49,7 +49,7 @@ class CardFront extends StatelessWidget {
                     ],
                     validator: (number){
                       if(number == null || number.length != 19) return 'Inválido';
-                      else if(detectCCType(number) == CreditCardType.unknown)
+                      else if(detectCCType(number).isEmpty)
                         return 'Inválido';
                       return null;
                     },

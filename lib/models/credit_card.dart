@@ -12,7 +12,14 @@ class CreditCard {
   void setCVV(String? cvv) => securityCode = cvv;
   void setNumber(String? number) {
     this.number = number;
-    brand = detectCCType((number ?? '').replaceAll(' ', '')).toString().toUpperCase().split(".").last;
+    final types = detectCCType((number ?? '').replaceAll(' ', ''));
+    // a Cloud Function authorizeCreditCard espera os nomes da versão antiga
+    // do detector (VISA, MASTERCARD, AMEX, DINERSCLUB, ...)
+    brand = types.isEmpty ? null : switch(types.first.type) {
+      'american_express' => 'AMEX',
+      'diners_club' => 'DINERSCLUB',
+      final type => type.toUpperCase(),
+    };
   }
 
   Map<String, dynamic> toJson(){

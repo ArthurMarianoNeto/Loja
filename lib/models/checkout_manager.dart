@@ -1,4 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart' hide Order;
 import 'package:flutter/foundation.dart';
 import 'package:loja/models/cart_manager.dart';
 import 'package:loja/models/credit_card.dart';
@@ -16,7 +16,7 @@ class CheckoutManager extends ChangeNotifier {
     notifyListeners();
   }
 
-  final Firestore firestore = Firestore.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
   final CieloPayment cieloPayment = CieloPayment();
 
 
@@ -83,16 +83,15 @@ class CheckoutManager extends ChangeNotifier {
   }
 
   Future<int> _getOrderId() async { // salvando o firebase
-    final ref = firestore.document('aux/ordercounter');
+    final ref = firestore.doc('aux/ordercounter');
 
     try {
-      final result = await firestore.runTransaction((tx) async {
+      return await firestore.runTransaction((tx) async {
         final doc = await tx.get(ref);
-        final orderId = doc.data['current'] as int;
-        await tx.update(ref, {'current': orderId + 1});
-        return {'orderId': orderId};
+        final orderId = doc.data()!['current'] as int;
+        tx.update(ref, {'current': orderId + 1});
+        return orderId;
       });
-      return result['orderId'] as int;
     } catch (e){
       debugPrint(e.toString());
       return Future.error('Falha ao gerar número do pedido');
@@ -116,7 +115,7 @@ class CheckoutManager extends ChangeNotifier {
                   (p) => p.id == cartProduct.productId);
         } else {
           final doc = await tx.get(
-              firestore.document('products/${cartProduct.productId}')
+              firestore.doc('products/${cartProduct.productId}')
           );
           product = Product.fromDocument(doc);
         }
@@ -138,7 +137,7 @@ class CheckoutManager extends ChangeNotifier {
       }
 
       for(final product in productsToUpdate){
-        tx.update(firestore.document('products/${product.id}'),
+        tx.update(firestore.doc('products/${product.id}'),
             {'sizes': product.exportSizeList()});
       }
     });

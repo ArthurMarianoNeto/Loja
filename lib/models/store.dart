@@ -8,13 +8,13 @@ enum StoreStatus { closed, open, closing }
 
 class Store {
 
-  Store.fromDocument(DocumentSnapshot doc){
-    name = doc.data['name'] as String? ?? '';
-    image = doc.data['image'] as String? ?? '';
-    phone = doc.data['phone'] as String? ?? '';
-    address = Address.fromMap(doc.data['address'] as Map<String, dynamic>);
+  Store.fromDocument(DocumentSnapshot<Map<String, dynamic>> doc){
+    name = doc.data()!['name'] as String? ?? '';
+    image = doc.data()!['image'] as String? ?? '';
+    phone = doc.data()!['phone'] as String? ?? '';
+    address = Address.fromMap(doc.data()!['address'] as Map<String, dynamic>);
 
-    opening = (doc.data['opening'] as Map<String, dynamic>).map((key, value) {
+    opening = (doc.data()!['opening'] as Map<String, dynamic>).map((key, value) {
       final timesString = value as String?;
 
       if(timesString != null && timesString.isNotEmpty){

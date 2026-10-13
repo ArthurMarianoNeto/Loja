@@ -8,7 +8,7 @@ class ProductManager extends ChangeNotifier{
     _loadAllProducts();
   }
 
-  final Firestore firestore = Firestore.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   List<Product> allProducts = [];
 
@@ -37,11 +37,11 @@ class ProductManager extends ChangeNotifier{
   }
 
   Future<void> _loadAllProducts() async {
-    final QuerySnapshot snapProducts =
+    final QuerySnapshot<Map<String, dynamic>> snapProducts =
     await firestore.collection('products')
-        .where('deleted', isEqualTo: false).getDocuments();
+        .where('deleted', isEqualTo: false).get();
 
-    allProducts = snapProducts.documents.map(
+    allProducts = snapProducts.docs.map(
             (d) => Product.fromDocument(d)).toList();
 
     notifyListeners();

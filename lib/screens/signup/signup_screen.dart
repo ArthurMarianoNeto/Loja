@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:loja/helpers/validators.dart';
-import 'package:loja/models/user.dart';
+import 'package:loja/models/app_user.dart';
 import 'package:loja/models/user_manager.dart';
 import 'package:provider/provider.dart';
 
@@ -10,7 +10,7 @@ class SignUpScreen extends StatelessWidget {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
-  final User user = User();
+  final AppUser user = AppUser();
 
   @override
   Widget build(BuildContext context) {

@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:loja/screens/edit_product/components/image_source_sheet.dart';
-import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
+import 'package:loja/common/image_carousel.dart';
 import 'package:loja/models/product.dart';
 
 class ImagesForm extends StatelessWidget {
@@ -33,8 +33,9 @@ class ImagesForm extends StatelessWidget {
           children: <Widget>[
             AspectRatio(
               aspectRatio: 1,
-              child: Carousel(
-                images: state.value!.map<Widget>((image){
+              child: ImageCarousel(
+                dotColor: Theme.of(context).primaryColor,
+                children: state.value!.map<Widget>((image){
                   return Stack(
                     fit: StackFit.expand,
                     children: <Widget>[
@@ -81,11 +82,6 @@ class ImagesForm extends StatelessWidget {
                       ),
                     )
                 ),
-                dotSize: 4,
-                dotSpacing: 15,
-                dotBgColor: Colors.transparent,
-                dotColor: Theme.of(context).primaryColor,
-                autoplay: false,
               ),
             ),
             if(state.hasError)

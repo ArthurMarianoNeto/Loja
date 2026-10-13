@@ -1,10 +1,9 @@
-import 'package:flutter_signin_button/button_list.dart';
-import 'package:flutter_signin_button/button_view.dart';
-import 'package:loja/models/user.dart';
+import 'package:loja/models/app_user.dart';
 import 'package:loja/models/user_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:loja/helpers/validators.dart';
+import 'package:sign_in_button/sign_in_button.dart';
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
@@ -89,7 +88,7 @@ class LoginScreen extends StatelessWidget {
                       onPressed: userManager.loading ? null : (){
                         if(formKey.currentState!.validate()){
                           userManager.signIn(
-                              user: User(
+                              user: AppUser(
                                   email: emailController.text,
                                   password: passController.text
                               ),
@@ -123,7 +122,7 @@ class LoginScreen extends StatelessWidget {
                       ),
                     ),
                     SignInButton(
-                      Buttons.Facebook,
+                      Buttons.facebook,
                       text: 'Entrar com Facebook',
                       onPressed: (){
                         userManager.facebookLogin(

@@ -18,34 +18,34 @@ class Order {
     status = Status.preparing;
   }
 
-  Order.fromDocument(DocumentSnapshot doc){
-    orderId = doc.documentID;
+  Order.fromDocument(DocumentSnapshot<Map<String, dynamic>> doc){
+    orderId = doc.id;
 
-    items = (doc.data['items'] as List<dynamic>).map((e){
+    items = (doc.data()!['items'] as List<dynamic>).map((e){
       return CartProduct.fromMap(e as Map<String, dynamic>);
     }).toList();
 
-    price = doc.data['price'] as num;
-    userId = doc.data['user'] as String;
-    address = Address.fromMap(doc.data['address'] as Map<String, dynamic>);
-    date = doc.data['date'] as Timestamp?;
+    price = doc.data()!['price'] as num;
+    userId = doc.data()!['user'] as String;
+    address = Address.fromMap(doc.data()!['address'] as Map<String, dynamic>);
+    date = doc.data()!['date'] as Timestamp?;
 
-    status = Status.values[doc.data['status'] as int];
+    status = Status.values[doc.data()!['status'] as int];
 
-    payId = doc.data['payId'] as String?;
+    payId = doc.data()!['payId'] as String?;
   }
 
-  final Firestore firestore = Firestore.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  DocumentReference get firestoreRef =>
-      firestore.collection('orders').document(orderId);
+  DocumentReference<Map<String, dynamic>> get firestoreRef =>
+      firestore.collection('orders').doc(orderId);
 
-  void updateFromDocument(DocumentSnapshot doc){
-    status = Status.values[doc.data['status'] as int];
+  void updateFromDocument(DocumentSnapshot<Map<String, dynamic>> doc){
+    status = Status.values[doc.data()!['status'] as int];
   }
 
   Future<void> save() async {
-    firestore.collection('orders').document(orderId).setData(
+    firestore.collection('orders').doc(orderId).set(
         {
           'items': items.map((e) => e.toOrderItemMap()).toList(),
           'price': price,
@@ -62,7 +62,7 @@ class Order {
     return status.index >= Status.transporting.index ?
         (){
       status = Status.values[status.index - 1];
-      firestoreRef.updateData({'status': status.index});
+      firestoreRef.update({'status': status.index});
     } : null;
   }
 
@@ -70,7 +70,7 @@ class Order {
     return status.index <= Status.transporting.index ?
         (){
       status = Status.values[status.index + 1];
-      firestoreRef.updateData({'status': status.index});
+      firestoreRef.update({'status': status.index});
     } : null;
   }
 
@@ -79,7 +79,7 @@ class Order {
       await CieloPayment().cancel(payId!);
 
       status = Status.canceled;
-      firestoreRef.updateData({'status': status.index});
+      firestoreRef.update({'status': status.index});
     } catch (e){
       debugPrint('Erro ao cancelar');
       return Future.error('Falha ao cancelar');

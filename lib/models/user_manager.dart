@@ -1,10 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:loja/helpers/firebase_errors.dart';
-import 'package:loja/models/user.dart';
+import 'package:loja/models/app_user.dart';
 
 class UserManager extends ChangeNotifier {
 
@@ -13,9 +12,9 @@ class UserManager extends ChangeNotifier {
   }
 
   final FirebaseAuth auth = FirebaseAuth.instance;
-  final Firestore firestore = Firestore.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  User? user;
+  AppUser? user;
 
   bool _loading = false;
   bool get loading => _loading;
@@ -34,19 +33,19 @@ class UserManager extends ChangeNotifier {
   bool get isLoggedIn => user != null;
 
   Future<void> signIn({
-    required User user,
+    required AppUser user,
     required void Function(String) onFail,
     required VoidCallback onSuccess,
   }) async {
     loading = true;
     try {
-      final AuthResult result = await auth.signInWithEmailAndPassword(
+      final UserCredential result = await auth.signInWithEmailAndPassword(
           email: user.email!, password: user.password!);
 
       await _loadCurrentUser(firebaseUser: result.user);
 
       onSuccess();
-    } on PlatformException catch (e){
+    } on FirebaseAuthException catch (e){
       onFail(getErrorString(e.code));
     }
     loading = false;
@@ -58,20 +57,21 @@ class UserManager extends ChangeNotifier {
   }) async {
     loadingFace = true;
 
-    final result = await FacebookLogin().logIn(['email', 'public_profile']);
+    final result = await FacebookAuth.instance.login(
+        permissions: ['email', 'public_profile']);
 
     switch(result.status){
-      case FacebookLoginStatus.loggedIn:
-        final credential = FacebookAuthProvider.getCredential(
-            accessToken: result.accessToken.token
+      case LoginStatus.success:
+        final credential = FacebookAuthProvider.credential(
+            result.accessToken!.tokenString
         );
 
         final authResult = await auth.signInWithCredential(credential);
 
-        if(authResult.user != null){
-          final firebaseUser = authResult.user;
+        final firebaseUser = authResult.user;
+        if(firebaseUser != null){
 
-          final newUser = User(
+          final newUser = AppUser(
               id: firebaseUser.uid,
               name: firebaseUser.displayName,
               email: firebaseUser.email
@@ -84,10 +84,11 @@ class UserManager extends ChangeNotifier {
           onSuccess();
         }
         break;
-      case FacebookLoginStatus.cancelledByUser:
+      case LoginStatus.cancelled:
+      case LoginStatus.operationInProgress:
         break;
-      case FacebookLoginStatus.error:
-        onFail(result.errorMessage);
+      case LoginStatus.failed:
+        onFail(result.message ?? 'Falha no login com Facebook');
         break;
     }
 
@@ -95,23 +96,23 @@ class UserManager extends ChangeNotifier {
   }
 
   Future<void> signUp({
-    required User user,
+    required AppUser user,
     required void Function(String) onFail,
     required VoidCallback onSuccess,
   }) async {
     loading = true;
     try {
-      final AuthResult result = await auth.createUserWithEmailAndPassword(
+      final UserCredential result = await auth.createUserWithEmailAndPassword(
           email: user.email!, password: user.password!);
 
-      user.id = result.user.uid;
+      user.id = result.user!.uid;
       this.user = user;
 
       await user.saveData();
       user.saveToken();
 
       onSuccess();
-    } on PlatformException catch (e){
+    } on FirebaseAuthException catch (e){
       onFail(getErrorString(e.code));
     }
     loading = false;
@@ -128,18 +129,18 @@ class UserManager extends ChangeNotifier {
     notifyListeners();
   }
 //---------
-  Future<void> _loadCurrentUser({FirebaseUser? firebaseUser}) async {
-    final FirebaseUser? currentUser = firebaseUser ?? await auth.currentUser();
+  Future<void> _loadCurrentUser({User? firebaseUser}) async {
+    final User? currentUser = firebaseUser ?? auth.currentUser;
     if(currentUser != null){
-      final DocumentSnapshot docUser = await firestore.collection('users')
-          .document(currentUser.uid).get();
-      final loadedUser = User.fromDocument(docUser);
+      final DocumentSnapshot<Map<String, dynamic>> docUser = await firestore.collection('users')
+          .doc(currentUser.uid).get();
+      final loadedUser = AppUser.fromDocument(docUser);
       user = loadedUser;
       loadedUser.saveToken();
 
       // verificando se é administrador
 
-      final docAdmin = await firestore.collection('admins').document(loadedUser.id).get();
+      final docAdmin = await firestore.collection('admins').doc(loadedUser.id).get();
       if(docAdmin.exists){
         loadedUser.admin = true;
       }

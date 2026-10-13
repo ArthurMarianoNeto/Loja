@@ -28,24 +28,23 @@ class SectionStaggered extends StatelessWidget {
             SectionHeader(),
             Consumer<Section>(
               builder: (_, section, __){
-                return StaggeredGridView.countBuilder(
-                  padding: EdgeInsets.zero,
-                  shrinkWrap: true,
+                final itemCount = homeManager.editing
+                    ? section.items.length + 1
+                    : section.items.length;
+                return StaggeredGrid.count(
                   crossAxisCount: 4,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: homeManager.editing
-                      ? section.items.length + 1
-                      : section.items.length,
-                  itemBuilder: (_, index){
-                    if(index < section.items.length)
-                      return ItemTile(section.items[index]);
-                    else
-                      return AddTileWidget();
-                  },
-                  staggeredTileBuilder: (index) =>
-                      StaggeredTile.count(2, index.isEven ? 2 : 1),
                   mainAxisSpacing: 4,
                   crossAxisSpacing: 4,
+                  children: <Widget>[
+                    for(int index = 0; index < itemCount; index++)
+                      StaggeredGridTile.count(
+                        crossAxisCellCount: 2,
+                        mainAxisCellCount: index.isEven ? 2 : 1,
+                        child: index < section.items.length
+                            ? ItemTile(section.items[index])
+                            : const AddTileWidget(),
+                      ),
+                  ],
                 );
               },
             )

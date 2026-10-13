@@ -16,12 +16,12 @@ class HomeManager extends ChangeNotifier {
   bool loading = false;
 
 
-  final Firestore firestore = Firestore.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   Future<void> _loadSections() async {
     firestore.collection('home').orderBy('pos').snapshots().listen((snapshot) {
       _sections.clear();
-      for(final DocumentSnapshot document in snapshot.documents){
+      for(final DocumentSnapshot<Map<String, dynamic>> document in snapshot.docs){
         _sections.add(Section.fromDocument(document));
       }
       notifyListeners();

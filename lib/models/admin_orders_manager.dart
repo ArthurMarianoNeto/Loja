@@ -1,18 +1,18 @@
 import 'dart:async';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart' hide Order;
 import 'package:flutter/foundation.dart';
 import 'package:loja/models/order.dart';
-import 'package:loja/models/user.dart';
+import 'package:loja/models/app_user.dart';
 
 class AdminOrdersManager extends ChangeNotifier {
 
   final List<Order> _orders = [];
 
-  User? userFilter;
+  AppUser? userFilter;
 //  List<Status> statusFilter = [Status.preparing, Status.transporting, Status.delivered];
   List<Status> statusFilter = [Status.preparing, Status.transporting];
 
-  final Firestore firestore = Firestore.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   StreamSubscription? _subscription;
 
@@ -39,17 +39,17 @@ class AdminOrdersManager extends ChangeNotifier {
   void _listenToOrders(){
     _subscription = firestore.collection('orders').snapshots().listen(
             (event) {
-          for(final change in event.documentChanges){
+          for(final change in event.docChanges){
             switch(change.type){
               case DocumentChangeType.added:
                 _orders.add(
-                    Order.fromDocument(change.document)
+                    Order.fromDocument(change.doc)
                 );
                 break;
               case DocumentChangeType.modified:
                 final modOrder = _orders.firstWhere(
-                        (o) => o.orderId == change.document.documentID);
-                modOrder.updateFromDocument(change.document);
+                        (o) => o.orderId == change.doc.id);
+                modOrder.updateFromDocument(change.doc);
                 break;
               case DocumentChangeType.removed:
                 debugPrint('Erro Crítico!'); // nunca um documento cancelado será excluído
@@ -60,7 +60,7 @@ class AdminOrdersManager extends ChangeNotifier {
         });
   }
 
-  void setUserFilter(User? user){
+  void setUserFilter(AppUser? user){
     userFilter = user;
     notifyListeners();
   }

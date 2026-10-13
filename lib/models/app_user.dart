@@ -3,18 +3,18 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:loja/models/address.dart';
 import 'dart:io';
 
-class User {
+class AppUser {
 
-  User({this.email, this.password, this.name, this.id});
+  AppUser({this.email, this.password, this.name, this.id});
 
-  User.fromDocument(DocumentSnapshot document){
-    id = document.documentID;
-    name = document.data['name'] as String?;
-    email = document.data['email'] as String?;
-    cpf = document.data['cpf'] as String?;
-    if(document.data.containsKey('address')){
+  AppUser.fromDocument(DocumentSnapshot<Map<String, dynamic>> document){
+    id = document.id;
+    name = document.data()!['name'] as String?;
+    email = document.data()!['email'] as String?;
+    cpf = document.data()!['cpf'] as String?;
+    if(document.data()!.containsKey('address')){
       address = Address.fromMap(
-          document.data['address'] as Map<String, dynamic>);
+          document.data()!['address'] as Map<String, dynamic>);
     }
   }
 
@@ -30,17 +30,17 @@ class User {
 
   Address? address;
 
-  DocumentReference get firestoreRef =>
-      Firestore.instance.document('users/$id');
+  DocumentReference<Map<String, dynamic>> get firestoreRef =>
+      FirebaseFirestore.instance.doc('users/$id');
 
-  CollectionReference get cartReference =>
+  CollectionReference<Map<String, dynamic>> get cartReference =>
       firestoreRef.collection('cart');
 
-  CollectionReference get tokensReference =>
+  CollectionReference<Map<String, dynamic>> get tokensReference =>
       firestoreRef.collection('tokens');
 
   Future<void> saveData() async {
-    await firestoreRef.setData(toMap());
+    await firestoreRef.set(toMap());
   }
 
   Map<String, dynamic> toMap(){
@@ -65,8 +65,9 @@ class User {
   }
 
   Future<void> saveToken() async {
-    final token = await FirebaseMessaging().getToken();
-    await tokensReference.document(token).setData({
+    final token = await FirebaseMessaging.instance.getToken();
+    if(token == null) return;
+    await tokensReference.doc(token).set({
       'token': token,
       'updatedAt': FieldValue.serverTimestamp(),
       'platform': Platform.operatingSystem,

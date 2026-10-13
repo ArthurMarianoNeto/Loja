@@ -65,14 +65,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.21.1"
-  carousel_slider:
-    dependency: "direct main"
-    description:
-      name: carousel_slider
-      sha256: febf4b0163e0242adc13d7a863b04965351f59e7dfea56675c7c2caa7bcd7476
-      url: "https://pub.dev"
-    source: hosted
-    version: "5.1.2"
   characters:
     dependency: transitive
     description:
@@ -169,14 +161,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.19.1"
-  cpf_cnpj_validator:
-    dependency: "direct main"
-    description:
-      name: cpf_cnpj_validator
-      sha256: "2d52caefe720f7428d8fd12b5dc3a9603e137ae4eafe032b8f1bd104d3656bfb"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.0"
   credit_card_type_detector:
     dependency: "direct main"
     description:
@@ -805,14 +789,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.12.0"
-  keyboard_actions:
-    dependency: "direct main"
-    description:
-      name: keyboard_actions
-      sha256: b87ce4217ca4c31c735c81734d34a9ce08f27b056c1500fd5a1bc87a0cdc36b1
-      url: "https://pub.dev"
-    source: hosted
-    version: "5.0.3"
   leak_tracker:
     dependency: transitive
     description:

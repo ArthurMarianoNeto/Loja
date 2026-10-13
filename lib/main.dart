@@ -2,7 +2,7 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:loja/models/admin_orders_manager.dart';
 import 'package:loja/models/order.dart';
-import 'package:loja/models/user.dart';
+import 'package:loja/models/app_user.dart';
 import 'package:loja/models/orders_manager.dart';
 import 'package:loja/screens/address/address_screen.dart';
 import 'package:loja/models/cart_manager.dart';
@@ -27,8 +27,8 @@ import 'models/stores_maager.dart';
 void main() async {
   runApp(const MyApp());
 
-  final response = await CloudFunctions.instance.getHttpsCallable(
-      functionName: 'addMessage').call(
+  final response = await FirebaseFunctions.instance.httpsCallable(
+      'addMessage').call(
       {"teste": "Matheuzito"}
   );
   print(response.data);
