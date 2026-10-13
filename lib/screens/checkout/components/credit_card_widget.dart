@@ -12,7 +12,7 @@ class CreditCardWidget extends StatefulWidget {
   final CreditCard creditCard;
 
   @override
-  _CreditCardWidgetState createState() => _CreditCardWidgetState();
+  State<CreditCardWidget> createState() => _CreditCardWidgetState();
 }
 class _CreditCardWidgetState extends State<CreditCardWidget> {
   final GlobalKey<FlipCardState> cardKey = GlobalKey<FlipCardState>();
@@ -50,12 +50,11 @@ class _CreditCardWidgetState extends State<CreditCardWidget> {
               cvvFocus: cvvFocus,
             ),
           ),
-          FlatButton(
+          TextButton(
+            style: TextButton.styleFrom(foregroundColor: Colors.white, padding: EdgeInsets.zero),
             onPressed: (){
               cardKey.currentState!.toggleCard();
             },
-            textColor: Colors.white,
-            padding: EdgeInsets.zero,
             child: const Text('Virar cartão'),
           )
         ],

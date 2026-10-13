@@ -24,7 +24,7 @@ class ProductScreen extends StatelessWidget {
           centerTitle: true,
           actions: <Widget>[
             Consumer<UserManager>(
-              builder: (_, userManager, __){
+              builder: (_, userManager, _){
                 if(userManager.adminEnabled && !product.deleted){
                   return IconButton(
                     icon: Icon(Icons.edit),
@@ -135,10 +135,10 @@ class ProductScreen extends StatelessWidget {
                   const SizedBox(height: 20,),
                   if(product.hasStock)
                     Consumer2<UserManager, Product>(
-                      builder: (_, userManager, product, __){
+                      builder: (_, userManager, product, _){
                         return SizedBox(
                           height: 44,
-                          child: RaisedButton(
+                          child: ElevatedButton(
                             onPressed: product.selectedSize != null ? (){
                               if(userManager.isLoggedIn){
                                 context.read<CartManager>().addToCart(product);
@@ -147,8 +147,6 @@ class ProductScreen extends StatelessWidget {
                                 Navigator.of(context).pushNamed('/login');
                               }
                             } : null,
-                            color: primaryColor,
-                            textColor: Colors.white,
                             child: Text(
                               userManager.isLoggedIn
                                   ? 'Adicionar ao Carrinho'

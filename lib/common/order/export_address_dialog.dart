@@ -31,7 +31,8 @@ class ExportAddressDialog extends StatelessWidget {
       ),
       contentPadding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
       actions: <Widget>[
-        FlatButton(
+        TextButton(
+          style: TextButton.styleFrom(foregroundColor: Theme.of(context).primaryColor),
           onPressed: () async {
             Navigator.of(context).pop();
             final bytes = await screenshotController.capture();
@@ -39,7 +40,6 @@ class ExportAddressDialog extends StatelessWidget {
               await Gal.putImageBytes(bytes, name: 'endereco_entrega');
             }
           },
-          textColor: Theme.of(context).primaryColor,
           child: const Text('Exportar'),
         )
       ],

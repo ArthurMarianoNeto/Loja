@@ -19,7 +19,7 @@ class AdminUsersScreen extends StatelessWidget {
         centerTitle: true,
       ),
       body: Consumer<AdminUsersManager>(
-        builder: (_, adminUsersManager, __){
+        builder: (_, adminUsersManager, _){
           // agrupa os usuários (já ordenados por nome) pela inicial
           final groups = <String, List<AppUser>>{};
           for(final user in adminUsersManager.users){

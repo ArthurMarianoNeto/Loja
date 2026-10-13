@@ -44,25 +44,25 @@ class ImageSourceSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if(Platform.isAndroid)
+    if(Platform.isAndroid) {
       return BottomSheet(
         onClosing: (){},
         builder: (_) => Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            FlatButton(
+            TextButton(
               onPressed: () => pickImage(ImageSource.camera, context),
               child: const Text('Câmera'),
             ),
-            FlatButton(
+            TextButton(
               onPressed: () => pickImage(ImageSource.gallery, context),
               child: const Text('Galeria'),
             ),
           ],
         ),
       );
-    else
+    } else {
       return CupertinoActionSheet(
         title: const Text('Selecionar foto para o item'),
         message: const Text('Escolha a origem da foto'),
@@ -82,5 +82,6 @@ class ImageSourceSheet extends StatelessWidget {
           )
         ],
       );
+    }
   }
 }

@@ -17,12 +17,13 @@ class SizeWidget extends StatelessWidget {
    final selected = size == product.selectedSize;
 
    Color color;
-   if(!size.hasStock)
+   if(!size.hasStock) {
      color = Colors.red.withAlpha(50);
-   else if (selected)
+   } else if (selected) {
      color = Theme.of(context).primaryColor;
-   else
+   } else {
      color = Colors.grey;
+   }
 
     return GestureDetector(
       onTap: (){

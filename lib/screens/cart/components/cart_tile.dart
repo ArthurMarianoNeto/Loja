@@ -14,7 +14,7 @@ class CartTile extends StatelessWidget {
     return ChangeNotifierProvider.value(
       value: cartProduct,
       child: Consumer<CartProduct>(
-        builder: (_, cartProduct, __){
+        builder: (_, cartProduct, _){
           // o produto é carregado de forma assíncrona pelo CartProduct
           final product = cartProduct.product;
           if(product == null){
@@ -60,8 +60,8 @@ class CartTile extends StatelessWidget {
                             ),
                           ),
                           Consumer<CartProduct>(
-                            builder: (_, cartProduct, __){
-                              if(cartProduct.hasStock)
+                            builder: (_, cartProduct, _){
+                              if(cartProduct.hasStock) {
                                 return Text(
                                   'R\$ ${cartProduct.unitPrice.toStringAsFixed(2)}',
                                   style: TextStyle(
@@ -70,7 +70,7 @@ class CartTile extends StatelessWidget {
                                       fontWeight: FontWeight.bold
                                   ),
                                 );
-                              else
+                              } else {
                                 return Text(
                                   'Sem estoque suficiente',
                                   style: TextStyle(
@@ -78,6 +78,7 @@ class CartTile extends StatelessWidget {
                                     fontSize: 12,
                                   ),
                                 );
+                              }
                             },
                           )
                         ],
@@ -85,7 +86,7 @@ class CartTile extends StatelessWidget {
                     ),
                   ),
                   Consumer<CartProduct>(
-                    builder: (_, cartProduct, __){
+                    builder: (_, cartProduct, _){
                       return Column(
                         children: <Widget>[
                           CustomIconButton(

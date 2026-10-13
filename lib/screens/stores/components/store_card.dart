@@ -25,13 +25,11 @@ class StoreCard extends StatelessWidget {
           return Colors.green;
         case StoreStatus.closing:
           return Colors.orange;
-        default:
-          return Colors.green;
       }
     }
 
     void showError(){
-      Scaffold.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Esta função não está disponível neste dispositivo'),
             backgroundColor: Colors.red,
@@ -43,7 +41,7 @@ class StoreCard extends StatelessWidget {
       final uri = Uri(scheme: 'tel', path: store.cleanPhone);
       if(await canLaunchUrl(uri)){
         launchUrl(uri);
-      } else {
+      } else if(context.mounted) {
         showError();
       }
     }
@@ -56,6 +54,7 @@ class StoreCard extends StatelessWidget {
           title: store.name,
         ));
         final availableMaps = await marker.getSupportedMaps(supportedMaps);
+        if(!context.mounted) return;
 
         showModalBottomSheet(
             context: context,
@@ -92,7 +91,7 @@ class StoreCard extends StatelessWidget {
       clipBehavior: Clip.antiAlias,
       child: Column(
         children: <Widget>[
-          Container(
+          SizedBox(
             height: 160,
             child: Stack(
               fit: StackFit.expand,

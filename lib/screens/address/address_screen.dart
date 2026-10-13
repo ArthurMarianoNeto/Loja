@@ -18,7 +18,7 @@ class AddressScreen extends StatelessWidget {
         children: <Widget>[
           AddressCard(),
           Consumer<CartManager>(
-            builder: (_, cartManager, __){
+            builder: (_, cartManager, _){
               return PriceCard(
                 buttonText: 'Continuar para Pagamento',
                 onPressed: cartManager.isAddressValid ? (){

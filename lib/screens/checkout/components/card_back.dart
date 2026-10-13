@@ -39,7 +39,7 @@ class CardBack extends StatelessWidget {
                       hint: '123',
                       maxLength: 3,
                       inputFormatters: [
-                        WhitelistingTextInputFormatter.digitsOnly,
+                        FilteringTextInputFormatter.digitsOnly,
                       ],
                       textAlign: TextAlign.end,
                       textInputType: TextInputType.number,

@@ -60,8 +60,9 @@ class EditProductScreen extends StatelessWidget {
                           fontWeight: FontWeight.w600
                       ),
                       validator: (name){
-                        if(name == null || name.length < 6)
+                        if(name == null || name.length < 6) {
                           return 'Título mínimo 6 caracteres';
+                        }
                         return null;
                       },
                       onSaved: (name) => product.name = name ?? '',
@@ -103,8 +104,9 @@ class EditProductScreen extends StatelessWidget {
                       ),
                       maxLines: null,
                       validator: (desc){
-                        if(desc == null || desc.length < 10)
+                        if(desc == null || desc.length < 10) {
                           return 'Descrição mínimo 10 caracteres';
+                        }
                         return null;
                       },
                       onSaved: (desc) => product.description = desc ?? '',
@@ -112,15 +114,16 @@ class EditProductScreen extends StatelessWidget {
                     SizesForm(product),
                     const SizedBox(height: 20,),
                     Consumer<Product>(
-                      builder: (_, product, __){
+                      builder: (_, product, _){
                         return SizedBox(
                           height: 44,
-                          child: RaisedButton(
+                          child: ElevatedButton(
                             onPressed: !product.loading ? () async {
                               if(formKey.currentState!.validate()){
                                 formKey.currentState!.save();
 
                                 await product.save();
+                                if(!context.mounted) return;
 
                                 context.read<ProductManager>()
                                     .update(product);
@@ -128,9 +131,6 @@ class EditProductScreen extends StatelessWidget {
                                 Navigator.of(context).pop();
                               }
                             } : null,
-                            textColor: Colors.white,
-                            color: primaryColor,
-                            disabledColor: primaryColor.withAlpha(100),
                             child: product.loading
                                 ? CircularProgressIndicator(
                               valueColor: AlwaysStoppedAnimation(Colors.white),

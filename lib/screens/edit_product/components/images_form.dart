@@ -64,20 +64,21 @@ class ImagesForm extends StatelessWidget {
                         color: Theme.of(context).primaryColor,
                         iconSize: 50,
                         onPressed: (){
-                          if(Platform.isAndroid)
+                          if(Platform.isAndroid) {
                             showModalBottomSheet(
                                 context: context,
                                 builder: (_) => ImageSourceSheet(
                                   onImageSelected: onImageSelected,
                                 )
                             );
-                          else
+                          } else {
                             showCupertinoModalPopup(
                                 context: context,
                                 builder: (_) => ImageSourceSheet(
                                   onImageSelected: onImageSelected,
                                 )
                             );
+                          }
                         },
                       ),
                     )

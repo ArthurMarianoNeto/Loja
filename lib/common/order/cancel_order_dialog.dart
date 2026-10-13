@@ -7,7 +7,7 @@ class CancelOrderDialog extends StatefulWidget {
   final Order order;
 
   @override
-  _CancelOrderDialogState createState() => _CancelOrderDialogState();
+  State<CancelOrderDialog> createState() => _CancelOrderDialogState();
 }
 
 class _CancelOrderDialogState extends State<CancelOrderDialog> {
@@ -16,8 +16,8 @@ class _CancelOrderDialogState extends State<CancelOrderDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () => Future.value(false),
+    return PopScope(
+      canPop: false,
       child: AlertDialog(
         title: Text('Cancelar ${widget.order.formattedId}?'),
         content: Column(
@@ -38,7 +38,7 @@ class _CancelOrderDialogState extends State<CancelOrderDialog> {
           ],
         ),
         actions: <Widget>[
-          FlatButton(
+          TextButton(
             onPressed: !loading
                 ? () {
                     Navigator.of(context).pop();
@@ -46,7 +46,8 @@ class _CancelOrderDialogState extends State<CancelOrderDialog> {
                 : null,
             child: const Text('Voltar'),
           ),
-          FlatButton(
+          TextButton(
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
             onPressed: !loading
                 ? () async {
                     setState(() {
@@ -54,6 +55,7 @@ class _CancelOrderDialogState extends State<CancelOrderDialog> {
                     });
                     try {
                       await widget.order.cancel();
+                      if(!context.mounted) return;
                       Navigator.of(context).pop();
                     } catch (e) {
                       setState(() {
@@ -63,7 +65,6 @@ class _CancelOrderDialogState extends State<CancelOrderDialog> {
                     }
                   }
                 : null,
-            textColor: Colors.red,
             child: const Text('Cancelar Pedido'),
           ),
         ],

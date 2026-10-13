@@ -14,7 +14,7 @@ class SelectProductScreen extends StatelessWidget {
       ),
       backgroundColor: Colors.white,
       body: Consumer<ProductManager>(
-        builder: (_, productManager, __){
+        builder: (_, productManager, _){
           return ListView.builder(
             itemCount: productManager.allProducts.length,
             itemBuilder: (_, index){

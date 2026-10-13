@@ -16,7 +16,7 @@ class AddressCard extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
         child: Consumer<CartManager>(
-          builder: (_, cartManager, __){
+          builder: (_, cartManager, _){
             final address = cartManager.address ?? Address(); // resultado
             //           print(address);
 

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:loja/firebase_options.dart';
 import 'package:loja/models/admin_orders_manager.dart';
 import 'package:loja/models/order.dart';
-import 'package:loja/models/app_user.dart';
 import 'package:loja/models/orders_manager.dart';
 import 'package:loja/screens/address/address_screen.dart';
 import 'package:loja/models/cart_manager.dart';
@@ -35,6 +34,8 @@ Future<void> main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+
+  static const Color primaryColor = Color.fromARGB(255, 4, 125, 141);
 
   @override
   Widget build(BuildContext context) {
@@ -86,10 +87,25 @@ class MyApp extends StatelessWidget {
         title: 'Mega Moda',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          primaryColor: const Color.fromARGB(255, 4, 125, 141),
-          scaffoldBackgroundColor: const Color.fromARGB(255, 4, 125, 141),
+          useMaterial3: true,
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: primaryColor,
+            primary: primaryColor,
+          ),
+          primaryColor: primaryColor,
+          scaffoldBackgroundColor: primaryColor,
           appBarTheme: const AppBarTheme(
-              elevation: 0
+            elevation: 0,
+            backgroundColor: primaryColor,
+            foregroundColor: Colors.white,
+          ),
+          elevatedButtonTheme: ElevatedButtonThemeData(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: primaryColor,
+              foregroundColor: Colors.white,
+              disabledBackgroundColor: primaryColor.withAlpha(100),
+              disabledForegroundColor: Colors.white,
+            ),
           ),
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
@@ -98,11 +114,11 @@ class MyApp extends StatelessWidget {
           switch(settings.name){
             case '/login':
               return MaterialPageRoute(
-                  builder: (_) => LoginScreen()
+                  builder: (_) => const LoginScreen()
               );
             case '/signup':
               return MaterialPageRoute(
-                  builder: (_) => SignUpScreen()
+                  builder: (_) => const SignUpScreen()
               );
             case '/product':
               return MaterialPageRoute(

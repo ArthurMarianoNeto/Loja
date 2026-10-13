@@ -64,26 +64,27 @@ docker compose run --rm --service-ports web            # http://localhost:8080
 | 3 | Migração para null safety | ✅ concluído (merge em `modernizacao`) |
 | 4 | Renomeações da API do Firebase (`FirebaseAuth`, `FirebaseFirestore`, etc.) + APIs dos pacotes novos | ✅ concluído (merge em `modernizacao`) |
 | 5 | Inicialização do Firebase (`firebase_options.dart` + `Firebase.initializeApp`) | ✅ concluído (merge em `modernizacao`) |
-| 6 | Widgets / tema (Material 3) | ⏳ |
+| 6 | Widgets / tema (Material 3) | ✅ concluído (merge em `modernizacao`) |
 | 7 | Testes | ⏳ |
 | 8 | Regenerar pasta Android + gerar APK | ⏳ |
 | depois | Cloud Functions (`functions/`), painel admin web, iOS | — |
 
 ## Estado atual
 
-- Último passo concluído: **Dia 5** (inicialização do Firebase), mergeado em
+- Último passo concluído: **Dia 6** (widgets e Material 3), mergeado em
   `modernizacao`.
-  - `lib/firebase_options.dart` gerado a partir de
-    `android/app/google-services.json` (só Android, mesmo formato do
-    FlutterFire CLI). O volume `firebase-config` deste projeto não tem login e
-    não há config de iOS/web no repo → `flutterfire configure` fica para quando
-    o usuário logar (comandos no README).
-  - `main()`: `WidgetsFlutterBinding.ensureInitialized()` +
-    `Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform)`.
-  - Removida a chamada de teste à Cloud Function `addMessage` no `main()`
-    (gravava um documento em `messages` a cada abertura do app).
-  - `flutter analyze`: 39 erros (133 issues), só widgets → Dia 6.
-- **Próximo passo:** Dia 6 — widgets/tema Material 3.
+  - Tema `useMaterial3` + `ColorScheme.fromSeed` (teal `MyApp.primaryColor`),
+    AppBar e `ElevatedButton` estilizados pelo tema (igual ao Loja-Virtual-Pro).
+  - `RaisedButton` → `ElevatedButton`, `FlatButton` → `TextButton`
+    (`TextButton.styleFrom`), `showSnackBar` via `ScaffoldMessenger`,
+    `WhitelistingTextInputFormatter` → `FilteringTextInputFormatter`,
+    `WillPopScope` → `PopScope`, parâmetros `__` → `_` (curinga do Dart 3).
+  - `LoginScreen`/`SignUpScreen` viraram `StatefulWidget` (dispose dos
+    controllers, `mounted` nos callbacks); `context.mounted` depois de `await`.
+  - `CieloPayment.authorize`/`CepAbertoService`: o erro de negócio é devolvido
+    fora do `try` (mesmo comportamento: a mensagem da Cielo chega ao usuário).
+  - `flutter analyze`: **0 issues**.
+- **Próximo passo:** Dia 7 — testes.
 - Pendências conhecidas:
   - `recuperar_senha.txt` na raiz: anotação do curso; a recuperação de senha já
     está em `user_manager.dart`/`login_screen.dart` — perguntar se pode remover.
@@ -106,3 +107,6 @@ docker compose run --rm --service-ports web            # http://localhost:8080
 - **2026-10-13** — Dia 5: `firebase_options.dart` (Android) e
   `Firebase.initializeApp` no `main()` (branch `dia-5-firebase-init`); chamada
   de teste `addMessage` removida. Mergeado em `modernizacao`.
+- **2026-10-13** — Dia 6: Material 3 (branch `dia-6-material3`), widgets
+  removidos substituídos, telas de login/cadastro `StatefulWidget`;
+  `flutter analyze` com 0 issues. Mergeado em `modernizacao`.

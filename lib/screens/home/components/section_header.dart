@@ -1,10 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:loja/common/custom_icon_button.dart';
-import 'package:loja/screens/home/components/add_tile_widget.dart';
 import 'package:loja/models/home_manager.dart';
 import 'package:loja/models/section.dart';
-import 'package:loja/screens/home/components/item_tile.dart';
 import 'package:provider/provider.dart';
 
 class SectionHeader extends StatelessWidget {

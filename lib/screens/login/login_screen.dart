@@ -5,28 +5,39 @@ import 'package:flutter/material.dart';
 import 'package:loja/helpers/validators.dart';
 import 'package:sign_in_button/sign_in_button.dart';
 
-class LoginScreen extends StatelessWidget {
-  LoginScreen({super.key});
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
 
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passController = TextEditingController();
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: scaffoldKey,
       appBar: AppBar(
         title: const Text('Entrar'),
         centerTitle: true,
         actions: <Widget>[
-          FlatButton(
+          TextButton(
+            style: TextButton.styleFrom(foregroundColor: Colors.white),
             onPressed: (){
               Navigator.of(context).pushReplacementNamed('/signup');
             },
-            textColor: Colors.white,
             child: const Text(
               'CRIAR CONTA',
               style: TextStyle(fontSize: 14),
@@ -63,8 +74,9 @@ class LoginScreen extends StatelessWidget {
                       keyboardType: TextInputType.emailAddress,
                       autocorrect: false,
                       validator: (email){
-                        if(email == null || !emailValid(email))
+                        if(email == null || !emailValid(email)) {
                           return 'E-mail inválido';
+                        }
                         return null;
                       },
                     ),
@@ -76,15 +88,15 @@ class LoginScreen extends StatelessWidget {
                       autocorrect: false,
                       obscureText: true,
                       validator: (pass){
-                        if(pass == null || pass.isEmpty || pass.length < 6)
+                        if(pass == null || pass.isEmpty || pass.length < 6) {
                           return 'Senha inválida';
+                        }
                         return null;
                       },
                     ),
                     child!,
                     const SizedBox(height: 16,),
-                    RaisedButton(
-                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ElevatedButton(
                       onPressed: userManager.loading ? null : (){
                         if(formKey.currentState!.validate()){
                           userManager.signIn(
@@ -93,7 +105,8 @@ class LoginScreen extends StatelessWidget {
                                   password: passController.text
                               ),
                               onFail: (e){
-                                scaffoldKey.currentState.showSnackBar(
+                                if(!mounted) return;
+                                ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
                                       content: Text('Falha ao entrar: $e'),
                                       backgroundColor: Colors.red,
@@ -101,15 +114,12 @@ class LoginScreen extends StatelessWidget {
                                 );
                               },
                               onSuccess: (){
+                                if(!mounted) return;
                                 Navigator.of(context).pop();
                               }
                           );
                         }
                       },
-                      color: Theme.of(context).primaryColor,
-                      disabledColor: Theme.of(context).primaryColor
-                          .withAlpha(100),
-                      textColor: Colors.white,
                       child: userManager.loading ?
                       CircularProgressIndicator(
                         valueColor: AlwaysStoppedAnimation(Colors.white),
@@ -127,7 +137,8 @@ class LoginScreen extends StatelessWidget {
                       onPressed: (){
                         userManager.facebookLogin(
                             onFail: (e){
-                              scaffoldKey.currentState.showSnackBar(
+                              if(!mounted) return;
+                              ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                     content: Text('Falha ao entrar: $e'),
                                     backgroundColor: Colors.red,
@@ -135,6 +146,7 @@ class LoginScreen extends StatelessWidget {
                               );
                             },
                             onSuccess: (){
+                              if(!mounted) return;
                               Navigator.of(context).pop();
                             }
                         );
@@ -146,11 +158,12 @@ class LoginScreen extends StatelessWidget {
               child: Align( // Procedimento de esqueci minha senha
                 alignment: Alignment.centerRight,
                 child: Consumer<UserManager>(
-                  builder: (_, userManager, __) {
-                    return FlatButton(
+                  builder: (_, userManager, _) {
+                    return TextButton(
+                      style: TextButton.styleFrom(padding: EdgeInsets.zero),
                       onPressed: () {
                         if (emailController.text.isEmpty) {
-                          scaffoldKey.currentState.showSnackBar(SnackBar(
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             content: const Text(
                                 'Insira seu e-mail para recuperação'
                             ),
@@ -159,7 +172,7 @@ class LoginScreen extends StatelessWidget {
                           ));
                         } else {
                           userManager.recoverPass(emailController.text);
-                          scaffoldKey.currentState.showSnackBar(SnackBar(
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             content: const Text(
                                 'Confira seu e-mail.'
                             ),
@@ -168,7 +181,6 @@ class LoginScreen extends StatelessWidget {
                           ));
                         }
                       },
-                      padding: EdgeInsets.zero,
                       child: const Text(
                         'Esqueci minha senha',
                       ),

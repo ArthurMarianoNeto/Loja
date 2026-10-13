@@ -3,7 +3,6 @@ import 'package:loja/common/price_card.dart';
 import 'package:loja/models/cart_manager.dart';
 import 'package:loja/models/checkout_manager.dart';
 import 'package:loja/models/credit_card.dart';
-import 'package:loja/models/page_manager.dart';
 import 'package:loja/screens/checkout/components/cpf_field.dart';
 import 'package:loja/screens/checkout/components/credit_card_widget.dart';
 import 'package:provider/provider.dart';
@@ -11,7 +10,6 @@ import 'package:provider/provider.dart';
 class CheckoutScreen extends StatelessWidget {
   CheckoutScreen({super.key});
 
-  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final CreditCard creditCard = CreditCard();
 
@@ -23,13 +21,12 @@ class CheckoutScreen extends StatelessWidget {
       checkoutManager!..updateCart(cartManager),
       lazy: false,
       child: Scaffold(
-        key: scaffoldKey,
         appBar: AppBar(
           title: const Text('Pagamento'),
           centerTitle: true,
         ),
         body: Consumer<CheckoutManager>(
-          builder: (_, checkoutManager, __){
+          builder: (_, checkoutManager, _){
             if(checkoutManager.loading){
               return Center(
                 child: Column(
@@ -70,7 +67,7 @@ class CheckoutScreen extends StatelessWidget {
                                       (route) => route.settings.name == '/cart');
                             },
                             onPayFail: (e){
-                              scaffoldKey.currentState.showSnackBar(
+                              ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                     content: Text('$e'),
                                     backgroundColor: Colors.red,
