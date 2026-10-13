@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:loja/common/safe_network_image.dart';
 import 'package:loja/common/image_carousel.dart';
 import 'package:loja/models/cart_manager.dart';
 import 'package:loja/models/product.dart';
@@ -50,7 +51,7 @@ class ProductScreen extends StatelessWidget {
               child: ImageCarousel(
                 dotColor: primaryColor,
                 children: product.images.map((url){
-                  return Image.network(url, fit: BoxFit.cover);
+                  return SafeNetworkImage(url, fit: BoxFit.cover);
                 }).toList(),
               ),
             ),

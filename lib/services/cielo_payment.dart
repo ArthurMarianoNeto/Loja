@@ -5,7 +5,8 @@ import 'package:loja/models/app_user.dart';
 
 class CieloPayment {
 
-  final FirebaseFunctions functions = FirebaseFunctions.instance;
+  // resolvido só no uso (permite simular o pagamento nos testes)
+  FirebaseFunctions get functions => FirebaseFunctions.instance;
 
   Future<String> authorize({required CreditCard creditCard, required num price,
     required String orderId, required AppUser user}) async {

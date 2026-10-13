@@ -65,26 +65,32 @@ docker compose run --rm --service-ports web            # http://localhost:8080
 | 4 | Renomeações da API do Firebase (`FirebaseAuth`, `FirebaseFirestore`, etc.) + APIs dos pacotes novos | ✅ concluído (merge em `modernizacao`) |
 | 5 | Inicialização do Firebase (`firebase_options.dart` + `Firebase.initializeApp`) | ✅ concluído (merge em `modernizacao`) |
 | 6 | Widgets / tema (Material 3) | ✅ concluído (merge em `modernizacao`) |
-| 7 | Testes | ⏳ |
+| 7 | Testes | ✅ concluído (merge em `modernizacao`) |
 | 8 | Regenerar pasta Android + gerar APK | ⏳ |
 | depois | Cloud Functions (`functions/`), painel admin web, iOS | — |
 
 ## Estado atual
 
-- Último passo concluído: **Dia 6** (widgets e Material 3), mergeado em
-  `modernizacao`.
-  - Tema `useMaterial3` + `ColorScheme.fromSeed` (teal `MyApp.primaryColor`),
-    AppBar e `ElevatedButton` estilizados pelo tema (igual ao Loja-Virtual-Pro).
-  - `RaisedButton` → `ElevatedButton`, `FlatButton` → `TextButton`
-    (`TextButton.styleFrom`), `showSnackBar` via `ScaffoldMessenger`,
-    `WhitelistingTextInputFormatter` → `FilteringTextInputFormatter`,
-    `WillPopScope` → `PopScope`, parâmetros `__` → `_` (curinga do Dart 3).
-  - `LoginScreen`/`SignUpScreen` viraram `StatefulWidget` (dispose dos
-    controllers, `mounted` nos callbacks); `context.mounted` depois de `await`.
-  - `CieloPayment.authorize`/`CepAbertoService`: o erro de negócio é devolvido
-    fora do `try` (mesmo comportamento: a mensagem da Cielo chega ao usuário).
-  - `flutter analyze`: **0 issues**.
-- **Próximo passo:** Dia 7 — testes.
+- Último passo concluído: **Dia 7** (testes), mergeado em `modernizacao`.
+  - Injeção de dependência: managers recebem `FirebaseFirestore`/`FirebaseAuth`
+    opcionais; `UserManager` recebe `getToken` (FCM) e `CheckoutManager`
+    recebe `CieloPayment`. Models (`Product`, `Section`, `CartProduct`,
+    `Order`, `AppUser`) usam o Firestore do próprio documento
+    (`document.reference.firestore`) ou resolvem o `instance` só no uso.
+    Parâmetros nomeados privados (`this._firestore`, recurso do Dart 3.13).
+  - 76 testes: helpers, models, managers com `fake_cloud_firestore` +
+    `firebase_auth_mocks` + `mock_exceptions` (inclui checkout completo com
+    Cielo simulada: autorização, baixa de estoque em transação, captura,
+    cancelamento sem estoque) e telas (login, cadastro, carrinho,
+    `ProductListTile`). `test/widget_test.dart` (contador) removido.
+  - Bugs achados pelos testes e corrigidos: `Product.fromDocument` quebrava
+    com campo ausente; produto apagado criava item vazio no carrinho/pedido;
+    `ProductListTile` estourava 4 px sem estoque (altura 100 → 110);
+    coordenadas inteiras no `aux/delivery`.
+  - `SafeNetworkImage` (`lib/common/`): produto sem imagem ou URL quebrada
+    mostra um ícone em vez de erro (`images.first` quebrava com lista vazia).
+  - `flutter analyze`: **0 issues**. `flutter test`: **76/76 passando**.
+- **Próximo passo:** Dia 8 — regenerar pasta Android + gerar APK.
 - Pendências conhecidas:
   - `recuperar_senha.txt` na raiz: anotação do curso; a recuperação de senha já
     está em `user_manager.dart`/`login_screen.dart` — perguntar se pode remover.
@@ -110,3 +116,6 @@ docker compose run --rm --service-ports web            # http://localhost:8080
 - **2026-10-13** — Dia 6: Material 3 (branch `dia-6-material3`), widgets
   removidos substituídos, telas de login/cadastro `StatefulWidget`;
   `flutter analyze` com 0 issues. Mergeado em `modernizacao`.
+- **2026-10-13** — Dia 7: testes (branch `dia-7-testes`): 76 testes,
+  injeção de dependência nos managers, `SafeNetworkImage`, bugs corrigidos.
+  Mergeado em `modernizacao`.

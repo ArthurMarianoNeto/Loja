@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:loja/common/safe_network_image.dart';
 import 'package:loja/common/custom_icon_button.dart';
 import 'package:loja/models/cart_product.dart';
 import 'package:provider/provider.dart';
@@ -37,7 +38,7 @@ class CartTile extends StatelessWidget {
                   SizedBox(
                     height: 80,
                     width: 80,
-                    child: Image.network(product.images.first),
+                    child: SafeNetworkImage(product.images.firstOrNull),
                   ),
                   Expanded(
                     child: Padding(

@@ -5,11 +5,14 @@ import 'package:loja/models/app_user.dart';
 import 'dart:async';
 
 class OrdersManager extends ChangeNotifier {
+
+  OrdersManager({FirebaseFirestore? firestore})
+      : firestore = firestore ?? FirebaseFirestore.instance;
   AppUser? user;
 
   List<Order> orders = [];
 
-  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+  final FirebaseFirestore firestore;
   StreamSubscription? _subscription; // import 'dart:async';
 
   void updateUser(AppUser? user) {

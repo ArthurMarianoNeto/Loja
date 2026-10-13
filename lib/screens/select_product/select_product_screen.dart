@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:loja/common/safe_network_image.dart';
 import 'package:loja/models/product_manager.dart';
 import 'package:provider/provider.dart';
 
@@ -20,7 +21,7 @@ class SelectProductScreen extends StatelessWidget {
             itemBuilder: (_, index){
               final product = productManager.allProducts[index];
               return ListTile(
-                leading: Image.network(product.images.first),
+                leading: SafeNetworkImage(product.images.firstOrNull),
                 title: Text(product.name),
                 subtitle: Text('R\$ ${product.basePrice.toStringAsFixed(2)}'),
                 onTap: (){

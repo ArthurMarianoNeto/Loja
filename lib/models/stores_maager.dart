@@ -5,7 +5,8 @@ import 'dart:async';
 
 class StoresManager extends ChangeNotifier {
 
-  StoresManager(){
+  StoresManager({FirebaseFirestore? firestore})
+      : firestore = firestore ?? FirebaseFirestore.instance {
     _loadStoreList();
     _startTimer();
   }
@@ -14,7 +15,7 @@ class StoresManager extends ChangeNotifier {
 
   Timer? _timer;
 
-  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+  final FirebaseFirestore firestore;
 
   Future<void> _loadStoreList() async {
     final snapshot = await firestore.collection('stores').get();

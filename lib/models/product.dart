@@ -8,22 +8,29 @@ import 'dart:io';
 class Product extends ChangeNotifier {
 
   Product({this.id, this.name = '', this.description = '',
-    List<String>? images, List<ItemSize>? sizes, this.deleted = false})
+    List<String>? images, List<ItemSize>? sizes, this.deleted = false,
+    this._firestore, this._storage})
       : images = images ?? [],
         sizes = sizes ?? [];
 
   Product.fromDocument(DocumentSnapshot<Map<String, dynamic>> document){
+    _firestore = document.reference.firestore;
     id = document.id;
-    name = document['name'] as String? ?? '';
-    description = document['description'] as String? ?? '';
-    images = List<String>.from(document.data()!['images'] as List<dynamic>? ?? []);
-    deleted = (document.data()!['deleted'] ?? false) as bool;
-    sizes = (document.data()!['sizes'] as List<dynamic>? ?? []).map(
+    final data = document.data() ?? {};
+    name = data['name'] as String? ?? '';
+    description = data['description'] as String? ?? '';
+    images = List<String>.from(data['images'] as List<dynamic>? ?? []);
+    deleted = (data['deleted'] ?? false) as bool;
+    sizes = (data['sizes'] as List<dynamic>? ?? []).map(
             (s) => ItemSize.fromMap(s as Map<String, dynamic>)).toList();
   }
 
-  final FirebaseFirestore firestore = FirebaseFirestore.instance;
-  final FirebaseStorage storage = FirebaseStorage.instance;
+  // o Firebase é resolvido só quando usado: dá para testar a lógica do
+  // produto sem inicializar o Firebase (e com o Firestore falso dos testes)
+  FirebaseFirestore? _firestore;
+  FirebaseStorage? _storage;
+  FirebaseFirestore get firestore => _firestore ??= FirebaseFirestore.instance;
+  FirebaseStorage get storage => _storage ??= FirebaseStorage.instance;
 
   DocumentReference<Map<String, dynamic>> get firestoreRef => firestore.doc('products/$id');
   Reference get storageRef => storage.ref().child('products').child(id!);
@@ -148,6 +155,8 @@ class Product extends ChangeNotifier {
       images: List.from(images),
       sizes: sizes.map((size) => size.clone()).toList(),
       deleted: deleted,
+      firestore: _firestore,
+      storage: _storage,
     );
   }
 

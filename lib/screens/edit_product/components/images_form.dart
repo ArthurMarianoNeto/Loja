@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:loja/screens/edit_product/components/image_source_sheet.dart';
 import 'package:flutter/material.dart';
+import 'package:loja/common/safe_network_image.dart';
 import 'package:loja/common/image_carousel.dart';
 import 'package:loja/models/product.dart';
 
@@ -40,7 +41,7 @@ class ImagesForm extends StatelessWidget {
                     fit: StackFit.expand,
                     children: <Widget>[
                       if(image is String)
-                        Image.network(image, fit: BoxFit.cover,)
+                        SafeNetworkImage(image, fit: BoxFit.cover)
                       else
                         Image.file(image as File, fit: BoxFit.cover,),
                       Align(

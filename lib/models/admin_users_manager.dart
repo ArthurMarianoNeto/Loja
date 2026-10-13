@@ -6,9 +6,12 @@ import 'package:loja/models/user_manager.dart';
 
 class AdminUsersManager extends ChangeNotifier {
 
+  AdminUsersManager({FirebaseFirestore? firestore})
+      : firestore = firestore ?? FirebaseFirestore.instance;
+
   List<AppUser> users = [];
 
-  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+  final FirebaseFirestore firestore;
 
   StreamSubscription? _subscription;
 

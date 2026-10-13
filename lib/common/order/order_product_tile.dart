@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:loja/common/safe_network_image.dart';
 import 'package:loja/models/cart_product.dart';
 
 class OrderProductTile extends StatelessWidget {
@@ -34,7 +35,7 @@ class OrderProductTile extends StatelessWidget {
             SizedBox(
               height: 60,
               width: 60,
-              child: Image.network(product.images.first),
+              child: SafeNetworkImage(product.images.firstOrNull),
             ),
             const SizedBox(
               width: 8,

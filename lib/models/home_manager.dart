@@ -4,7 +4,8 @@ import 'package:loja/models/section.dart';
 
 class HomeManager extends ChangeNotifier {
 
-  HomeManager(){
+  HomeManager({FirebaseFirestore? firestore})
+      : firestore = firestore ?? FirebaseFirestore.instance {
     _loadSections();
   }
 
@@ -16,7 +17,7 @@ class HomeManager extends ChangeNotifier {
   bool loading = false;
 
 
-  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+  final FirebaseFirestore firestore;
 
   Future<void> _loadSections() async {
     firestore.collection('home').orderBy('pos').snapshots().listen((snapshot) {

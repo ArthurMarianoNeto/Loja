@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:loja/common/custom_icon_button.dart';
+import 'package:loja/common/safe_network_image.dart';
 import 'package:loja/models/store.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:map_launcher/map_launcher.dart';
@@ -96,7 +97,7 @@ class StoreCard extends StatelessWidget {
             child: Stack(
               fit: StackFit.expand,
               children: <Widget>[
-                Image.network(
+                SafeNetworkImage(
                   store.image,
                   fit: BoxFit.cover,
                 ),

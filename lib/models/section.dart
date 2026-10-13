@@ -6,12 +6,14 @@ import 'package:flutter/foundation.dart';
 import 'package:loja/models/section_item.dart';
 
 class Section extends ChangeNotifier {
-  Section({this.id, this.name, this.type, List<SectionItem>? items})
+  Section({this.id, this.name, this.type, List<SectionItem>? items,
+    this._firestore, this._storage})
       : items = items ?? [] {
     originalItems = List.from(this.items);
   }
 
   Section.fromDocument(DocumentSnapshot<Map<String, dynamic>> document) {
+    _firestore = document.reference.firestore;
     id = document.id;
     name = document.data()!['name'] as String?;
     type = document.data()!['type'] as String?;
@@ -21,8 +23,10 @@ class Section extends ChangeNotifier {
     originalItems = List.from(items);
   }
 
-  final FirebaseFirestore firestore = FirebaseFirestore.instance;
-  final FirebaseStorage storage = FirebaseStorage.instance;
+  FirebaseFirestore? _firestore;
+  FirebaseStorage? _storage;
+  FirebaseFirestore get firestore => _firestore ??= FirebaseFirestore.instance;
+  FirebaseStorage get storage => _storage ??= FirebaseStorage.instance;
 
   DocumentReference<Map<String, dynamic>> get firestoreRef => firestore.doc('home/$id');
   Reference get storageRef => storage.ref().child('home/$id');
@@ -125,6 +129,8 @@ class Section extends ChangeNotifier {
       name: name,
       type: type,
       items: items.map((e) => e.clone()).toList(),
+      firestore: _firestore,
+      storage: _storage,
     );
   }
 
