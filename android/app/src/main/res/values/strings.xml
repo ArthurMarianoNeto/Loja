@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Loja Mega Moda.</string>
+    <string name="app_name">Loja Mega Moda</string>
 
     <string name="facebook_app_id">339151310887539</string>
 
     <string name="fb_login_protocol_scheme">fb339151310887539</string>
+
+    <!-- O Facebook SDK exige o Client Token (Meta for Developers > App >
+         Configurações > Avançado > Token do cliente). Sem ele o app fecha ao
+         abrir; com este valor provisório abre, mas o login com Facebook falha. -->
+    <string name="facebook_client_token">PREENCHER_CLIENT_TOKEN</string>
 
 </resources>
