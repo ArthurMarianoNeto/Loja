@@ -1,0 +1,33 @@
+x-flutter: &flutter
+  build:
+    context: ./docker          # não envia o repositório inteiro como build context
+    args:
+      FLUTTER_VERSION: ${FLUTTER_VERSION:-3.47.5}
+      UID: ${UID:-1000}
+      GID: ${GID:-1000}
+  image: loja/flutter:${FLUTTER_VERSION:-3.47.5}
+  working_dir: /app
+  volumes:
+    - .:/app                                  # código da máquina local
+    - pub-cache:/home/dev/.pub-cache          # pacotes Dart persistentes
+    - gradle-cache:/home/dev/.gradle          # dependências Android persistentes
+    - firebase-config:/home/dev/.config       # login do Firebase CLI (fora do repositório)
+  stdin_open: true
+  tty: true
+
+services:
+  # Comandos avulsos: doctor, pub get, analyze, test, build apk
+  flutter:
+    <<: *flutter
+
+  # Servidor de desenvolvimento web (painel administrativo, futuramente)
+  web:
+    <<: *flutter
+    ports:
+      - "8080:8080"
+    command: flutter run -d web-server --web-port 8080 --web-hostname 0.0.0.0
+
+volumes:
+  pub-cache:
+  gradle-cache:
+  firebase-config:

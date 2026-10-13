@@ -39,3 +39,14 @@ app.*.symbols
 
 # Obfuscation related
 app.*.map.json
+
+# Gerado pelo Flutter
+ios/Flutter/ephemeral/
+
+# Chaves de assinatura / segredos (nunca versionar)
+*.jks
+*.keystore
+*.p12
+*.pem
+key.properties
+.env
