@@ -1,5 +1,5 @@
 name: loja
-description: A new Flutter application.
+description: Loja virtual em Flutter + Firebase.
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
@@ -18,52 +18,48 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: ^3.13.0
 
 dependencies:
+  alphabet_list_view: ^1.2.1
+  another_flushbar: ^2.2.4
+  brasil_fields: ^1.21.1
+  carousel_slider: ^5.1.2
+  cloud_firestore: ^6.10.0
+  cloud_functions: ^6.5.0
+  cpf_cnpj_validator: ^2.0.0
+  credit_card_type_detector: ^3.0.0
+  cupertino_icons: ^2.0.0
+  dio: ^5.11.1
+  firebase_auth: ^6.7.0
+  firebase_core: ^4.15.0
+  firebase_messaging: ^16.7.0
+  firebase_storage: ^13.6.0
+  flip_card: ^0.7.0
   flutter:
     sdk: flutter
-
-
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.0
-  cloud_firestore: ^0.13.5
-  firebase_auth: ^0.16.0
-  firebase_storage: ^3.1.5
-  provider: ^4.1.3
-  carousel_pro: ^1.0.0
-  flutter_staggered_grid_view: ^0.3.0
-  transparent_image: ^1.0.0
-  alphabet_list_scroll_view: ^1.0.6
-  faker: ^1.2.1
-  image_picker: ^0.6.7+1
-  image_cropper: ^1.2.2
-  uuid: ^2.0.4
-  dio: ^3.0.9
-  brasil_fields: ^0.2.0
-  geolocator: ^6.2.1
-  sliding_up_panel: ^1.0.2
-  screenshot: ^0.1.1
-  gallery_saver: ^2.0.1
-  flutter_signin_button: ^1.0.0
-  flutter_facebook_login: ^3.0.0
-  url_launcher: ^5.4.11
-  map_launcher: ^0.5.0
-  flip_card: ^0.4.4
-  mask_text_input_formatter: ^1.0.7
-  credit_card_type_detector: ^1.1.0
-  keyboard_actions: ^3.2.1+1
-  cloud_functions: ^0.5.0
-  cpf_cnpj_validator: ^1.0.5
-  firebase_messaging: ^6.0.16
-  flushbar: ^1.10.4
-  flutter_launcher_icons: ^0.7.0
+  flutter_facebook_auth: ^7.2.0
+  flutter_staggered_grid_view: ^0.7.0
+  gal: ^2.3.3
+  geolocator: ^14.1.1
+  image_cropper: ^13.0.0
+  image_picker: ^1.2.4
+  keyboard_actions: ^5.0.3
+  map_launcher: ^6.0.0
+  mask_text_input_formatter: ^2.9.0
+  provider: ^6.1.5+1
+  screenshot: ^3.0.0
+  sign_in_button: ^5.0.0
+  sliding_up_panel: ^2.0.0+1
+  transparent_image: ^2.0.1
+  url_launcher: ^6.3.3
+  uuid: ^4.6.0
 
 dev_dependencies:
+  flutter_launcher_icons: ^0.14.4
+  flutter_lints: ^6.0.0
   flutter_test:
     sdk: flutter
-
 
 
 # For information on the generic Dart part of this file, see the
@@ -107,7 +103,7 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
-flutter_icons:
+flutter_launcher_icons:
   android: true
   ios: true
   image_path: "icons/LojaVirtual.png"
