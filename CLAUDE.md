@@ -63,7 +63,7 @@ docker compose run --rm --service-ports web            # http://localhost:8080
 | 2 | Dependências / `pubspec.yaml` atualizados (trocar pacotes descontinuados) | ✅ concluído |
 | 3 | Migração para null safety | ✅ concluído (merge em `modernizacao`) |
 | 4 | Renomeações da API do Firebase (`FirebaseAuth`, `FirebaseFirestore`, etc.) + APIs dos pacotes novos | ✅ concluído (merge em `modernizacao`) |
-| 5 | Inicialização do Firebase (`flutterfire configure` dentro do Docker) | ⏳ |
+| 5 | Inicialização do Firebase (`firebase_options.dart` + `Firebase.initializeApp`) | ✅ concluído (merge em `modernizacao`) |
 | 6 | Widgets / tema (Material 3) | ⏳ |
 | 7 | Testes | ⏳ |
 | 8 | Regenerar pasta Android + gerar APK | ⏳ |
@@ -71,37 +71,20 @@ docker compose run --rm --service-ports web            # http://localhost:8080
 
 ## Estado atual
 
-- Último passo concluído: **Dia 4** (APIs do Firebase e dos pacotes), mergeado
-  em `modernizacao`.
-  - Firestore: `FirebaseFirestore`, `doc`/`docs`/`id`/`data()`/`set`/`update`,
-    snapshots tipados `<Map<String, dynamic>>`; `Order` do app conflita com o
-    `Order` do Firestore → `import ... cloud_firestore.dart' hide Order`.
-  - Auth: `UserCredential`, `User` do firebase_auth, `currentUser` síncrono,
-    `FirebaseAuthException` com códigos novos (`invalid-credential` etc.).
-    Model `User` → `AppUser` (`lib/models/app_user.dart`).
-  - Storage: `Reference`, `putFile` aguardado direto, `refFromURL`.
-  - Functions: `FirebaseFunctions.instance.httpsCallable(nome, options:
-    HttpsCallableOptions(timeout: 60 s))`. Messaging: `FirebaseMessaging.instance`,
-    `requestPermission`, streams `onMessage`/`onMessageOpenedApp`.
-  - Pacotes: login Facebook com `flutter_facebook_auth`
-    (`FacebookAuthProvider.credential`), `sign_in_button`, `another_flushbar`,
-    `gal` (salva o print do endereço), `image_picker.pickImage` +
-    `ImageCropper().cropImage(uiSettings: [...])`, `StaggeredGrid.count`,
-    `AlphabetListView` (usuários agrupados pela inicial), `url_launcher`
-    com `Uri`, `map_launcher` 6 (Google Maps, Apple Maps, Waze), `DioException`.
-  - Carrossel próprio `lib/common/image_carousel.dart` (PageView + pontos) no
-    lugar do `carousel_pro`; `carousel_slider`, `cpf_cnpj_validator` (o
-    `brasil_fields` já tem `CPFValidator`) e `keyboard_actions` (só importado)
-    removidos do pubspec.
-  - Bandeira do cartão: `credit_card_type_detector` 3 devolve
-    `american_express`/`diners_club`; convertido para `AMEX`/`DINERSCLUB`
-    porque a Cloud Function `authorizeCreditCard` espera esses nomes.
-  - `flutter analyze`: 203 → 39 erros (134 issues); restantes são widgets
-    removidos do Flutter (`RaisedButton`, `FlatButton`, `showSnackBar`,
-    `WhitelistingTextInputFormatter`) → Dia 6.
-- **Próximo passo:** Dia 5 — inicialização do Firebase (`flutterfire configure`).
+- Último passo concluído: **Dia 5** (inicialização do Firebase), mergeado em
+  `modernizacao`.
+  - `lib/firebase_options.dart` gerado a partir de
+    `android/app/google-services.json` (só Android, mesmo formato do
+    FlutterFire CLI). O volume `firebase-config` deste projeto não tem login e
+    não há config de iOS/web no repo → `flutterfire configure` fica para quando
+    o usuário logar (comandos no README).
+  - `main()`: `WidgetsFlutterBinding.ensureInitialized()` +
+    `Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform)`.
+  - Removida a chamada de teste à Cloud Function `addMessage` no `main()`
+    (gravava um documento em `messages` a cada abertura do app).
+  - `flutter analyze`: 39 erros (133 issues), só widgets → Dia 6.
+- **Próximo passo:** Dia 6 — widgets/tema Material 3.
 - Pendências conhecidas:
-  - `main()` chama a Cloud Function de teste `addMessage` a cada abertura.
   - `recuperar_senha.txt` na raiz: anotação do curso; a recuperação de senha já
     está em `user_manager.dart`/`login_screen.dart` — perguntar se pode remover.
   - `functions/` (Node 14, firebase-functions 3) também precisará de atualização.
@@ -120,3 +103,6 @@ docker compose run --rm --service-ports web            # http://localhost:8080
 - **2026-10-13** — Dia 4: APIs do Firebase e dos pacotes trocados (branch
   `dia-4-firebase-api`), `User` → `AppUser`, carrossel próprio; analyze de 203
   para 39 erros. Mergeado em `modernizacao`.
+- **2026-10-13** — Dia 5: `firebase_options.dart` (Android) e
+  `Firebase.initializeApp` no `main()` (branch `dia-5-firebase-init`); chamada
+  de teste `addMessage` removida. Mergeado em `modernizacao`.

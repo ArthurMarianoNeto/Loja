@@ -1,5 +1,6 @@
-import 'package:cloud_functions/cloud_functions.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:loja/firebase_options.dart';
 import 'package:loja/models/admin_orders_manager.dart';
 import 'package:loja/models/order.dart';
 import 'package:loja/models/app_user.dart';
@@ -24,14 +25,12 @@ import 'package:loja/screens/edit_product/edit_product_screen.dart';
 
 import 'models/stores_maager.dart';
 
-void main() async {
-  runApp(const MyApp());
-
-  final response = await FirebaseFunctions.instance.httpsCallable(
-      'addMessage').call(
-      {"teste": "Matheuzito"}
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
   );
-  print(response.data);
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
