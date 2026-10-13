@@ -7,6 +7,8 @@ import 'package:loja/models/orders_manager.dart';
 import 'package:provider/provider.dart';
 
 class OrdersScreen extends StatelessWidget {
+  const OrdersScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

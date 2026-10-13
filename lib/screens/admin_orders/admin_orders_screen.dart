@@ -9,6 +9,8 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:loja/models/order.dart';
 
 class AdminOrdersScreen extends StatefulWidget {
+  const AdminOrdersScreen({super.key});
+
 
   @override
   _AdminOrdersScreenState createState() => _AdminOrdersScreenState();
@@ -41,7 +43,7 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
                       children: <Widget>[
                         Expanded(
                           child: Text(
-                            'Pedidos de ${ordersManager.userFilter.name}',
+                            'Pedidos de ${ordersManager.userFilter!.name}',
                             style: TextStyle(
                               fontWeight: FontWeight.w800,
                               color: Colors.white,
@@ -119,7 +121,7 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
                         onChanged: (v){
                           ordersManager.setStatusFilter(
                             status: s,
-                              enabled: v
+                              enabled: v ?? false
                           );
                         },
                       );

@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:loja/models/section.dart';
 
 class HomeManager extends ChangeNotifier {
@@ -39,10 +39,11 @@ class HomeManager extends ChangeNotifier {
   }
 
   List<Section> get sections {
-    if(editing)
+    if(editing) {
       return _editingSections;
-    else
+    } else {
       return _sections;
+    }
   }
 
   void enterEditing(){
@@ -74,7 +75,7 @@ class HomeManager extends ChangeNotifier {
     pos++;
     }
 
-    for(final section in List.from(_sections)){
+    for(final section in List<Section>.from(_sections)){
       if(!_editingSections.any((element) => element.id == section.id)){
         await section.delete();
       }

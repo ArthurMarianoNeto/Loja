@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:loja/models/order.dart';
 import 'package:loja/models/user.dart';
 
@@ -8,15 +8,15 @@ class AdminOrdersManager extends ChangeNotifier {
 
   final List<Order> _orders = [];
 
-  User userFilter;
+  User? userFilter;
 //  List<Status> statusFilter = [Status.preparing, Status.transporting, Status.delivered];
   List<Status> statusFilter = [Status.preparing, Status.transporting];
 
   final Firestore firestore = Firestore.instance;
 
-  StreamSubscription _subscription;
+  StreamSubscription? _subscription;
 
-  void updateAdmin({bool adminEnabled}){
+  void updateAdmin({required bool adminEnabled}){
     _orders.clear();
 
     _subscription?.cancel();
@@ -28,8 +28,9 @@ class AdminOrdersManager extends ChangeNotifier {
   List<Order> get filteredOrders {
     List<Order> output = _orders.reversed.toList();
 
-    if(userFilter != null){
-      output = output.where((o) => o.userId == userFilter.id).toList();
+    final filter = userFilter;
+    if(filter != null){
+      output = output.where((o) => o.userId == filter.id).toList();
     }
 
     return output.where((o) => statusFilter.contains(o.status)).toList();
@@ -59,12 +60,12 @@ class AdminOrdersManager extends ChangeNotifier {
         });
   }
 
-  void setUserFilter(User user){
+  void setUserFilter(User? user){
     userFilter = user;
     notifyListeners();
   }
 
-  void setStatusFilter({Status status, bool enabled}){
+  void setStatusFilter({required Status status, required bool enabled}){
     if(enabled){
       statusFilter.add(status);
     } else {
@@ -75,8 +76,8 @@ class AdminOrdersManager extends ChangeNotifier {
 
   @override
   void dispose() {
-    super.dispose();
     _subscription?.cancel();
+    super.dispose();
   }
 
 }

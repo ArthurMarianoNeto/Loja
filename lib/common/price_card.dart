@@ -4,10 +4,10 @@ import 'package:provider/provider.dart';
 
 class PriceCard extends StatelessWidget {
 
-  const PriceCard({this.buttonText, this.onPressed});
+  const PriceCard({super.key, required this.buttonText, this.onPressed});
 
   final String buttonText;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
 
   @override
   Widget build(BuildContext context) {

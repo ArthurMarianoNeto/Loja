@@ -3,7 +3,7 @@ import 'package:loja/models/product.dart';
 
 class ProductListTile extends StatelessWidget {
 
-  const ProductListTile(this.product);
+  const ProductListTile(this.product, {super.key});
 
   final Product product;
 

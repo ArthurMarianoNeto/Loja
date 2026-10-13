@@ -1,28 +1,23 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:loja/models/address.dart';
 import 'package:loja/models/cart_product.dart';
-import 'package:loja/models/cep_aberto_address.dart';
 import 'package:loja/services/cep_aberto_service.dart';
 import 'package:loja/models/product.dart';
 import 'package:loja/models/user.dart';
 import 'package:loja/models/user_manager.dart';
-import 'package:loja/screens/address/address_screen.dart';
-
-
 
 
 class CartManager extends ChangeNotifier {
 
   List<CartProduct> items = [];
 
-  User user;
-  Address address;
+  User? user;
+  Address? address;
 
   num productsPrice = 0.0;
-  num devliveryPrice;
+  num? devliveryPrice;
 
   num get totalPrice => productsPrice + (devliveryPrice ?? 0);
 
@@ -48,7 +43,7 @@ class CartManager extends ChangeNotifier {
   }
 
   Future<void> _loadCartItems() async {
-    final QuerySnapshot cartSnap = await user.cartReference.getDocuments();
+    final QuerySnapshot cartSnap = await user!.cartReference.getDocuments();
 
     items = cartSnap.documents.map(
             (d) => CartProduct.fromDocument(d)..addListener(_onItemUpdated)
@@ -56,9 +51,10 @@ class CartManager extends ChangeNotifier {
   }
 
   Future<void> _loadUserAddress() async {
-    if(user.address != null
-        && await calculateDelivery(user.address.lat, user.address.long)){ //raio de entrega
-      address = user.address;
+    final userAddress = user!.address;
+    if(userAddress != null
+        && await calculateDelivery(userAddress.lat, userAddress.long)){ //raio de entrega
+      address = userAddress;
       notifyListeners();
     }
   }
@@ -71,7 +67,7 @@ class CartManager extends ChangeNotifier {
       final cartProduct = CartProduct.fromProduct(product);
       cartProduct.addListener(_onItemUpdated);
       items.add(cartProduct);
-      user.cartReference.add(cartProduct.toCartItemMap())
+      user!.cartReference.add(cartProduct.toCartItemMap())
           .then((doc) => cartProduct.id = doc.documentID);
       _onItemUpdated();
     }
@@ -80,7 +76,7 @@ class CartManager extends ChangeNotifier {
 
   void removeOfCart(CartProduct cartProduct){
     items.removeWhere((p) => p.id == cartProduct.id);
-    user.cartReference.document(cartProduct.id).delete();
+    user!.cartReference.document(cartProduct.id).delete();
     cartProduct.removeListener(_onItemUpdated);
     notifyListeners();
   }
@@ -106,9 +102,10 @@ class CartManager extends ChangeNotifier {
   }
 
   void _updateCartProduct(CartProduct cartProduct){
-    if(cartProduct.id != null)
-      user.cartReference.document(cartProduct.id)
+    if(cartProduct.id != null) {
+      user!.cartReference.document(cartProduct.id)
           .updateData(cartProduct.toCartItemMap());
+    }
   }
 
   bool get isCartValid {
@@ -129,27 +126,22 @@ class CartManager extends ChangeNotifier {
     try {
       final cepAbertoAddress = await cepAbertoService.getAddressFromCep(cep);
 
-      if(cepAbertoAddress != null){
-        address = Address(
-//            complement: cepAbertoAddress.complemento,
-            street: cepAbertoAddress.logradouro,
-            district: cepAbertoAddress.bairro,
-            zipCode: cepAbertoAddress.cep,
-            city: cepAbertoAddress.cidade.nome,
-            state: cepAbertoAddress.estado.sigla,
-            lat: cepAbertoAddress.latitude,
-            long: cepAbertoAddress.longitude
-        );
-        // retirar notifyListeners para não notificar duas vezes em virtude do loadingo false;
- //       notifyListeners(); r
-        loading = false;
-      }
+      address = Address(
+//          complement: cepAbertoAddress.complemento,
+          street: cepAbertoAddress.logradouro,
+          district: cepAbertoAddress.bairro,
+          zipCode: cepAbertoAddress.cep,
+          city: cepAbertoAddress.cidade.nome,
+          state: cepAbertoAddress.estado.sigla,
+          lat: cepAbertoAddress.latitude,
+          long: cepAbertoAddress.longitude
+      );
+      // retirar notifyListeners para não notificar duas vezes em virtude do loadingo false;
+      loading = false;
     } catch (e){
-     // debugPrint(e.toString());
       loading = false;
       return Future.error('CEP Inválido');
     }
- //   loading = false;
   }
 
   Future<void> setAddress(Address address) async {
@@ -157,10 +149,8 @@ class CartManager extends ChangeNotifier {
     this.address = address;
 
     if( await calculateDelivery(address.lat, address.long)){
-      user.setAddress(address);
-//      print('price $devliveryPrice');
+      user!.setAddress(address);
       loading = false;
-      //      notifyListeners();
     } else {
       loading = false;
       return Future.error('Endereço fora do raio de entrega!');
@@ -169,7 +159,7 @@ class CartManager extends ChangeNotifier {
 
   void clear(){
     for(final cartProduct in items){
-      user.cartReference.document(cartProduct.id).delete();
+      user!.cartReference.document(cartProduct.id).delete();
     }
     items.clear();
     notifyListeners();
@@ -181,7 +171,9 @@ class CartManager extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool> calculateDelivery(double lat, double long) async {
+  Future<bool> calculateDelivery(double? lat, double? long) async {
+    if(lat == null || long == null) return false;
+
     final DocumentSnapshot doc = await firestore.document('aux/delivery').get();
 
     final latStore = doc.data['lat'] as double;
@@ -192,14 +184,9 @@ class CartManager extends ChangeNotifier {
 
     final maxkm = doc.data['maxkm'] as num;
 
-    double dis =
-    await Geolocator.distanceBetween(latStore, longStore, lat, long);
- //      await Geolocator().distanceBetween(double 52.2165157, double 6.9437819, 52.3546274, 4.8285838);
-//    await GeolocatorPlatform.instance.distanceBetween(latStore, longStore, lat, long);
+    double dis = Geolocator.distanceBetween(latStore, longStore, lat, long);
 
     dis /= 1000.0;
-
-//    debugPrint('Distance $dis');
 
     if(dis > maxkm){
       return false;

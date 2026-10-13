@@ -5,7 +5,7 @@ import 'package:screenshot/screenshot.dart';
 
 class ExportAddressDialog extends StatelessWidget {
 
-  ExportAddressDialog(this.address);
+  ExportAddressDialog(this.address, {super.key});
 
   final Address address;
 

@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:loja/models/store.dart';
 import 'dart:async';
 
@@ -12,7 +12,7 @@ class StoresManager extends ChangeNotifier {
 
   List<Store> stores = [];
 
-  Timer _timer;
+  Timer? _timer;
 
   final Firestore firestore = Firestore.instance;
 
@@ -31,14 +31,15 @@ class StoresManager extends ChangeNotifier {
   }
 
   void _checkOpening(){
-    for(final store in stores)
+    for(final store in stores) {
       store.updateStatus();
+    }
     notifyListeners();
   }
 
   @override
   void dispose() {
-    super.dispose();
     _timer?.cancel();
+    super.dispose();
   }
 }

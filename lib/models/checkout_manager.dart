@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:loja/models/cart_manager.dart';
 import 'package:loja/models/credit_card.dart';
 import 'package:loja/models/order.dart';
@@ -8,7 +8,7 @@ import 'package:loja/services/cielo_payment.dart';
 
 class CheckoutManager extends ChangeNotifier {
 
-  CartManager cartManager;
+  late CartManager cartManager;
   bool _loading = false;
   bool get loading => _loading;
   set loading(bool value){
@@ -26,14 +26,12 @@ class CheckoutManager extends ChangeNotifier {
   }
 
   // Verificando se temos estoque diponível
-  Future<void> checkout({CreditCard creditCard,
-    Function onStockFail,
-    Function onSuccess,
-    Function onPayFail}) async {
+  Future<void> checkout({required CreditCard creditCard,
+    required void Function(Object) onStockFail,
+    required void Function(Order) onSuccess,
+    required void Function(Object) onPayFail}) async {
 
     loading = true;
-
-//    print(creditCard.toJson());
 
     final orderId = await _getOrderId(); // gerando número unico do pedido
 
@@ -43,7 +41,7 @@ class CheckoutManager extends ChangeNotifier {
         creditCard: creditCard,
         price: cartManager.totalPrice,
         orderId: orderId.toString(),
-        user: cartManager.user,
+        user: cartManager.user!,
       );
 
       debugPrint('success $payId');
@@ -60,7 +58,6 @@ class CheckoutManager extends ChangeNotifier {
       cieloPayment.cancel(payId);
       onStockFail(e);
       loading = false;
- //     debugPrint(e.toString());
       return;
     }
 
@@ -83,8 +80,6 @@ class CheckoutManager extends ChangeNotifier {
     onSuccess(order);
 
     loading = false;
-
- //   _getOrderId().then((value) => print(value));
   }
 
   Future<int> _getOrderId() async { // salvando o firebase
@@ -129,10 +124,10 @@ class CheckoutManager extends ChangeNotifier {
         cartProduct.product = product;
 
         final size = product.findSize(cartProduct.size);
-        if(size.stock - cartProduct.quantity < 0){
+        if(size == null || (size.stock ?? 0) - cartProduct.quantity < 0){
           productsWithoutStock.add(product);
         } else {
-          size.stock -= cartProduct.quantity;
+          size.stock = size.stock! - cartProduct.quantity;
           productsToUpdate.add(product);
         }
       }

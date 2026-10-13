@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 class CardTextField extends StatelessWidget {
 
   const CardTextField({
+    super.key,
     this.title,
     this.bold = false,
     this.hint,
@@ -20,19 +21,19 @@ class CardTextField extends StatelessWidget {
       ? TextInputAction.done
       : TextInputAction.next;
 
-  final String title;
+  final String? title;
   final bool bold;
-  final String hint;
-  final TextInputType textInputType;
-  final List<TextInputFormatter> inputFormatters;
-  final FormFieldValidator<String> validator;
-  final int maxLength;
+  final String? hint;
+  final TextInputType? textInputType;
+  final List<TextInputFormatter>? inputFormatters;
+  final FormFieldValidator<String>? validator;
+  final int? maxLength;
   final TextAlign textAlign;
-  final FocusNode focusNode;
-  final Function(String) onSubmitted;
+  final FocusNode? focusNode;
+  final void Function(String)? onSubmitted;
   final TextInputAction textInputAction;
-  final FormFieldSetter<String> onSaved;
-  final String initialValue;
+  final FormFieldSetter<String>? onSaved;
+  final String? initialValue;
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +51,7 @@ class CardTextField extends StatelessWidget {
                 Row(
                   children: <Widget>[
                     Text(
-                      title,
+                      title!,
                       style: TextStyle(
                           fontSize: 10,
                           fontWeight: FontWeight.w400,

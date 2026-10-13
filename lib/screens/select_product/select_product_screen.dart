@@ -3,6 +3,8 @@ import 'package:loja/models/product_manager.dart';
 import 'package:provider/provider.dart';
 
 class SelectProductScreen extends StatelessWidget {
+  const SelectProductScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

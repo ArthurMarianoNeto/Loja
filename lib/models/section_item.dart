@@ -3,12 +3,12 @@ class SectionItem {
   SectionItem({this.image, this.product});
 
   SectionItem.fromMap(Map<String, dynamic> map){
-    image = map['image'] as String;
-    product = map['product'] as String;
+    image = map['image'] as String?;
+    product = map['product'] as String?;
   }
 
   dynamic image;
-  String product;
+  String? product;
 
   SectionItem clone(){
     return SectionItem(

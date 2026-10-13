@@ -6,7 +6,7 @@ import 'package:map_launcher/map_launcher.dart';
 
 class StoreCard extends StatelessWidget {
 
-  const StoreCard(this.store);
+  const StoreCard(this.store, {super.key});
 
   final Store store;
 

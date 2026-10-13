@@ -5,13 +5,13 @@ import 'package:loja/models/item_size.dart';
 
 class EditItemSize extends StatelessWidget {
 
-  const EditItemSize({Key key, this.size, this.onRemove,
-    this.onMoveUp, this.onMoveDown}) : super(key: key);
+  const EditItemSize({super.key, required this.size, this.onRemove,
+    this.onMoveUp, this.onMoveDown});
 
   final ItemSize size;
-  final VoidCallback onRemove;
-  final VoidCallback onMoveUp;
-  final VoidCallback onMoveDown;
+  final VoidCallback? onRemove;
+  final VoidCallback? onMoveUp;
+  final VoidCallback? onMoveDown;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +26,7 @@ class EditItemSize extends StatelessWidget {
               isDense: true,
             ),
             validator: (name){
-              if(name.isEmpty)
+              if(name == null || name.isEmpty)
                 return 'Insira o Título';
               return null;
             },
@@ -44,7 +44,7 @@ class EditItemSize extends StatelessWidget {
             ),
             keyboardType: TextInputType.number,
             validator: (stock){
-              if(int.tryParse(stock) == null)
+              if(int.tryParse(stock ?? '') == null)
                 return 'Inválido';
               return null;
             },
@@ -64,7 +64,7 @@ class EditItemSize extends StatelessWidget {
             ),
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
             validator: (price){
-              if(num.tryParse(price) == null)
+              if(num.tryParse(price ?? '') == null)
                 return 'Inválido';
               return null;
             },

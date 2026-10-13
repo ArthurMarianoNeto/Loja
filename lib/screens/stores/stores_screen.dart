@@ -5,6 +5,8 @@ import 'package:loja/screens/stores/components/store_card.dart';
 import 'package:provider/provider.dart';
 
 class StoresScreen extends StatelessWidget {
+  const StoresScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

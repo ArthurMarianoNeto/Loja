@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 
 class SizeWidget extends StatelessWidget {
 
-  const SizeWidget({this.size});
+  const SizeWidget({super.key, required this.size});
 
   final ItemSize size;
 
@@ -43,14 +43,14 @@ class SizeWidget extends StatelessWidget {
               color: color,
               padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
               child: Text(
-                size.name,
+                size.name ?? '',
                 style: TextStyle(color: Colors.white),
               ),
             ),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Text(
-                'R\$ ${size.price.toStringAsFixed(2)}',
+                'R\$ ${(size.price ?? 0).toStringAsFixed(2)}',
                 style: TextStyle(
                   color: color,
                 ),

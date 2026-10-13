@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 
 class ProductScreen extends StatelessWidget {
 
-  const ProductScreen(this.product);
+  const ProductScreen(this.product, {super.key});
 
   final Product product;
 

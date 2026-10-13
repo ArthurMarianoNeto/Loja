@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:faker/faker.dart';
 import 'dart:async';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:loja/models/user.dart';
 import 'package:loja/models/user_manager.dart';
 
@@ -11,7 +10,7 @@ class AdminUsersManager extends ChangeNotifier {
 
   final Firestore firestore = Firestore.instance;
 
-  StreamSubscription _subscription;
+  StreamSubscription? _subscription;
 
   void updateUser(UserManager userManager){
     _subscription?.cancel();
@@ -28,12 +27,12 @@ class AdminUsersManager extends ChangeNotifier {
         .listen((snapshot){
       users = snapshot.documents.map((d) => User.fromDocument(d)).toList();
       users.sort((a, b) =>
-          a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+          (a.name ?? '').toLowerCase().compareTo((b.name ?? '').toLowerCase()));
       notifyListeners();
     });
   }
 
-  List<String> get names => users.map((e) => e.name).toList();
+  List<String> get names => users.map((e) => e.name ?? '').toList();
 
   @override
   void dispose() {

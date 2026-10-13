@@ -1,4 +1,4 @@
-String getErrorString(String code){
+String getErrorString(String? code){
   switch (code) {
     case 'ERROR_WEAK_PASSWORD':
       return 'Sua senha é muito fraca.';

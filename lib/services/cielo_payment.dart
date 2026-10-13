@@ -1,6 +1,6 @@
 import 'dart:collection';
 import 'package:cloud_functions/cloud_functions.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:loja/models/credit_card.dart';
 import 'package:loja/models/user.dart';
 
@@ -8,8 +8,8 @@ class CieloPayment {
 
   final CloudFunctions functions = CloudFunctions.instance;
 
-  Future<String> authorize({CreditCard creditCard, num price,
-    String orderId, User user}) async {
+  Future<String> authorize({required CreditCard creditCard, required num price,
+    required String orderId, required User user}) async {
 
     try {
       final Map<String, dynamic> dataSale = {

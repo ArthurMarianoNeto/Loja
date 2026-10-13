@@ -9,6 +9,7 @@ import 'package:loja/screens/checkout/components/credit_card_widget.dart';
 import 'package:provider/provider.dart';
 
 class CheckoutScreen extends StatelessWidget {
+  CheckoutScreen({super.key});
 
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -19,7 +20,7 @@ class CheckoutScreen extends StatelessWidget {
     return ChangeNotifierProxyProvider<CartManager, CheckoutManager>(
       create: (_) => CheckoutManager(),
       update: (_, cartManager, checkoutManager) =>
-      checkoutManager..updateCart(cartManager),
+      checkoutManager!..updateCart(cartManager),
       lazy: false,
       child: Scaffold(
         key: scaffoldKey,
@@ -60,8 +61,8 @@ class CheckoutScreen extends StatelessWidget {
                   PriceCard(
                     buttonText: 'Finalizar Pedido',
                     onPressed: (){
-                      if(formKey.currentState.validate()){
-                        formKey.currentState.save();
+                      if(formKey.currentState!.validate()){
+                        formKey.currentState!.save();
                         checkoutManager.checkout(
                             creditCard: creditCard,
                             onStockFail: (e){

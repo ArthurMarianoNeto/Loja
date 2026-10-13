@@ -25,7 +25,7 @@ import 'package:loja/screens/edit_product/edit_product_screen.dart';
 import 'models/stores_maager.dart';
 
 void main() async {
-  runApp(MyApp());
+  runApp(const MyApp());
 
   final response = await CloudFunctions.instance.getHttpsCallable(
       functionName: 'addMessage').call(
@@ -35,6 +35,8 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -58,25 +60,25 @@ class MyApp extends StatelessWidget {
           create: (_) => CartManager(),
           lazy: false,
           update: (_, userManager, cartManager) =>
-          cartManager..updateUser(userManager),
+          cartManager!..updateUser(userManager),
         ),
         ChangeNotifierProxyProvider<UserManager, OrdersManager>(
           create: (_) => OrdersManager(),
           lazy: false,
           update: (_, userManager, ordersManager) =>
-          ordersManager..updateUser(userManager.user),
+          ordersManager!..updateUser(userManager.user),
         ),
         ChangeNotifierProxyProvider<UserManager, AdminUsersManager>(
           create: (_) => AdminUsersManager(),
           lazy: false,
           update: (_, userManager, adminUsersManager) =>
-          adminUsersManager..updateUser(userManager),
+          adminUsersManager!..updateUser(userManager),
         ),
       ChangeNotifierProxyProvider<UserManager, AdminOrdersManager>(
           create: (_) => AdminOrdersManager(),
           lazy: false,
           update: (_, userManager, adminOrdersManager) =>
-          adminOrdersManager..updateAdmin(
+          adminOrdersManager!..updateAdmin(
           adminEnabled: userManager.adminEnabled
         ),
     )
@@ -125,7 +127,7 @@ class MyApp extends StatelessWidget {
             case '/edit_product':
               return MaterialPageRoute(
                   builder: (_) => EditProductScreen(
-                      settings.arguments as Product
+                      settings.arguments as Product?
                   )
               );
             case '/select_product':

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:loja/models/order.dart';
 
 class CancelOrderDialog extends StatefulWidget {
-  const CancelOrderDialog(this.order);
+  const CancelOrderDialog(this.order, {super.key});
 
   final Order order;
 
@@ -12,7 +12,7 @@ class CancelOrderDialog extends StatefulWidget {
 
 class _CancelOrderDialogState extends State<CancelOrderDialog> {
   bool loading = false;
-  String error;
+  String? error;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +31,7 @@ class _CancelOrderDialogState extends State<CancelOrderDialog> {
               Padding(
                 padding: const EdgeInsets.only(top: 8),
                 child: Text(
-                  error,
+                  error!,
                   style: TextStyle(color: Colors.red),
                 ),
               )

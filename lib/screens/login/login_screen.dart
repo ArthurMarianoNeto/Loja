@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:loja/helpers/validators.dart';
 
 class LoginScreen extends StatelessWidget {
+  LoginScreen({super.key});
 
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passController = TextEditingController();
@@ -63,7 +64,7 @@ class LoginScreen extends StatelessWidget {
                       keyboardType: TextInputType.emailAddress,
                       autocorrect: false,
                       validator: (email){
-                        if(!emailValid(email))
+                        if(email == null || !emailValid(email))
                           return 'E-mail inválido';
                         return null;
                       },
@@ -76,17 +77,17 @@ class LoginScreen extends StatelessWidget {
                       autocorrect: false,
                       obscureText: true,
                       validator: (pass){
-                        if(pass.isEmpty || pass.length < 6)
+                        if(pass == null || pass.isEmpty || pass.length < 6)
                           return 'Senha inválida';
                         return null;
                       },
                     ),
-                    child,
+                    child!,
                     const SizedBox(height: 16,),
                     RaisedButton(
                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       onPressed: userManager.loading ? null : (){
-                        if(formKey.currentState.validate()){
+                        if(formKey.currentState!.validate()){
                           userManager.signIn(
                               user: User(
                                   email: emailController.text,

@@ -17,6 +17,8 @@ import 'package:loja/models/user_manager.dart';
 
 
 class BaseScreen extends StatefulWidget {
+  const BaseScreen({super.key});
+
 
   @override
   _BaseScreenState createState() => _BaseScreenState();

@@ -10,7 +10,7 @@ import 'package:provider/provider.dart';
 
 class SectionList extends StatelessWidget {
 
-  const SectionList(this.section);
+  const SectionList(this.section, {super.key});
 
   final Section section;
 

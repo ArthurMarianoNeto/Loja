@@ -7,7 +7,7 @@ import 'package:loja/models/product.dart';
 
 class ImagesForm extends StatelessWidget {
 
-  const ImagesForm(this.product);
+  const ImagesForm(this.product, {super.key});
 
   final Product product;
 
@@ -16,14 +16,15 @@ class ImagesForm extends StatelessWidget {
     return FormField<List<dynamic>>(
       initialValue: List.from(product.images),
       validator: (images){
-        if(images.isEmpty)
+        if(images == null || images.isEmpty) {
           return 'Insira ao menos uma imagem';
+        }
         return null;
       },
       onSaved: (images) => product.newImages = images,
       builder: (state){
         void onImageSelected(File file){
-          state.value.add(file);
+          state.value!.add(file);
           state.didChange(state.value);
           Navigator.of(context).pop();
         }
@@ -33,7 +34,7 @@ class ImagesForm extends StatelessWidget {
             AspectRatio(
               aspectRatio: 1,
               child: Carousel(
-                images: state.value.map<Widget>((image){
+                images: state.value!.map<Widget>((image){
                   return Stack(
                     fit: StackFit.expand,
                     children: <Widget>[
@@ -47,7 +48,7 @@ class ImagesForm extends StatelessWidget {
                           icon: Icon(Icons.remove),
                           color: Colors.red,
                           onPressed: (){
-                            state.value.remove(image);
+                            state.value!.remove(image);
                             state.didChange(state.value);
                           },
                         ),
@@ -92,7 +93,7 @@ class ImagesForm extends StatelessWidget {
                 margin: const EdgeInsets.only(top: 16, left: 16),
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  state.errorText,
+                  state.errorText!,
                   style: const TextStyle(
                     color: Colors.red,
                     fontSize: 12,

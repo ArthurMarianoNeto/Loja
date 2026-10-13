@@ -6,6 +6,8 @@ import 'package:loja/screens/address/components/cep_input_field.dart';
 import 'package:provider/provider.dart';
 
 class AddressCard extends StatelessWidget {
+  const AddressCard({super.key});
+
 
   @override
   Widget build(BuildContext context) {

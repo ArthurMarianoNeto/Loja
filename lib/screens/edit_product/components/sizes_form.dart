@@ -6,7 +6,7 @@ import 'package:loja/screens/edit_product/components/edit_item_size.dart';
 
 class SizesForm extends StatelessWidget {
 
-  const SizesForm(this.product);
+  const SizesForm(this.product, {super.key});
 
   final Product product;
 
@@ -15,11 +15,13 @@ class SizesForm extends StatelessWidget {
     return FormField<List<ItemSize>>(
       initialValue: product.sizes,
       validator: (sizes){
-        if(sizes.isEmpty)
+        if(sizes == null || sizes.isEmpty) {
           return 'Insira uma opção de tamanho';
+        }
         return null;
       },
       builder: (state){
+        final sizes = state.value!;
         return Column(
           children: <Widget>[
             Row(
@@ -37,32 +39,32 @@ class SizesForm extends StatelessWidget {
                   iconData: Icons.add,
                   color: Colors.black,
                   onTap: (){
-                    state.value.add(ItemSize());
-                    state.didChange(state.value);
+                    sizes.add(ItemSize());
+                    state.didChange(sizes);
                   },
                 )
               ],
             ),
             Column(
-              children: state.value.map((size){
+              children: sizes.map((size){
                 return EditItemSize(
                   key: ObjectKey(size),
                   size: size,
                   onRemove: (){
-                    state.value.remove(size);
-                    state.didChange(state.value);
+                    sizes.remove(size);
+                    state.didChange(sizes);
                   },
-                  onMoveUp: size != state.value.first ? (){
-                    final index = state.value.indexOf(size);
-                    state.value.remove(size);
-                    state.value.insert(index-1, size);
-                    state.didChange(state.value);
+                  onMoveUp: size != sizes.first ? (){
+                    final index = sizes.indexOf(size);
+                    sizes.remove(size);
+                    sizes.insert(index-1, size);
+                    state.didChange(sizes);
                   } : null,
-                  onMoveDown: size != state.value.last ? (){
-                    final index = state.value.indexOf(size);
-                    state.value.remove(size);
-                    state.value.insert(index+1, size);
-                    state.didChange(state.value);
+                  onMoveDown: size != sizes.last ? (){
+                    final index = sizes.indexOf(size);
+                    sizes.remove(size);
+                    sizes.insert(index+1, size);
+                    state.didChange(sizes);
                   } : null,
                 );
               }).toList(),
@@ -71,7 +73,7 @@ class SizesForm extends StatelessWidget {
               Container(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  state.errorText,
+                  state.errorText!,
                   style: const TextStyle(
                     color: Colors.red,
                     fontSize: 12,

@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:loja/models/cep_aberto_address.dart';
-import 'package:loja/screens/address/components/cep_input_field.dart';
 
 const token = 'e2f3190c84941b02576bd1fd17600cfb';
 
@@ -18,15 +17,15 @@ class CepAbertoService {
     try {
       final response = await dio.get<Map<String, dynamic>>(endpoint);
 
-      if(response.data.isEmpty){
+      final data = response.data;
+      if(data == null || data.isEmpty){
         return Future.error('CEP Inválido');
       }
 
-    //  print(response.data);
-      final CepAbertoAddress address = CepAbertoAddress.fromMap(response.data);
+      final CepAbertoAddress address = CepAbertoAddress.fromMap(data);
       return address;
 
-    } on DioError catch (e){
+    } on DioError {
       return Future.error('Erro ao buscar CEP');
     }
   }

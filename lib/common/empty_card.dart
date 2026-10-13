@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class EmptyCard extends StatelessWidget {
 
-  const EmptyCard({this.title, this.iconData});
+  const EmptyCard({super.key, required this.title, required this.iconData});
 
   final String title;
   final IconData iconData;

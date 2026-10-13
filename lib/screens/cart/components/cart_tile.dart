@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 //testando 
 class CartTile extends StatelessWidget {
 
-  const CartTile(this.cartProduct);
+  const CartTile(this.cartProduct, {super.key});
 
   final CartProduct cartProduct;
 
@@ -13,16 +13,20 @@ class CartTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider.value(
       value: cartProduct,
-      child: GestureDetector(
-        onTap: (){
-          Navigator.of(context).pushNamed(
-              '/product',
-              arguments: cartProduct.product);
-        },
-        child: GestureDetector(
+      child: Consumer<CartProduct>(
+        builder: (_, cartProduct, __){
+          // o produto é carregado de forma assíncrona pelo CartProduct
+          final product = cartProduct.product;
+          if(product == null){
+            return const Card(
+              margin: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              child: SizedBox(height: 96),
+            );
+          }
+          return GestureDetector(
           onTap: (){
             Navigator.of(context).pushNamed('/product',
-            arguments: cartProduct.product);
+            arguments: product);
           },
           child: Card(
             margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
@@ -33,7 +37,7 @@ class CartTile extends StatelessWidget {
                   SizedBox(
                     height: 80,
                     width: 80,
-                    child: Image.network(cartProduct.product.images.first),
+                    child: Image.network(product.images.first),
                   ),
                   Expanded(
                     child: Padding(
@@ -42,7 +46,7 @@ class CartTile extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Text(
-                            cartProduct.product.name,
+                            product.name,
                             style: TextStyle(
                               fontWeight: FontWeight.w500,
                               fontSize: 17.0,
@@ -107,7 +111,8 @@ class CartTile extends StatelessWidget {
               ),
             ),
           ),
-        ),
+        );
+        },
       ),
     );
   }

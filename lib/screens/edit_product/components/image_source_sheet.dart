@@ -7,7 +7,7 @@ import 'package:image_picker/image_picker.dart';
 
 class ImageSourceSheet extends StatelessWidget {
 
-  ImageSourceSheet({this.onImageSelected});
+  ImageSourceSheet({super.key, required this.onImageSelected});
 
   final Function(File) onImageSelected;
 

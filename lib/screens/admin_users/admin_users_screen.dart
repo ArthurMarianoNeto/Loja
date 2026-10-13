@@ -7,6 +7,8 @@ import 'package:loja/models/page_manager.dart';
 import 'package:provider/provider.dart';
 
 class AdminUsersScreen extends StatelessWidget {
+  const AdminUsersScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,14 +23,14 @@ class AdminUsersScreen extends StatelessWidget {
             itemBuilder: (_, index){
               return ListTile(
                 title: Text(
-                  adminUsersManager.users[index].name,
+                  adminUsersManager.users[index].name ?? '',
                   style: TextStyle(
                       fontWeight: FontWeight.w800,
                       color: Colors.white
                   ),
                 ),
                 subtitle: Text(
-                  adminUsersManager.users[index].email,
+                  adminUsersManager.users[index].email ?? '',
                   style: TextStyle(
                     color: Colors.white,
                   ),

@@ -7,6 +7,8 @@ import 'package:provider/provider.dart';
 import 'package:loja/screens/cart/components/cart_tile.dart';
 
 class CartScreen extends StatelessWidget {
+  const CartScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

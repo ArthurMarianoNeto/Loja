@@ -7,6 +7,8 @@ import 'package:provider/provider.dart';
 import 'components/search_dialog.dart';
 
 class ProductsScreen extends StatelessWidget {
+  const ProductsScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

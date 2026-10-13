@@ -10,7 +10,7 @@ import 'package:provider/provider.dart';
 
 class SectionStaggered extends StatelessWidget {
 
-  const SectionStaggered(this.section);
+  const SectionStaggered(this.section, {super.key});
 
   final Section section;
 

@@ -8,7 +8,7 @@ import 'package:flutter/services.dart';
 
 class CardFront extends StatelessWidget {
 
-  CardFront({this.numberFocus, this.dateFocus, this.nameFocus, this.finished, this.creditCard});
+  CardFront({super.key, required this.numberFocus, required this.dateFocus, required this.nameFocus, required this.finished, required this.creditCard});
 
   final MaskTextInputFormatter dateFormatter = MaskTextInputFormatter(
       mask: '!#/####', filter: {'#': RegExp('[0-9]'), '!': RegExp('[0-1]')}
@@ -48,7 +48,7 @@ class CardFront extends StatelessWidget {
                       CartaoBancarioInputFormatter()
                     ],
                     validator: (number){
-                      if(number.length != 19) return 'Inválido';
+                      if(number == null || number.length != 19) return 'Inválido';
                       else if(detectCCType(number) == CreditCardType.unknown)
                         return 'Inválido';
                       return null;
@@ -66,7 +66,7 @@ class CardFront extends StatelessWidget {
                     textInputType: TextInputType.number,
                     inputFormatters: [dateFormatter],
                     validator: (date){
-                      if(date.length != 7) return 'Inválido';
+                      if(date == null || date.length != 7) return 'Inválido';
                       return null;
                     },
                     onSubmitted: (_){
@@ -82,7 +82,7 @@ class CardFront extends StatelessWidget {
                     textInputType: TextInputType.text,
                     bold: true,
                     validator: (name){
-                      if(name.isEmpty) return 'Inválido';
+                      if(name == null || name.isEmpty) return 'Inválido';
                       return null;
                     },
                     onSubmitted: (_){

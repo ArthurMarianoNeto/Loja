@@ -5,6 +5,7 @@ import 'package:loja/models/user_manager.dart';
 import 'package:provider/provider.dart';
 
 class SignUpScreen extends StatelessWidget {
+  SignUpScreen({super.key});
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
@@ -34,7 +35,7 @@ class SignUpScreen extends StatelessWidget {
                       decoration: const InputDecoration(hintText: 'Nome Completo'),
                       enabled: !userManager.loading,
                       validator: (name){
-                        if(name.isEmpty)
+                        if(name == null || name.isEmpty)
                           return 'Campo obrigatório';
                         else if(name.trim().split(' ').length <= 1)
                           return 'Preencha seu Nome completo';
@@ -48,7 +49,7 @@ class SignUpScreen extends StatelessWidget {
                       keyboardType: TextInputType.emailAddress,
                       enabled: !userManager.loading,
                       validator: (email){
-                        if(email.isEmpty)
+                        if(email == null || email.isEmpty)
                           return 'Campo obrigatório';
                         else if(!emailValid(email))
                           return 'E-mail inválido';
@@ -62,7 +63,7 @@ class SignUpScreen extends StatelessWidget {
                       obscureText: true,
                       enabled: !userManager.loading,
                       validator: (pass){
-                        if(pass.isEmpty)
+                        if(pass == null || pass.isEmpty)
                           return 'Campo obrigatório';
                         else if(pass.length < 6)
                           return 'Senha muito curta';
@@ -76,7 +77,7 @@ class SignUpScreen extends StatelessWidget {
                       obscureText: true,
                       enabled: !userManager.loading,
                       validator: (pass){
-                        if(pass.isEmpty)
+                        if(pass == null || pass.isEmpty)
                           return 'Campo obrigatório';
                         else if(pass.length < 6)
                           return 'Senha muito curta';
@@ -92,8 +93,8 @@ class SignUpScreen extends StatelessWidget {
                           .withAlpha(100),
                       textColor: Colors.white,
                       onPressed: userManager.loading ? null : (){
-                        if(formKey.currentState.validate()){
-                          formKey.currentState.save();
+                        if(formKey.currentState!.validate()){
+                          formKey.currentState!.save();
 
                           if(user.password != user.confirmPassword){
                             scaffoldKey.currentState.showSnackBar(

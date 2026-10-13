@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:loja/models/address.dart';
 import 'package:loja/models/cart_manager.dart';
 import 'package:loja/models/cart_product.dart';
@@ -13,8 +13,8 @@ class Order {
   Order.fromCartManager(CartManager cartManager){
     items = List.from(cartManager.items);
     price = cartManager.totalPrice;
-    userId = cartManager.user.id;
-    address = cartManager.address;
+    userId = cartManager.user!.id!;
+    address = cartManager.address!;
     status = Status.preparing;
   }
 
@@ -28,11 +28,11 @@ class Order {
     price = doc.data['price'] as num;
     userId = doc.data['user'] as String;
     address = Address.fromMap(doc.data['address'] as Map<String, dynamic>);
-    date = doc.data['date'] as Timestamp;
+    date = doc.data['date'] as Timestamp?;
 
     status = Status.values[doc.data['status'] as int];
 
-    payId = doc.data['payId'] as String;
+    payId = doc.data['payId'] as String?;
   }
 
   final Firestore firestore = Firestore.instance;
@@ -58,7 +58,7 @@ class Order {
     );
   }
 
-  Function() get back {
+  VoidCallback? get back {
     return status.index >= Status.transporting.index ?
         (){
       status = Status.values[status.index - 1];
@@ -66,7 +66,7 @@ class Order {
     } : null;
   }
 
-  Function() get advance {
+  VoidCallback? get advance {
     return status.index <= Status.transporting.index ?
         (){
       status = Status.values[status.index + 1];
@@ -76,7 +76,7 @@ class Order {
 
   Future<void> cancel() async {
     try {
-      await CieloPayment().cancel(payId);
+      await CieloPayment().cancel(payId!);
 
       status = Status.canceled;
       firestoreRef.updateData({'status': status.index});
@@ -86,21 +86,21 @@ class Order {
     }
   }
 
-  String orderId;
-  String payId;
+  String? orderId;
+  String? payId;
 
-  List<CartProduct> items;
-  num price;
+  late List<CartProduct> items;
+  late num price;
 
-  String userId;
+  late String userId;
 
-  Address address;
+  late Address address;
 
-  Status status;
+  late Status status;
 
-  Timestamp date;
+  Timestamp? date;
 
-  String get formattedId => '#${orderId.padLeft(6, '0')}';
+  String get formattedId => '#${(orderId ?? '').padLeft(6, '0')}';
 
   String get statusText => getStatusText(status);
 
@@ -114,8 +114,6 @@ class Order {
         return 'Em transporte';
       case Status.delivered:
         return 'Entregue';
-      default:
-        return '';
     }
   }
 
