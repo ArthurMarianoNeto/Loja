@@ -5,6 +5,60 @@
 > "Estado atual" e "Histórico") no mesmo commit. Ao iniciar em outra máquina:
 > `git pull`, ler este arquivo e continuar do "Próximo passo".
 
+## ▶ Começando em outra máquina (ler primeiro)
+
+Máquina de origem (trabalho): WSL2 + Docker, UID/GID 1000, projeto em
+`~/particular_programacao/Loja`, ao lado do projeto de referência
+`~/particular_programacao/Loja-Virtual-Pro`. Máquina pessoal: **WSL2 + Docker
+Desktop**. Faça tudo **dentro do terminal do WSL** (Ubuntu), não no PowerShell.
+
+1. **Docker Desktop**: Settings > General > "Use the WSL 2 based engine" ligado;
+   Settings > Resources > WSL integration > ativar a distro (ex.: Ubuntu).
+   Conferir no WSL: `docker version` e `docker compose version`.
+   Memória: o Gradle usa `-Xmx3G`; se o build cair, aumentar a memória do WSL
+   em `%UserProfile%\.wslconfig` (`[wsl2]` → `memory=8GB`) e `wsl --shutdown`.
+2. **Clonar dentro do filesystem do WSL** (não em `/mnt/c/...` — fica lento e
+   quebra permissões):
+   ```bash
+   mkdir -p ~/particular_programacao && cd ~/particular_programacao
+   git clone https://github.com/ArthurMarianoNeto/Loja.git
+   git clone https://github.com/ArthurMarianoNeto/Loja-Virtual-Pro.git   # referência (como cada Dia foi feito lá)
+   cd Loja
+   git fetch --all
+   git switch modernizacao && git switch dia-8-android-apk               # branches de trabalho
+   git config user.name "Arthur Mariano"; git config user.email "<seu e-mail>"
+   ```
+   Para push, usar `gh auth login` (se tiver o `gh`) ou um Personal Access Token.
+3. **UID/GID**: `id -u; id -g`. Se não for `1000/1000`, rodar
+   `export UID=$(id -u) GID=$(id -g)` antes do `docker compose build` (senão os
+   arquivos gerados no volume ficam com dono errado).
+4. **Construir a imagem e validar** (a imagem e os volumes `pub-cache`,
+   `gradle-cache`, `firebase-config` não vão pelo Git — são recriados aqui):
+   ```bash
+   docker compose build                                  # ~10 min na primeira vez
+   docker compose run --rm flutter flutter doctor -v
+   docker compose run --rm flutter flutter pub get
+   docker compose run --rm flutter flutter analyze       # esperado: No issues found
+   docker compose run --rm flutter flutter test          # esperado: 76 testes passando
+   docker compose run --rm flutter flutter build apk     # build/app/outputs/flutter-apk/app-release.apk
+   ```
+   O APK não é versionado (`build/` no `.gitignore`); gerar de novo aqui.
+   Para copiar o APK para o Windows: `cp build/app/outputs/flutter-apk/app-release.apk /mnt/c/Users/<usuario>/Downloads/`.
+5. **Firebase CLI** (só quando for mexer em `functions/` ou `flutterfire configure`):
+   `docker compose run --rm flutter firebase login --no-localhost` (o login fica
+   no volume `firebase-config`, precisa ser refeito em cada máquina).
+6. Continuar do **"Próximo passo"** em "Estado atual" abaixo.
+
+O que já está no Git (não precisa recriar): `android/app/google-services.json`,
+`lib/firebase_options.dart`, `.firebaserc` (`loja-eeab9`), `strings.xml` (com o
+placeholder do Facebook). O que **não** está e nunca deve ir: keystore de
+release, `key.properties`, `.env`.
+
+Nota para o Claude: a memória local do Claude Code não é sincronizada entre
+máquinas — tudo que importa está neste arquivo. Antes de cada Dia/etapa, ver
+como foi feito no `../Loja-Virtual-Pro` (`git log`/`git show` do commit
+`Dia N` de lá) e adaptar; o Loja é bem maior (77 arquivos, `functions/`).
+
 ## Visão geral
 
 - App Flutter de loja virtual completa (curso), originalmente em **Flutter 1.22**,
@@ -107,6 +161,8 @@ docker compose run --rm --service-ports web            # http://localhost:8080
   - `flutter build apk` → `build/app/outputs/flutter-apk/app-release.apk`
     (59 MB, assinado com a chave de debug, targetSdk 36).
   - `flutter analyze`: **0 issues**. `flutter test`: **76/76 passando**.
+- Branches no GitHub (enviadas em 2026-10-29): `master`, `modernizacao`,
+  `dia-3-…` a `dia-8-android-apk`. Trabalho atual em `dia-8-android-apk`.
 - **Próximo passo:** usuário instalar o APK e testar (login, cadastro,
   produtos, carrinho, endereço/frete, pedidos, lojas, admin). Após aprovação:
   merge em `modernizacao`, push e PR `modernizacao` → `master`. Depois:
@@ -150,3 +206,6 @@ docker compose run --rm --service-ports web            # http://localhost:8080
 - **2026-10-13** — Dia 8: `android/` regenerada pelo template do Flutter
   3.47.5 (branch `dia-8-android-apk`), manifest atualizado para os pacotes
   novos, `app-release.apk` gerado; 76 testes passando.
+- **2026-10-29** — Handoff trabalho → casa: seção "Começando em outra máquina"
+  neste arquivo (WSL2 + Docker Desktop, clone, UID/GID, build, validação);
+  todas as branches enviadas ao GitHub.
