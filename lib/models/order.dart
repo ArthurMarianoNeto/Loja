@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:loja/models/address.dart';
 import 'package:loja/models/cart_manager.dart';
 import 'package:loja/models/cart_product.dart';
@@ -13,39 +13,39 @@ class Order {
   Order.fromCartManager(CartManager cartManager){
     items = List.from(cartManager.items);
     price = cartManager.totalPrice;
-    userId = cartManager.user.id;
-    address = cartManager.address;
+    userId = cartManager.user!.id!;
+    address = cartManager.address!;
     status = Status.preparing;
   }
 
-  Order.fromDocument(DocumentSnapshot doc){
-    orderId = doc.documentID;
+  Order.fromDocument(DocumentSnapshot<Map<String, dynamic>> doc){
+    orderId = doc.id;
 
-    items = (doc.data['items'] as List<dynamic>).map((e){
+    items = (doc.data()!['items'] as List<dynamic>).map((e){
       return CartProduct.fromMap(e as Map<String, dynamic>);
     }).toList();
 
-    price = doc.data['price'] as num;
-    userId = doc.data['user'] as String;
-    address = Address.fromMap(doc.data['address'] as Map<String, dynamic>);
-    date = doc.data['date'] as Timestamp;
+    price = doc.data()!['price'] as num;
+    userId = doc.data()!['user'] as String;
+    address = Address.fromMap(doc.data()!['address'] as Map<String, dynamic>);
+    date = doc.data()!['date'] as Timestamp?;
 
-    status = Status.values[doc.data['status'] as int];
+    status = Status.values[doc.data()!['status'] as int];
 
-    payId = doc.data['payId'] as String;
+    payId = doc.data()!['payId'] as String?;
   }
 
-  final Firestore firestore = Firestore.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  DocumentReference get firestoreRef =>
-      firestore.collection('orders').document(orderId);
+  DocumentReference<Map<String, dynamic>> get firestoreRef =>
+      firestore.collection('orders').doc(orderId);
 
-  void updateFromDocument(DocumentSnapshot doc){
-    status = Status.values[doc.data['status'] as int];
+  void updateFromDocument(DocumentSnapshot<Map<String, dynamic>> doc){
+    status = Status.values[doc.data()!['status'] as int];
   }
 
   Future<void> save() async {
-    firestore.collection('orders').document(orderId).setData(
+    firestore.collection('orders').doc(orderId).set(
         {
           'items': items.map((e) => e.toOrderItemMap()).toList(),
           'price': price,
@@ -58,49 +58,49 @@ class Order {
     );
   }
 
-  Function() get back {
+  VoidCallback? get back {
     return status.index >= Status.transporting.index ?
         (){
       status = Status.values[status.index - 1];
-      firestoreRef.updateData({'status': status.index});
+      firestoreRef.update({'status': status.index});
     } : null;
   }
 
-  Function() get advance {
+  VoidCallback? get advance {
     return status.index <= Status.transporting.index ?
         (){
       status = Status.values[status.index + 1];
-      firestoreRef.updateData({'status': status.index});
+      firestoreRef.update({'status': status.index});
     } : null;
   }
 
   Future<void> cancel() async {
     try {
-      await CieloPayment().cancel(payId);
+      await CieloPayment().cancel(payId!);
 
       status = Status.canceled;
-      firestoreRef.updateData({'status': status.index});
+      firestoreRef.update({'status': status.index});
     } catch (e){
       debugPrint('Erro ao cancelar');
       return Future.error('Falha ao cancelar');
     }
   }
 
-  String orderId;
-  String payId;
+  String? orderId;
+  String? payId;
 
-  List<CartProduct> items;
-  num price;
+  late List<CartProduct> items;
+  late num price;
 
-  String userId;
+  late String userId;
 
-  Address address;
+  late Address address;
 
-  Status status;
+  late Status status;
 
-  Timestamp date;
+  Timestamp? date;
 
-  String get formattedId => '#${orderId.padLeft(6, '0')}';
+  String get formattedId => '#${(orderId ?? '').padLeft(6, '0')}';
 
   String get statusText => getStatusText(status);
 
@@ -114,8 +114,6 @@ class Order {
         return 'Em transporte';
       case Status.delivered:
         return 'Entregue';
-      default:
-        return '';
     }
   }
 

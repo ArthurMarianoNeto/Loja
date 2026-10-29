@@ -7,7 +7,7 @@ import 'package:loja/screens/edit_product/components/images_form.dart';
 
 class EditProductScreen extends StatelessWidget {
 
-  EditProductScreen(Product p) :
+  EditProductScreen(Product? p, {super.key}) :
         editing = p != null,
         product = p != null ? p.clone() : Product();
 
@@ -60,11 +60,11 @@ class EditProductScreen extends StatelessWidget {
                           fontWeight: FontWeight.w600
                       ),
                       validator: (name){
-                        if(name.length < 6)
+                        if(name == null || name.length < 6)
                           return 'Título mínimo 6 caracteres';
                         return null;
                       },
-                      onSaved: (name) => product.name = name,
+                      onSaved: (name) => product.name = name ?? '',
                     ),
                     Padding(
                       padding: const EdgeInsets.only(top: 4),
@@ -103,11 +103,11 @@ class EditProductScreen extends StatelessWidget {
                       ),
                       maxLines: null,
                       validator: (desc){
-                        if(desc.length < 10)
+                        if(desc == null || desc.length < 10)
                           return 'Descrição mínimo 10 caracteres';
                         return null;
                       },
-                      onSaved: (desc) => product.description = desc,
+                      onSaved: (desc) => product.description = desc ?? '',
                     ),
                     SizesForm(product),
                     const SizedBox(height: 20,),
@@ -117,8 +117,8 @@ class EditProductScreen extends StatelessWidget {
                           height: 44,
                           child: RaisedButton(
                             onPressed: !product.loading ? () async {
-                              if(formKey.currentState.validate()){
-                                formKey.currentState.save();
+                              if(formKey.currentState!.validate()){
+                                formKey.currentState!.save();
 
                                 await product.save();
 

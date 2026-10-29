@@ -7,6 +7,8 @@ import 'package:loja/screens/edit_product/components/image_source_sheet.dart';
 import 'package:provider/provider.dart';
 
 class AddTileWidget extends StatelessWidget {
+  const AddTileWidget({super.key});
+
 
   @override
   Widget build(BuildContext context) {

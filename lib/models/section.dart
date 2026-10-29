@@ -2,40 +2,40 @@ import 'dart:io';
 import 'package:uuid/uuid.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:loja/models/section_item.dart';
 
 class Section extends ChangeNotifier {
-  Section({this.id, this.name, this.type, this.items}) {
-    items = items ?? [];
+  Section({this.id, this.name, this.type, List<SectionItem>? items})
+      : items = items ?? [] {
+    originalItems = List.from(this.items);
+  }
+
+  Section.fromDocument(DocumentSnapshot<Map<String, dynamic>> document) {
+    id = document.id;
+    name = document.data()!['name'] as String?;
+    type = document.data()!['type'] as String?;
+    items = (document.data()!['items'] as List? ?? [])
+        .map((i) => SectionItem.fromMap(i as Map<String, dynamic>))
+        .toList();
     originalItems = List.from(items);
   }
 
-  Section.fromDocument(DocumentSnapshot document) {
-    id = document.documentID;
-    name = document.data['name'] as String;
-    type = document.data['type'] as String;
-    items = (document.data['items'] as List)
-        .map((i) => SectionItem.fromMap(i as Map<String, dynamic>))
-        .toList();
-  }
-
-  final Firestore firestore = Firestore.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
   final FirebaseStorage storage = FirebaseStorage.instance;
 
-  DocumentReference get firestoreRef => firestore.document('home/$id');
-  StorageReference get storageRef => storage.ref().child('home/$id');
+  DocumentReference<Map<String, dynamic>> get firestoreRef => firestore.doc('home/$id');
+  Reference get storageRef => storage.ref().child('home/$id');
 
-  String id;
-  String name;
-  String type;
-  List<SectionItem> items;
-  List<SectionItem> originalItems;
+  String? id;
+  String? name;
+  String? type;
+  List<SectionItem> items = [];
+  List<SectionItem> originalItems = [];
 
-  String _error;
-  String get error => _error;
-  set error(String value) {
+  String? _error;
+  String? get error => _error;
+  set error(String? value) {
     _error = value;
     notifyListeners();
   }
@@ -59,17 +59,16 @@ class Section extends ChangeNotifier {
 
     if (id == null) {
       final doc = await firestore.collection('home').add(data);
-      id = doc.documentID;
+      id = doc.id;
     } else {
-      await firestoreRef.updateData(data);
+      await firestoreRef.update(data);
     }
     // transormando imagens do celular em url
     for (final item in items) {
       if (item.image is File) {
-        final StorageUploadTask task =
-            storageRef.child(Uuid().v1()).putFile(item.image as File);
-        final StorageTaskSnapshot snapshot = await task.onComplete;
-        final String url = await snapshot.ref.getDownloadURL() as String;
+        final TaskSnapshot snapshot =
+            await storageRef.child(const Uuid().v1()).putFile(item.image as File);
+        final String url = await snapshot.ref.getDownloadURL();
         item.image = url;
       }
     }
@@ -77,11 +76,11 @@ class Section extends ChangeNotifier {
       if(!items.contains(original)
           && (original.image as String).contains('firebase')){
         try {
-          final ref = await storage.getReferenceFromUrl(
+          final ref = storage.refFromURL(
               original.image as String
           );
           await ref.delete(); // deletando do Storage
-          // ignore: empty_catches "supress"
+          // ignore: empty_catches
         } catch (e){}
       }
     }
@@ -90,7 +89,7 @@ class Section extends ChangeNotifier {
       'items': items.map((e) => e.toMap()).toList()
     };
 
-    await firestoreRef.updateData(itemsData);
+    await firestoreRef.update(itemsData);
 
   }
 
@@ -99,7 +98,7 @@ class Section extends ChangeNotifier {
     for(final item in items){
       if((item.image as String).contains('firebase')){
         try {
-          final ref = await storage.getReferenceFromUrl(
+          final ref = storage.refFromURL(
               item.image as String
           );
           await ref.delete();
@@ -110,7 +109,7 @@ class Section extends ChangeNotifier {
   }
 
   bool valid() {
-    if (name == null || name.isEmpty) {
+    if (name == null || name!.isEmpty) {
       error = 'Título inválido';
     } else if (items.isEmpty) {
       error = 'Insira ao menos uma imagem';

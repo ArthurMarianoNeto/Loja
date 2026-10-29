@@ -1,6 +1,5 @@
 import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
-import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:loja/models/credit_card.dart';
 import 'package:loja/screens/checkout/components/card_back.dart';
 import 'package:loja/screens/checkout/components/card_front.dart';
@@ -8,7 +7,7 @@ import 'package:loja/screens/checkout/components/card_front.dart';
 
 class CreditCardWidget extends StatefulWidget {
 
-  const CreditCardWidget(this.creditCard);
+  const CreditCardWidget(this.creditCard, {super.key});
 
   final CreditCard creditCard;
 
@@ -42,7 +41,7 @@ class _CreditCardWidgetState extends State<CreditCardWidget> {
               dateFocus: dateFocus,
               nameFocus: nameFocus,
               finished: (){
-                cardKey.currentState.toggleCard();
+                cardKey.currentState!.toggleCard();
                 cvvFocus.requestFocus();
               },
             ),
@@ -53,7 +52,7 @@ class _CreditCardWidgetState extends State<CreditCardWidget> {
           ),
           FlatButton(
             onPressed: (){
-              cardKey.currentState.toggleCard();
+              cardKey.currentState!.toggleCard();
             },
             textColor: Colors.white,
             padding: EdgeInsets.zero,

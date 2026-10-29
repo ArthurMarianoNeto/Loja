@@ -9,7 +9,7 @@ import 'package:loja/models/address.dart';
 
 class CepInputField extends StatefulWidget {
 
-  const CepInputField(this.address);
+  const CepInputField(this.address, {super.key});
 
   final Address address;
 
@@ -46,7 +46,7 @@ class _CepInputFieldState extends State<CepInputField> {
             ],
             keyboardType: TextInputType.number,
             validator: (cep){
-              if(cep.isEmpty)
+              if(cep == null || cep.isEmpty)
                 return 'Campo obrigatório';
               else if(cep.length != 10)
                 return 'CEP número de digitos incorreto';

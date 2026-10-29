@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:loja/models/address.dart';
-import 'package:gallery_saver/gallery_saver.dart';
+import 'package:gal/gal.dart';
 import 'package:screenshot/screenshot.dart';
 
 class ExportAddressDialog extends StatelessWidget {
 
-  ExportAddressDialog(this.address);
+  ExportAddressDialog(this.address, {super.key});
 
   final Address address;
 
@@ -34,8 +34,10 @@ class ExportAddressDialog extends StatelessWidget {
         FlatButton(
           onPressed: () async {
             Navigator.of(context).pop();
-            final file = await screenshotController.capture();
-            await GallerySaver.saveImage(file.path);
+            final bytes = await screenshotController.capture();
+            if(bytes != null){
+              await Gal.putImageBytes(bytes, name: 'endereco_entrega');
+            }
           },
           textColor: Theme.of(context).primaryColor,
           child: const Text('Exportar'),

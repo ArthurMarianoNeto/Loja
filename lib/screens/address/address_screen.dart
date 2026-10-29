@@ -5,6 +5,8 @@ import 'package:loja/screens/address/components/address_card.dart';
 import 'package:provider/provider.dart';
 
 class AddressScreen extends StatelessWidget {
+  const AddressScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

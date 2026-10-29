@@ -6,6 +6,7 @@ import 'package:loja/models/user_manager.dart';
 
 
 class CustomDrawer extends StatelessWidget {
+  const CustomDrawer({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -1,26 +1,24 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:loja/models/item_size.dart';
 import 'package:loja/models/product.dart';
-import 'package:provider/provider.dart';
 
 
 class CartProduct extends ChangeNotifier {
 
-  CartProduct.fromProduct(this._product){
-    productId = product.id;
+  CartProduct.fromProduct(Product product) : _product = product {
+    productId = product.id!;
     quantity = 1;
-    size = product.selectedSize.name;
+    size = product.selectedSize!.name;
   }
 
-  CartProduct.fromDocument(DocumentSnapshot document){
-    id = document.documentID;
-    productId = document.data['pid'] as String;
-    quantity = document.data['quantity'] as int;
-    size = document.data['size'] as String;
+  CartProduct.fromDocument(DocumentSnapshot<Map<String, dynamic>> document){
+    id = document.id;
+    productId = document.data()!['pid'] as String;
+    quantity = document.data()!['quantity'] as int;
+    size = document.data()!['size'] as String?;
 
-    firestore.document('products/$productId').get().then(
+    firestore.doc('products/$productId').get().then(
             (doc) {
           product = Product.fromDocument(doc);
         }
@@ -30,37 +28,34 @@ class CartProduct extends ChangeNotifier {
   CartProduct.fromMap(Map<String, dynamic> map){
     productId = map['pid'] as String;
     quantity = map['quantity'] as int;
-    size = map['size'] as String;
-    fixedPrice = map['fixedPrice'] as num;
+    size = map['size'] as String?;
+    fixedPrice = map['fixedPrice'] as num?;
 
-    firestore.document('products/$productId').get().then(
+    firestore.doc('products/$productId').get().then(
             (doc) {
           product = Product.fromDocument(doc);
         }
     );
   }
 
-  final Firestore firestore = Firestore.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  String id;
+  String? id;
 
-  String productId;
-  int quantity;
-  String size;
+  late String productId;
+  late int quantity;
+  String? size;
 
-  num fixedPrice;
+  num? fixedPrice;
 
-  Product _product;
-  Product get product => _product;
-  set product(Product value){
+  Product? _product;
+  Product? get product => _product;
+  set product(Product? value){
     _product = value;
     notifyListeners();
   }
 
-  ItemSize get itemSize {
-    if(product == null) return null;
-    return product.findSize(size);
-  }
+  ItemSize? get itemSize => product?.findSize(size);
 
   num get unitPrice {
     if(product == null) return 0;
@@ -88,7 +83,7 @@ class CartProduct extends ChangeNotifier {
   }
 
   bool stackable(Product product){
-    return product.id == productId && product.selectedSize.name == size;
+    return product.id == productId && product.selectedSize?.name == size;
   }
 
   void increment(){
@@ -102,10 +97,10 @@ class CartProduct extends ChangeNotifier {
   }
 
   bool get hasStock {
-    if(product != null && product.deleted) return false;
+    if(product != null && product!.deleted) return false;
     final size = itemSize;
     if(size == null) return false;
-    return size.stock >= quantity;
+    return (size.stock ?? 0) >= quantity;
   }
 
 }

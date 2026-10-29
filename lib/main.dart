@@ -1,8 +1,9 @@
-import 'package:cloud_functions/cloud_functions.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:loja/firebase_options.dart';
 import 'package:loja/models/admin_orders_manager.dart';
 import 'package:loja/models/order.dart';
-import 'package:loja/models/user.dart';
+import 'package:loja/models/app_user.dart';
 import 'package:loja/models/orders_manager.dart';
 import 'package:loja/screens/address/address_screen.dart';
 import 'package:loja/models/cart_manager.dart';
@@ -24,17 +25,17 @@ import 'package:loja/screens/edit_product/edit_product_screen.dart';
 
 import 'models/stores_maager.dart';
 
-void main() async {
-  runApp(MyApp());
-
-  final response = await CloudFunctions.instance.getHttpsCallable(
-      functionName: 'addMessage').call(
-      {"teste": "Matheuzito"}
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
   );
-  print(response.data);
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -58,25 +59,25 @@ class MyApp extends StatelessWidget {
           create: (_) => CartManager(),
           lazy: false,
           update: (_, userManager, cartManager) =>
-          cartManager..updateUser(userManager),
+          cartManager!..updateUser(userManager),
         ),
         ChangeNotifierProxyProvider<UserManager, OrdersManager>(
           create: (_) => OrdersManager(),
           lazy: false,
           update: (_, userManager, ordersManager) =>
-          ordersManager..updateUser(userManager.user),
+          ordersManager!..updateUser(userManager.user),
         ),
         ChangeNotifierProxyProvider<UserManager, AdminUsersManager>(
           create: (_) => AdminUsersManager(),
           lazy: false,
           update: (_, userManager, adminUsersManager) =>
-          adminUsersManager..updateUser(userManager),
+          adminUsersManager!..updateUser(userManager),
         ),
       ChangeNotifierProxyProvider<UserManager, AdminOrdersManager>(
           create: (_) => AdminOrdersManager(),
           lazy: false,
           update: (_, userManager, adminOrdersManager) =>
-          adminOrdersManager..updateAdmin(
+          adminOrdersManager!..updateAdmin(
           adminEnabled: userManager.adminEnabled
         ),
     )
@@ -125,7 +126,7 @@ class MyApp extends StatelessWidget {
             case '/edit_product':
               return MaterialPageRoute(
                   builder: (_) => EditProductScreen(
-                      settings.arguments as Product
+                      settings.arguments as Product?
                   )
               );
             case '/select_product':

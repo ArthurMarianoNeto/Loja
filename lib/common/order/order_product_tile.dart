@@ -2,16 +2,29 @@ import 'package:flutter/material.dart';
 import 'package:loja/models/cart_product.dart';
 
 class OrderProductTile extends StatelessWidget {
-  const OrderProductTile(this.cartProduct);
+  const OrderProductTile(this.cartProduct, {super.key});
 
   final CartProduct cartProduct;
 
   @override
   Widget build(BuildContext context) {
+    // o produto é carregado de forma assíncrona pelo CartProduct
+    return ListenableBuilder(
+      listenable: cartProduct,
+      builder: (context, _) => _buildTile(context),
+    );
+  }
+
+  Widget _buildTile(BuildContext context) {
+    final product = cartProduct.product;
+    if(product == null) {
+      return const SizedBox(height: 76);
+    }
+
     return GestureDetector(
       onTap: () {
         Navigator.of(context)
-            .pushNamed('/product', arguments: cartProduct.product);
+            .pushNamed('/product', arguments: product);
       },
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -21,7 +34,7 @@ class OrderProductTile extends StatelessWidget {
             SizedBox(
               height: 60,
               width: 60,
-              child: Image.network(cartProduct.product.images.first),
+              child: Image.network(product.images.first),
             ),
             const SizedBox(
               width: 8,
@@ -31,7 +44,7 @@ class OrderProductTile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    cartProduct.product.name,
+                    product.name,
                     style: TextStyle(
                       fontWeight: FontWeight.w500,
                       fontSize: 17.0,

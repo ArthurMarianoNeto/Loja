@@ -4,7 +4,7 @@ import 'package:loja/models/section.dart';
 
 class AddSectionWidget extends StatelessWidget {
 
-  const AddSectionWidget(this.homeManager);
+  const AddSectionWidget(this.homeManager, {super.key});
 
   final HomeManager homeManager;
 

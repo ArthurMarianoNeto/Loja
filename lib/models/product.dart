@@ -1,44 +1,42 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:loja/models/item_size.dart';
-import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import 'dart:io';
 
 class Product extends ChangeNotifier {
 
-  Product({this.id, this.name, this.description, this.images, this.sizes,
-    this.deleted = false}){
-    images = images ?? [];
-    sizes = sizes ?? [];
-  }
+  Product({this.id, this.name = '', this.description = '',
+    List<String>? images, List<ItemSize>? sizes, this.deleted = false})
+      : images = images ?? [],
+        sizes = sizes ?? [];
 
-  Product.fromDocument(DocumentSnapshot document){
-    id = document.documentID;
-    name = document['name'] as String;
-    description = document['description'] as String;
-    images = List<String>.from(document.data['images'] as List<dynamic>);
-    deleted = (document.data['deleted'] ?? false) as bool;
-    sizes = (document.data['sizes'] as List<dynamic> ?? []).map(
+  Product.fromDocument(DocumentSnapshot<Map<String, dynamic>> document){
+    id = document.id;
+    name = document['name'] as String? ?? '';
+    description = document['description'] as String? ?? '';
+    images = List<String>.from(document.data()!['images'] as List<dynamic>? ?? []);
+    deleted = (document.data()!['deleted'] ?? false) as bool;
+    sizes = (document.data()!['sizes'] as List<dynamic>? ?? []).map(
             (s) => ItemSize.fromMap(s as Map<String, dynamic>)).toList();
   }
 
-  final Firestore firestore = Firestore.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
   final FirebaseStorage storage = FirebaseStorage.instance;
 
-  DocumentReference get firestoreRef => firestore.document('products/$id');
-  StorageReference get storageRef => storage.ref().child('products').child(id);
+  DocumentReference<Map<String, dynamic>> get firestoreRef => firestore.doc('products/$id');
+  Reference get storageRef => storage.ref().child('products').child(id!);
 
-  String id;
-  String name;
-  String description;
-  List<String> images;
-  List<ItemSize> sizes;
+  String? id;
+  String name = '';
+  String description = '';
+  List<String> images = [];
+  List<ItemSize> sizes = [];
 
-  List<dynamic> newImages;
+  List<dynamic>? newImages;
 
-  bool deleted;
+  bool deleted = false;
 
   bool _loading = false;
   bool get loading => _loading;
@@ -47,9 +45,9 @@ class Product extends ChangeNotifier {
     notifyListeners();
   }
 
-  ItemSize _selectedSize;
-  ItemSize get selectedSize => _selectedSize;
-  set selectedSize(ItemSize value){
+  ItemSize? _selectedSize;
+  ItemSize? get selectedSize => _selectedSize;
+  set selectedSize(ItemSize? value){
     _selectedSize = value;
     notifyListeners();
   }
@@ -57,7 +55,7 @@ class Product extends ChangeNotifier {
   int get totalStock {
     int stock = 0;
     for(final size in sizes){
-      stock += size.stock;
+      stock += size.stock ?? 0;
     }
     return stock;
   }
@@ -69,13 +67,15 @@ class Product extends ChangeNotifier {
   num get basePrice {
     num lowest = double.infinity;
     for(final size in sizes){
-      if(size.price < lowest)
-        lowest = size.price;
+      final price = size.price;
+      if(price != null && price < lowest) {
+        lowest = price;
+      }
     }
     return lowest;
   }
 
-  ItemSize findSize(String name){
+  ItemSize? findSize(String? name){
     try {
       return sizes.firstWhere((s) => s.name == name);
     } catch (e){
@@ -99,28 +99,29 @@ class Product extends ChangeNotifier {
 
     if(id == null){
       final doc = await firestore.collection('products').add(data);
-      id = doc.documentID;
+      id = doc.id;
     } else {
-      await firestoreRef.updateData(data);
+      await firestoreRef.update(data);
     }
 
     final List<String> updateImages = [];
+    final selectedImages = newImages ?? [];
 
-    for(final newImage in newImages){
+    for(final newImage in selectedImages){
       if(images.contains(newImage)){
         updateImages.add(newImage as String);
       } else {
-        final StorageUploadTask task = storageRef.child(Uuid().v1()).putFile(newImage as File);
-        final StorageTaskSnapshot snapshot = await task.onComplete;
-        final String url = await snapshot.ref.getDownloadURL() as String;
+        final TaskSnapshot snapshot =
+            await storageRef.child(const Uuid().v1()).putFile(newImage as File);
+        final String url = await snapshot.ref.getDownloadURL();
         updateImages.add(url);
       }
     }
 
     for(final image in images){
-      if(!newImages.contains(image) && image.contains('firebase')){
+      if(!selectedImages.contains(image) && image.contains('firebase')){
         try {
-          final ref = await storage.getReferenceFromUrl(image);
+          final ref = storage.refFromURL(image);
           await ref.delete();
         } catch (e){
           debugPrint('Falha ao deletar $image');
@@ -128,7 +129,7 @@ class Product extends ChangeNotifier {
       }
     }
 
-    await firestoreRef.updateData({'images': updateImages});
+    await firestoreRef.update({'images': updateImages});
 
     images = updateImages;
 
@@ -136,7 +137,7 @@ class Product extends ChangeNotifier {
   }
 
   void delete(){
-    firestoreRef.updateData({'deleted': true});
+    firestoreRef.update({'deleted': true});
   }
 
   Product clone(){

@@ -1,5 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:cloud_firestore/cloud_firestore.dart' hide Order;
+import 'package:flutter/foundation.dart';
 import 'package:loja/models/cart_manager.dart';
 import 'package:loja/models/credit_card.dart';
 import 'package:loja/models/order.dart';
@@ -8,7 +8,7 @@ import 'package:loja/services/cielo_payment.dart';
 
 class CheckoutManager extends ChangeNotifier {
 
-  CartManager cartManager;
+  late CartManager cartManager;
   bool _loading = false;
   bool get loading => _loading;
   set loading(bool value){
@@ -16,7 +16,7 @@ class CheckoutManager extends ChangeNotifier {
     notifyListeners();
   }
 
-  final Firestore firestore = Firestore.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
   final CieloPayment cieloPayment = CieloPayment();
 
 
@@ -26,14 +26,12 @@ class CheckoutManager extends ChangeNotifier {
   }
 
   // Verificando se temos estoque diponível
-  Future<void> checkout({CreditCard creditCard,
-    Function onStockFail,
-    Function onSuccess,
-    Function onPayFail}) async {
+  Future<void> checkout({required CreditCard creditCard,
+    required void Function(Object) onStockFail,
+    required void Function(Order) onSuccess,
+    required void Function(Object) onPayFail}) async {
 
     loading = true;
-
-//    print(creditCard.toJson());
 
     final orderId = await _getOrderId(); // gerando número unico do pedido
 
@@ -43,7 +41,7 @@ class CheckoutManager extends ChangeNotifier {
         creditCard: creditCard,
         price: cartManager.totalPrice,
         orderId: orderId.toString(),
-        user: cartManager.user,
+        user: cartManager.user!,
       );
 
       debugPrint('success $payId');
@@ -60,7 +58,6 @@ class CheckoutManager extends ChangeNotifier {
       cieloPayment.cancel(payId);
       onStockFail(e);
       loading = false;
- //     debugPrint(e.toString());
       return;
     }
 
@@ -83,21 +80,18 @@ class CheckoutManager extends ChangeNotifier {
     onSuccess(order);
 
     loading = false;
-
- //   _getOrderId().then((value) => print(value));
   }
 
   Future<int> _getOrderId() async { // salvando o firebase
-    final ref = firestore.document('aux/ordercounter');
+    final ref = firestore.doc('aux/ordercounter');
 
     try {
-      final result = await firestore.runTransaction((tx) async {
+      return await firestore.runTransaction((tx) async {
         final doc = await tx.get(ref);
-        final orderId = doc.data['current'] as int;
-        await tx.update(ref, {'current': orderId + 1});
-        return {'orderId': orderId};
+        final orderId = doc.data()!['current'] as int;
+        tx.update(ref, {'current': orderId + 1});
+        return orderId;
       });
-      return result['orderId'] as int;
     } catch (e){
       debugPrint(e.toString());
       return Future.error('Falha ao gerar número do pedido');
@@ -121,7 +115,7 @@ class CheckoutManager extends ChangeNotifier {
                   (p) => p.id == cartProduct.productId);
         } else {
           final doc = await tx.get(
-              firestore.document('products/${cartProduct.productId}')
+              firestore.doc('products/${cartProduct.productId}')
           );
           product = Product.fromDocument(doc);
         }
@@ -129,10 +123,10 @@ class CheckoutManager extends ChangeNotifier {
         cartProduct.product = product;
 
         final size = product.findSize(cartProduct.size);
-        if(size.stock - cartProduct.quantity < 0){
+        if(size == null || (size.stock ?? 0) - cartProduct.quantity < 0){
           productsWithoutStock.add(product);
         } else {
-          size.stock -= cartProduct.quantity;
+          size.stock = size.stock! - cartProduct.quantity;
           productsToUpdate.add(product);
         }
       }
@@ -143,7 +137,7 @@ class CheckoutManager extends ChangeNotifier {
       }
 
       for(final product in productsToUpdate){
-        tx.update(firestore.document('products/${product.id}'),
+        tx.update(firestore.doc('products/${product.id}'),
             {'sizes': product.exportSizeList()});
       }
     });

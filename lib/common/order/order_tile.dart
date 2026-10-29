@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:loja/common/order/cancel_order_dialog.dart';
 import 'package:loja/common/order/export_address_dialog.dart';
 import 'package:loja/models/order.dart';
-import 'file:///C:/Users/thies/OneDrive/Desktop/Flutter/Flutter%20Projetos/loja/lib/common/order/order_product_tile.dart';
+import 'package:loja/common/order/order_product_tile.dart';
 
 class OrderTile extends StatelessWidget {
 
-  const OrderTile(this.order, {this.showControls = false});
+  const OrderTile(this.order, {super.key, this.showControls = false});
 
   final Order order;
   final bool showControls;

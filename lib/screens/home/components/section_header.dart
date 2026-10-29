@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'file:///C:/Users/thies/OneDrive/Desktop/Flutter/Flutter%20Projetos/loja/lib/common/custom_icon_button.dart';
+import 'package:loja/common/custom_icon_button.dart';
 import 'package:loja/screens/home/components/add_tile_widget.dart';
 import 'package:loja/models/home_manager.dart';
 import 'package:loja/models/section.dart';
@@ -8,6 +8,8 @@ import 'package:loja/screens/home/components/item_tile.dart';
 import 'package:provider/provider.dart';
 
 class SectionHeader extends StatelessWidget {
+  const SectionHeader({super.key});
+
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +51,7 @@ class SectionHeader extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(bottom: 8),
               child: Text(
-                section.error,
+                section.error!,
                 style: const TextStyle(
                   color: Colors.red
                 )

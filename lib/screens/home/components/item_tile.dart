@@ -10,7 +10,7 @@ import 'package:transparent_image/transparent_image.dart';
 
 class ItemTile extends StatelessWidget {
 
-  const ItemTile(this.item);
+  const ItemTile(this.item, {super.key});
 
   final SectionItem item;
 
@@ -59,8 +59,8 @@ class ItemTile extends StatelessWidget {
                         if(product != null){
                           item.product = null;
                         } else {
-                        final Product product =
-                          await Navigator.of(context).pushNamed('/select_product') as Product;
+                        final Product? product =
+                          await Navigator.of(context).pushNamed('/select_product') as Product?;
                         item.product = product?.id;
                         }
                         Navigator.of(context).pop();

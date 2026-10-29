@@ -1,15 +1,14 @@
-import 'dart:collection';
 import 'package:cloud_functions/cloud_functions.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:loja/models/credit_card.dart';
-import 'package:loja/models/user.dart';
+import 'package:loja/models/app_user.dart';
 
 class CieloPayment {
 
-  final CloudFunctions functions = CloudFunctions.instance;
+  final FirebaseFunctions functions = FirebaseFunctions.instance;
 
-  Future<String> authorize({CreditCard creditCard, num price,
-    String orderId, User user}) async {
+  Future<String> authorize({required CreditCard creditCard, required num price,
+    required String orderId, required AppUser user}) async {
 
     try {
       final Map<String, dynamic> dataSale = {
@@ -22,12 +21,12 @@ class CieloPayment {
         'paymentType': 'CreditCard',
       };
 
-      final HttpsCallable callable = functions.getHttpsCallable(
-          functionName: 'authorizeCreditCard'
-      );
-      callable.timeout = const Duration(seconds: 60);
+      final HttpsCallable callable = functions.httpsCallable(
+        'authorizeCreditCard',
+        options: HttpsCallableOptions(timeout: const Duration(seconds: 60)),
+    );
       final response = await callable.call(dataSale);
-      final data = Map<String, dynamic>.from(response.data as LinkedHashMap);
+      final data = Map<String, dynamic>.from(response.data as Map);
 
       if (data['success'] as bool) {
         return data['paymentId'] as String;
@@ -45,13 +44,13 @@ class CieloPayment {
   final Map<String, dynamic> captureData = {
     'payId': payId
   };
-  final HttpsCallable callable = functions.getHttpsCallable(
-      functionName: 'captureCreditCard'
-  );
-  callable.timeout = const Duration(seconds: 60);
+  final HttpsCallable callable = functions.httpsCallable(
+        'captureCreditCard',
+        options: HttpsCallableOptions(timeout: const Duration(seconds: 60)),
+    );
   final response = await callable.call(captureData);
  // print(response.data);
-  final data = Map<String, dynamic>.from(response.data as LinkedHashMap);
+  final data = Map<String, dynamic>.from(response.data as Map);
 
       if (data['success'] as bool) {
         debugPrint('Captura realizada com sucesso');
@@ -65,12 +64,12 @@ class CieloPayment {
     final Map<String, dynamic> cancelData = {
       'payId': payId
     };
-    final HttpsCallable callable = functions.getHttpsCallable(
-        functionName: 'cancelCreditCard'
+    final HttpsCallable callable = functions.httpsCallable(
+        'cancelCreditCard',
+        options: HttpsCallableOptions(timeout: const Duration(seconds: 60)),
     );
-    callable.timeout = const Duration(seconds: 60);
     final response = await callable.call(cancelData);
-    final data = Map<String, dynamic>.from(response.data as LinkedHashMap);
+    final data = Map<String, dynamic>.from(response.data as Map);
 
     if (data['success'] as bool) {
       debugPrint('Cancelamento realizado com sucesso');

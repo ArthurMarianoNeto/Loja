@@ -5,7 +5,7 @@ import 'package:loja/screens/checkout/components/card_text_field.dart';
 
 class CardBack extends StatelessWidget {
 
-  const CardBack({this.cvvFocus, this.creditCard});
+  const CardBack({super.key, required this.cvvFocus, required this.creditCard});
 
   final FocusNode cvvFocus;
   final CreditCard creditCard;
@@ -44,7 +44,7 @@ class CardBack extends StatelessWidget {
                       textAlign: TextAlign.end,
                       textInputType: TextInputType.number,
                       validator: (cvv){
-                        if(cvv.length != 3) return 'Inválido';
+                        if(cvv == null || cvv.length != 3) return 'Inválido';
                         return null;
                       },
                       focusNode: cvvFocus,

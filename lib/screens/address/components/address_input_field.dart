@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 
 class AddressInputField extends StatelessWidget {
 
-  const AddressInputField(this.address);
+  const AddressInputField(this.address, {super.key});
 
   final Address address;
 
@@ -15,8 +15,8 @@ class AddressInputField extends StatelessWidget {
     final primaryColor = Theme.of(context).primaryColor;
     final cartManager = context.watch<CartManager>();
 
-    String emptyValidator(String text) =>
-        text.isEmpty ? 'Campo obrigatório' : null;
+    String? emptyValidator(String? text) =>
+        (text ?? '').isEmpty ? 'Campo obrigatório' : null;
 
     if(address.zipCode != null && cartManager.devliveryPrice == null)
       return Column(
@@ -113,7 +113,7 @@ class AddressInputField extends StatelessWidget {
                   ),
                   maxLength: 2,
                   validator: (e) {
-                    if (e.isEmpty) {
+                    if (e == null || e.isEmpty) {
                       return 'Campo obrigatório';
                     } else if (e.length != 2) {
                       return 'Numero digitos inválido';

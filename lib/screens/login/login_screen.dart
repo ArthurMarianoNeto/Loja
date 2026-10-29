@@ -1,12 +1,12 @@
-import 'package:flutter_signin_button/button_list.dart';
-import 'package:flutter_signin_button/button_view.dart';
-import 'package:loja/models/user.dart';
+import 'package:loja/models/app_user.dart';
 import 'package:loja/models/user_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:loja/helpers/validators.dart';
+import 'package:sign_in_button/sign_in_button.dart';
 
 class LoginScreen extends StatelessWidget {
+  LoginScreen({super.key});
 
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passController = TextEditingController();
@@ -63,7 +63,7 @@ class LoginScreen extends StatelessWidget {
                       keyboardType: TextInputType.emailAddress,
                       autocorrect: false,
                       validator: (email){
-                        if(!emailValid(email))
+                        if(email == null || !emailValid(email))
                           return 'E-mail inválido';
                         return null;
                       },
@@ -76,19 +76,19 @@ class LoginScreen extends StatelessWidget {
                       autocorrect: false,
                       obscureText: true,
                       validator: (pass){
-                        if(pass.isEmpty || pass.length < 6)
+                        if(pass == null || pass.isEmpty || pass.length < 6)
                           return 'Senha inválida';
                         return null;
                       },
                     ),
-                    child,
+                    child!,
                     const SizedBox(height: 16,),
                     RaisedButton(
                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       onPressed: userManager.loading ? null : (){
-                        if(formKey.currentState.validate()){
+                        if(formKey.currentState!.validate()){
                           userManager.signIn(
-                              user: User(
+                              user: AppUser(
                                   email: emailController.text,
                                   password: passController.text
                               ),
@@ -122,7 +122,7 @@ class LoginScreen extends StatelessWidget {
                       ),
                     ),
                     SignInButton(
-                      Buttons.Facebook,
+                      Buttons.facebook,
                       text: 'Entrar com Facebook',
                       onPressed: (){
                         userManager.facebookLogin(
