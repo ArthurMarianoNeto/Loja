@@ -13,6 +13,7 @@ class CartProduct extends ChangeNotifier {
   }
 
   CartProduct.fromDocument(DocumentSnapshot<Map<String, dynamic>> document){
+    _firestore = document.reference.firestore;
     id = document.id;
     productId = document.data()!['pid'] as String;
     quantity = document.data()!['quantity'] as int;
@@ -20,25 +21,29 @@ class CartProduct extends ChangeNotifier {
 
     firestore.doc('products/$productId').get().then(
             (doc) {
-          product = Product.fromDocument(doc);
+          // produto apagado do Firestore: o item fica sem produto (sem estoque)
+          if(doc.exists) product = Product.fromDocument(doc);
         }
     );
   }
 
-  CartProduct.fromMap(Map<String, dynamic> map){
+  CartProduct.fromMap(Map<String, dynamic> map, {FirebaseFirestore? firestore}){
+    _firestore = firestore;
     productId = map['pid'] as String;
     quantity = map['quantity'] as int;
     size = map['size'] as String?;
     fixedPrice = map['fixedPrice'] as num?;
 
-    firestore.doc('products/$productId').get().then(
+    this.firestore.doc('products/$productId').get().then(
             (doc) {
-          product = Product.fromDocument(doc);
+          // produto apagado do Firestore: o item fica sem produto (sem estoque)
+          if(doc.exists) product = Product.fromDocument(doc);
         }
     );
   }
 
-  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+  FirebaseFirestore? _firestore;
+  FirebaseFirestore get firestore => _firestore ??= FirebaseFirestore.instance;
 
   String? id;
 

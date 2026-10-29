@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:loja/common/custom_icon_button.dart';
+import 'package:loja/common/safe_network_image.dart';
 import 'package:loja/models/store.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:map_launcher/map_launcher.dart';
@@ -25,13 +26,11 @@ class StoreCard extends StatelessWidget {
           return Colors.green;
         case StoreStatus.closing:
           return Colors.orange;
-        default:
-          return Colors.green;
       }
     }
 
     void showError(){
-      Scaffold.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Esta função não está disponível neste dispositivo'),
             backgroundColor: Colors.red,
@@ -43,7 +42,7 @@ class StoreCard extends StatelessWidget {
       final uri = Uri(scheme: 'tel', path: store.cleanPhone);
       if(await canLaunchUrl(uri)){
         launchUrl(uri);
-      } else {
+      } else if(context.mounted) {
         showError();
       }
     }
@@ -56,6 +55,7 @@ class StoreCard extends StatelessWidget {
           title: store.name,
         ));
         final availableMaps = await marker.getSupportedMaps(supportedMaps);
+        if(!context.mounted) return;
 
         showModalBottomSheet(
             context: context,
@@ -92,12 +92,12 @@ class StoreCard extends StatelessWidget {
       clipBehavior: Clip.antiAlias,
       child: Column(
         children: <Widget>[
-          Container(
+          SizedBox(
             height: 160,
             child: Stack(
               fit: StackFit.expand,
               children: <Widget>[
-                Image.network(
+                SafeNetworkImage(
                   store.image,
                   fit: BoxFit.cover,
                 ),

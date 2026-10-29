@@ -11,6 +11,9 @@ import 'package:loja/models/user_manager.dart';
 
 class CartManager extends ChangeNotifier {
 
+  CartManager({FirebaseFirestore? firestore})
+      : firestore = firestore ?? FirebaseFirestore.instance;
+
   List<CartProduct> items = [];
 
   AppUser? user;
@@ -28,7 +31,7 @@ class CartManager extends ChangeNotifier {
     notifyListeners();
   }
 
-  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+  final FirebaseFirestore firestore;
 
   void updateUser(UserManager userManager){
     user = userManager.user;
@@ -176,8 +179,8 @@ class CartManager extends ChangeNotifier {
 
     final DocumentSnapshot<Map<String, dynamic>> doc = await firestore.doc('aux/delivery').get();
 
-    final latStore = doc.data()!['lat'] as double;
-    final longStore = doc.data()!['long'] as double;
+    final latStore = (doc.data()!['lat'] as num).toDouble();
+    final longStore = (doc.data()!['long'] as num).toDouble();
 
     final base = doc.data()!['base'] as num;
     final km = doc.data()!['km'] as num;

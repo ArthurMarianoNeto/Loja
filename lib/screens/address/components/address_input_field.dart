@@ -18,7 +18,7 @@ class AddressInputField extends StatelessWidget {
     String? emptyValidator(String? text) =>
         (text ?? '').isEmpty ? 'Campo obrigatório' : null;
 
-    if(address.zipCode != null && cartManager.devliveryPrice == null)
+    if(address.zipCode != null && cartManager.devliveryPrice == null) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
@@ -45,7 +45,7 @@ class AddressInputField extends StatelessWidget {
                     hintText: '999',
                   ),
                   inputFormatters: [
-                    WhitelistingTextInputFormatter.digitsOnly,
+                    FilteringTextInputFormatter.digitsOnly,
                   ],
                   keyboardType: TextInputType.number,
                   validator: emptyValidator,
@@ -131,17 +131,15 @@ class AddressInputField extends StatelessWidget {
               valueColor: AlwaysStoppedAnimation(primaryColor),
               backgroundColor: Colors.transparent,
             ),
-          RaisedButton(
-            color: primaryColor,
-            disabledColor: primaryColor.withAlpha(100),
-            textColor: Colors.white,
+          ElevatedButton(
             onPressed: !cartManager.loading ? () async {
               if(Form.of(context).validate()){
                 Form.of(context).save();
                 try {
                   await context.read<CartManager>().setAddress(address);
                 } catch (e) {
-                  Scaffold.of(context).showSnackBar(
+                  if(!context.mounted) return;
+                  ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text('$e'),
                       backgroundColor: Colors.red,
@@ -154,15 +152,16 @@ class AddressInputField extends StatelessWidget {
           ),
         ],
       );
-    else if (address.zipCode !=null)
-      //  if(address.zipCode != null && cartManager.devliveryPrice != null)
-     return  Padding(
+    } else if (address.zipCode != null) {
+      return Padding(
         padding: const EdgeInsets.only(bottom: 16),
         child: Text(
             '${address.street}, ${address.number}\n${address.district}\n'
                 '${address.city} - ${address.state}'
         ),
       );
-    else return Container();
+    } else {
+      return Container();
+    }
   }
 }

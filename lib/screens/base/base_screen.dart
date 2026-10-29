@@ -20,7 +20,7 @@ class BaseScreen extends StatefulWidget {
 
 
   @override
-  _BaseScreenState createState() => _BaseScreenState();
+  State<BaseScreen> createState() => _BaseScreenState();
 }
 
 class _BaseScreenState extends State<BaseScreen> {
@@ -90,7 +90,7 @@ class _BaseScreenState extends State<BaseScreen> {
     return Provider(
       create: (_) => PageManager(pageController),
       child: Consumer<UserManager>(
-        builder: (_, userManager, __){
+        builder: (_, userManager, _){
           return PageView(
             controller: pageController,
             physics: const NeverScrollableScrollPhysics(),

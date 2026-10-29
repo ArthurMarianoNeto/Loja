@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:loja/common/safe_network_image.dart';
 import 'package:loja/common/image_carousel.dart';
 import 'package:loja/models/cart_manager.dart';
 import 'package:loja/models/product.dart';
@@ -24,7 +25,7 @@ class ProductScreen extends StatelessWidget {
           centerTitle: true,
           actions: <Widget>[
             Consumer<UserManager>(
-              builder: (_, userManager, __){
+              builder: (_, userManager, _){
                 if(userManager.adminEnabled && !product.deleted){
                   return IconButton(
                     icon: Icon(Icons.edit),
@@ -50,7 +51,7 @@ class ProductScreen extends StatelessWidget {
               child: ImageCarousel(
                 dotColor: primaryColor,
                 children: product.images.map((url){
-                  return Image.network(url, fit: BoxFit.cover);
+                  return SafeNetworkImage(url, fit: BoxFit.cover);
                 }).toList(),
               ),
             ),
@@ -135,10 +136,10 @@ class ProductScreen extends StatelessWidget {
                   const SizedBox(height: 20,),
                   if(product.hasStock)
                     Consumer2<UserManager, Product>(
-                      builder: (_, userManager, product, __){
+                      builder: (_, userManager, product, _){
                         return SizedBox(
                           height: 44,
-                          child: RaisedButton(
+                          child: ElevatedButton(
                             onPressed: product.selectedSize != null ? (){
                               if(userManager.isLoggedIn){
                                 context.read<CartManager>().addToCart(product);
@@ -147,8 +148,6 @@ class ProductScreen extends StatelessWidget {
                                 Navigator.of(context).pushNamed('/login');
                               }
                             } : null,
-                            color: primaryColor,
-                            textColor: Colors.white,
                             child: Text(
                               userManager.isLoggedIn
                                   ? 'Adicionar ao Carrinho'

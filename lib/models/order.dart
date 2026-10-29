@@ -11,6 +11,7 @@ enum Status { canceled, preparing, transporting, delivered }
 class Order {
 
   Order.fromCartManager(CartManager cartManager){
+    firestore = cartManager.firestore;
     items = List.from(cartManager.items);
     price = cartManager.totalPrice;
     userId = cartManager.user!.id!;
@@ -19,10 +20,11 @@ class Order {
   }
 
   Order.fromDocument(DocumentSnapshot<Map<String, dynamic>> doc){
+    firestore = doc.reference.firestore;
     orderId = doc.id;
 
     items = (doc.data()!['items'] as List<dynamic>).map((e){
-      return CartProduct.fromMap(e as Map<String, dynamic>);
+      return CartProduct.fromMap(e as Map<String, dynamic>, firestore: firestore);
     }).toList();
 
     price = doc.data()!['price'] as num;
@@ -35,7 +37,7 @@ class Order {
     payId = doc.data()!['payId'] as String?;
   }
 
-  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+  late final FirebaseFirestore firestore;
 
   DocumentReference<Map<String, dynamic>> get firestoreRef =>
       firestore.collection('orders').doc(orderId);

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:loja/common/safe_network_image.dart';
 import 'package:loja/models/product.dart';
 
 class ProductListTile extends StatelessWidget {
@@ -19,13 +20,13 @@ class ProductListTile extends StatelessWidget {
             borderRadius: BorderRadius.circular(4)
         ),
         child: Container(
-          height: 100,
+          height: 110,
           padding: const EdgeInsets.all(8),
           child: Row(
             children: <Widget>[
               AspectRatio(
                 aspectRatio: 1,
-                child: Image.network(product.images.first),
+                child: SafeNetworkImage(product.images.firstOrNull),
               ),
               const SizedBox(width: 16,),
               Expanded(

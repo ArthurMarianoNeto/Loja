@@ -5,6 +5,60 @@
 > "Estado atual" e "Histórico") no mesmo commit. Ao iniciar em outra máquina:
 > `git pull`, ler este arquivo e continuar do "Próximo passo".
 
+## ▶ Começando em outra máquina (ler primeiro)
+
+Máquina de origem (trabalho): WSL2 + Docker, UID/GID 1000, projeto em
+`~/particular_programacao/Loja`, ao lado do projeto de referência
+`~/particular_programacao/Loja-Virtual-Pro`. Máquina pessoal: **WSL2 + Docker
+Desktop**. Faça tudo **dentro do terminal do WSL** (Ubuntu), não no PowerShell.
+
+1. **Docker Desktop**: Settings > General > "Use the WSL 2 based engine" ligado;
+   Settings > Resources > WSL integration > ativar a distro (ex.: Ubuntu).
+   Conferir no WSL: `docker version` e `docker compose version`.
+   Memória: o Gradle usa `-Xmx3G`; se o build cair, aumentar a memória do WSL
+   em `%UserProfile%\.wslconfig` (`[wsl2]` → `memory=8GB`) e `wsl --shutdown`.
+2. **Clonar dentro do filesystem do WSL** (não em `/mnt/c/...` — fica lento e
+   quebra permissões):
+   ```bash
+   mkdir -p ~/particular_programacao && cd ~/particular_programacao
+   git clone https://github.com/ArthurMarianoNeto/Loja.git
+   git clone https://github.com/ArthurMarianoNeto/Loja-Virtual-Pro.git   # referência (como cada Dia foi feito lá)
+   cd Loja
+   git fetch --all
+   git switch modernizacao && git switch dia-8-android-apk               # branches de trabalho
+   git config user.name "Arthur Mariano"; git config user.email "<seu e-mail>"
+   ```
+   Para push, usar `gh auth login` (se tiver o `gh`) ou um Personal Access Token.
+3. **UID/GID**: `id -u; id -g`. Se não for `1000/1000`, rodar
+   `export UID=$(id -u) GID=$(id -g)` antes do `docker compose build` (senão os
+   arquivos gerados no volume ficam com dono errado).
+4. **Construir a imagem e validar** (a imagem e os volumes `pub-cache`,
+   `gradle-cache`, `firebase-config` não vão pelo Git — são recriados aqui):
+   ```bash
+   docker compose build                                  # ~10 min na primeira vez
+   docker compose run --rm flutter flutter doctor -v
+   docker compose run --rm flutter flutter pub get
+   docker compose run --rm flutter flutter analyze       # esperado: No issues found
+   docker compose run --rm flutter flutter test          # esperado: 76 testes passando
+   docker compose run --rm flutter flutter build apk     # build/app/outputs/flutter-apk/app-release.apk
+   ```
+   O APK não é versionado (`build/` no `.gitignore`); gerar de novo aqui.
+   Para copiar o APK para o Windows: `cp build/app/outputs/flutter-apk/app-release.apk /mnt/c/Users/<usuario>/Downloads/`.
+5. **Firebase CLI** (só quando for mexer em `functions/` ou `flutterfire configure`):
+   `docker compose run --rm flutter firebase login --no-localhost` (o login fica
+   no volume `firebase-config`, precisa ser refeito em cada máquina).
+6. Continuar do **"Próximo passo"** em "Estado atual" abaixo.
+
+O que já está no Git (não precisa recriar): `android/app/google-services.json`,
+`lib/firebase_options.dart`, `.firebaserc` (`loja-eeab9`), `strings.xml` (com o
+placeholder do Facebook). O que **não** está e nunca deve ir: keystore de
+release, `key.properties`, `.env`.
+
+Nota para o Claude: a memória local do Claude Code não é sincronizada entre
+máquinas — tudo que importa está neste arquivo. Antes de cada Dia/etapa, ver
+como foi feito no `../Loja-Virtual-Pro` (`git log`/`git show` do commit
+`Dia N` de lá) e adaptar; o Loja é bem maior (77 arquivos, `functions/`).
+
 ## Visão geral
 
 - App Flutter de loja virtual completa (curso), originalmente em **Flutter 1.22**,
@@ -28,7 +82,8 @@
 - Progresso gradual: um "Dia" por vez, cada um com commit `Dia N: ...`.
 - **A partir do Dia 3, cada Dia em sua própria branch** criada a partir de
   `modernizacao` (ex.: `dia-3-null-safety`); merge em `modernizacao` só após
-  aprovação do usuário.
+  aprovação do usuário. (Em 2026-10-13 o usuário pediu para executar os Dias
+  2–8 no mesmo dia: Dias 3–7 foram mergeados conforme analyze/testes passavam.)
 - Segredos: nunca versionar keystore (`*.jks`, `*.keystore`), `key.properties`,
   `.env` (já no `.gitignore`).
 - Plataformas: **Android primeiro**, iOS depois; web para o painel admin.
@@ -55,6 +110,19 @@ docker compose run --rm flutter flutter build apk
 docker compose run --rm --service-ports web            # http://localhost:8080
 ```
 
+## Estrutura do código (`lib/`)
+
+- `main.dart` — `Firebase.initializeApp`, providers, tema Material 3, rotas
+- `firebase_options.dart` — config do Firebase (só Android por enquanto)
+- `common/` — drawer, cards, `image_carousel.dart`, `safe_network_image.dart`, `order/`
+- `helpers/` — `extensions.dart`, `firebase_errors.dart`, `validators.dart`
+- `models/` — `app_user`, managers (user, product, cart, checkout, home,
+  orders, stores, admin_users, admin_orders), product, section, order, store…
+- `services/` — `cielo_payment.dart` (Cloud Functions), `cep_aberto_service.dart`
+- `screens/` — base, home, products, product, cart, address, checkout,
+  confirmation, orders, stores, login, signup, edit_product, select_product,
+  admin_users, admin_orders
+
 ## Roteiro da modernização
 
 | Dia | Tarefa | Status |
@@ -64,30 +132,53 @@ docker compose run --rm --service-ports web            # http://localhost:8080
 | 3 | Migração para null safety | ✅ concluído (merge em `modernizacao`) |
 | 4 | Renomeações da API do Firebase (`FirebaseAuth`, `FirebaseFirestore`, etc.) + APIs dos pacotes novos | ✅ concluído (merge em `modernizacao`) |
 | 5 | Inicialização do Firebase (`firebase_options.dart` + `Firebase.initializeApp`) | ✅ concluído (merge em `modernizacao`) |
-| 6 | Widgets / tema (Material 3) | ⏳ |
-| 7 | Testes | ⏳ |
-| 8 | Regenerar pasta Android + gerar APK | ⏳ |
+| 6 | Widgets / tema (Material 3) | ✅ concluído (merge em `modernizacao`) |
+| 7 | Testes | ✅ concluído (merge em `modernizacao`) |
+| 8 | Regenerar pasta Android + gerar APK | 🔄 aguardando teste no celular (branch `dia-8-android-apk`) |
 | depois | Cloud Functions (`functions/`), painel admin web, iOS | — |
 
 ## Estado atual
 
-- Último passo concluído: **Dia 5** (inicialização do Firebase), mergeado em
-  `modernizacao`.
-  - `lib/firebase_options.dart` gerado a partir de
-    `android/app/google-services.json` (só Android, mesmo formato do
-    FlutterFire CLI). O volume `firebase-config` deste projeto não tem login e
-    não há config de iOS/web no repo → `flutterfire configure` fica para quando
-    o usuário logar (comandos no README).
-  - `main()`: `WidgetsFlutterBinding.ensureInitialized()` +
-    `Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform)`.
-  - Removida a chamada de teste à Cloud Function `addMessage` no `main()`
-    (gravava um documento em `messages` a cada abertura do app).
-  - `flutter analyze`: 39 erros (133 issues), só widgets → Dia 6.
-- **Próximo passo:** Dia 6 — widgets/tema Material 3.
+- Último passo concluído: **Dia 8** (pasta `android/` regenerada + APK) na
+  branch `dia-8-android-apk` — **aguardando o usuário testar no celular**
+  para merge em `modernizacao`. (Dias 3–7 já mergeados.)
+  - `android/` recriada com `flutter create --platforms=android --org
+    br.com.arthurmariano --project-name loja .` (Gradle Kotlin DSL, Java 17,
+    `namespace` no Gradle). Ícones personalizados antigos restaurados;
+    `google-services.json` recolocado em `android/app/` (a cópia solta em
+    `android/app/src/` foi removida); `pubspec.lock` restaurado (o
+    `flutter create` tinha rebaixado dependências transitivas).
+  - Manifest: `android:label="Loja 44 beta"` (mantido), INTERNET,
+    WRITE_EXTERNAL_STORAGE só até API 29 + `requestLegacyExternalStorage`
+    (gal), `UCropActivity` (image_cropper), metadados/atividades do Facebook,
+    `<queries>` para `tel:` e app do Facebook. Removidos: permissões de
+    localização (geolocator só calcula distância), intent
+    `FLUTTER_NOTIFICATION_CLICK` (FCM antigo).
+  - `strings.xml`: `facebook_client_token` = `PREENCHER_CLIENT_TOKEN`
+    (o Facebook SDK 18 fecha o app sem esse campo).
+  - `android/gradle.properties`: `-Xmx3G` (o `-Xmx8G` do template derruba o
+    Gradle no WSL2), igual ao Loja-Virtual-Pro; `/.kotlin/` no `.gitignore`.
+  - `flutter build apk` → `build/app/outputs/flutter-apk/app-release.apk`
+    (59 MB, assinado com a chave de debug, targetSdk 36).
+  - `flutter analyze`: **0 issues**. `flutter test`: **76/76 passando**.
+- Branches no GitHub (enviadas em 2026-10-29): `master`, `modernizacao`,
+  `dia-3-…` a `dia-8-android-apk`. Trabalho atual em `dia-8-android-apk`.
+- **Próximo passo:** usuário instalar o APK e testar (login, cadastro,
+  produtos, carrinho, endereço/frete, pedidos, lojas, admin). Após aprovação:
+  merge em `modernizacao`, push e PR `modernizacao` → `master`. Depois:
+  `functions/` (Node 14 → atual), `flutterfire configure` para iOS/web,
+  painel admin web, iOS.
 - Pendências conhecidas:
   - `recuperar_senha.txt` na raiz: anotação do curso; a recuperação de senha já
     está em `user_manager.dart`/`login_screen.dart` — perguntar se pode remover.
-  - `functions/` (Node 14, firebase-functions 3) também precisará de atualização.
+  - `functions/` (Node 14, firebase-functions 3) também precisará de
+    atualização (Node 14 não é mais aceito no deploy do Firebase).
+  - **Facebook Client Token**: preencher `facebook_client_token` em
+    `android/app/src/main/res/values/strings.xml` (Meta for Developers > App >
+    Configurações > Avançado). Sem ele o login com Facebook falha.
+  - APK de release assinado com a chave de debug (criar keystore de release
+    antes de publicar — nunca versionar).
+  - Pagamento: a Cloud Function usa a Cielo em **sandbox**.
 
 ## Histórico
 
@@ -106,3 +197,15 @@ docker compose run --rm --service-ports web            # http://localhost:8080
 - **2026-10-13** — Dia 5: `firebase_options.dart` (Android) e
   `Firebase.initializeApp` no `main()` (branch `dia-5-firebase-init`); chamada
   de teste `addMessage` removida. Mergeado em `modernizacao`.
+- **2026-10-13** — Dia 6: Material 3 (branch `dia-6-material3`), widgets
+  removidos substituídos, telas de login/cadastro `StatefulWidget`;
+  `flutter analyze` com 0 issues. Mergeado em `modernizacao`.
+- **2026-10-13** — Dia 7: testes (branch `dia-7-testes`): 76 testes,
+  injeção de dependência nos managers, `SafeNetworkImage`, bugs corrigidos.
+  Mergeado em `modernizacao`.
+- **2026-10-13** — Dia 8: `android/` regenerada pelo template do Flutter
+  3.47.5 (branch `dia-8-android-apk`), manifest atualizado para os pacotes
+  novos, `app-release.apk` gerado; 76 testes passando.
+- **2026-10-29** — Handoff trabalho → casa: seção "Começando em outra máquina"
+  neste arquivo (WSL2 + Docker Desktop, clone, UID/GID, build, validação);
+  todas as branches enviadas ao GitHub.

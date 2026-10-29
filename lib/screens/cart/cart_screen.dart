@@ -17,7 +17,7 @@ class CartScreen extends StatelessWidget {
         centerTitle: true,
       ),
       body: Consumer<CartManager>(
-        builder: (_, cartManager, __){
+        builder: (_, cartManager, _){
           if(cartManager.user == null){
             return LoginCard();
           }

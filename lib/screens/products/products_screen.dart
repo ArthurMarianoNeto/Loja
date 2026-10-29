@@ -15,7 +15,7 @@ class ProductsScreen extends StatelessWidget {
       drawer: CustomDrawer(),
       appBar: AppBar(
         title: Consumer<ProductManager>(
-          builder: (_, productManager, __){
+          builder: (_, productManager, _){
             if(productManager.search.isEmpty){
               return const Text('Produtos');
             } else {
@@ -29,7 +29,7 @@ class ProductsScreen extends StatelessWidget {
                         productManager.search = search;
                       }
                     },
-                    child: Container(
+                    child: SizedBox(
                         width: constraints.biggest.width,
                         child: Text(
                           productManager.search,
@@ -45,7 +45,7 @@ class ProductsScreen extends StatelessWidget {
         centerTitle: true,
         actions: <Widget>[
           Consumer<ProductManager>(
-            builder: (_, productManager, __){
+            builder: (_, productManager, _){
               if(productManager.search.isEmpty){
                 return IconButton(
                   icon: Icon(Icons.search),
@@ -68,7 +68,7 @@ class ProductsScreen extends StatelessWidget {
             },
           ),
           Consumer<UserManager>(
-            builder: (_, userManager, __){
+            builder: (_, userManager, _){
               if(userManager.adminEnabled){
                 return IconButton(
                   icon: Icon(Icons.add),
@@ -88,7 +88,7 @@ class ProductsScreen extends StatelessWidget {
         ],
       ),
       body: Consumer<ProductManager>(
-        builder: (_, productManager, __){
+        builder: (_, productManager, _){
           final filteredProducts = productManager.filteredProducts;
           return ListView.builder(
  //             padding: const EdgeInsets.all(4),

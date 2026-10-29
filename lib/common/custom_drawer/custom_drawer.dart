@@ -56,7 +56,7 @@ class CustomDrawer extends StatelessWidget {
                 page: 4,
               ), */
               Consumer<UserManager>(
-                builder: (_, userManager, __){
+                builder: (_, userManager, _){
                   if(userManager.adminEnabled){
                     return Column(
                       children: <Widget>[

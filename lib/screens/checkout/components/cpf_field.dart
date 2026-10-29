@@ -34,12 +34,15 @@ class CpfField extends StatelessWidget {
               ),
               keyboardType: TextInputType.number,
               inputFormatters: [
-                WhitelistingTextInputFormatter.digitsOnly,
+                FilteringTextInputFormatter.digitsOnly,
                 CpfInputFormatter(),
               ],
               validator: (cpf){
-                if(cpf == null || cpf.isEmpty) return 'Campo Obrigatório';
-                else if(!CPFValidator.isValid(cpf)) return 'CPF Inválido';
+                if(cpf == null || cpf.isEmpty) {
+                  return 'Campo Obrigatório';
+                } else if(!CPFValidator.isValid(cpf)) {
+                  return 'CPF Inválido';
+                }
                 return null;
               },
               onSaved: userManager.user!.setCpf,

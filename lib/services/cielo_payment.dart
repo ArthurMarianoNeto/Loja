@@ -5,11 +5,13 @@ import 'package:loja/models/app_user.dart';
 
 class CieloPayment {
 
-  final FirebaseFunctions functions = FirebaseFunctions.instance;
+  // resolvido só no uso (permite simular o pagamento nos testes)
+  FirebaseFunctions get functions => FirebaseFunctions.instance;
 
   Future<String> authorize({required CreditCard creditCard, required num price,
     required String orderId, required AppUser user}) async {
 
+    final Map<String, dynamic> data;
     try {
       final Map<String, dynamic> dataSale = {
         'merchantOrderId': orderId,
@@ -26,17 +28,18 @@ class CieloPayment {
         options: HttpsCallableOptions(timeout: const Duration(seconds: 60)),
     );
       final response = await callable.call(dataSale);
-      final data = Map<String, dynamic>.from(response.data as Map);
-
-      if (data['success'] as bool) {
-        return data['paymentId'] as String;
-      } else {
-        debugPrint('${data['error']['message']}');
-        return Future.error(data['error']['message']);
-      }
+      data = Map<String, dynamic>.from(response.data as Map);
     } catch (e){
       debugPrint('$e');
       return Future.error('Falha ao processar transação. Tente novamente.');
+    }
+
+    // erro devolvido pela Cielo: a mensagem dela vai para o usuário
+    if (data['success'] as bool) {
+      return data['paymentId'] as String;
+    } else {
+      debugPrint('${data['error']['message']}');
+      return Future.error(data['error']['message']);
     }
   }
 

@@ -48,7 +48,7 @@ class HomeScreen extends StatelessWidget {
                     onPressed: () => Navigator.of(context).pushNamed('/cart'),
                   ),
                   Consumer2<UserManager, HomeManager>(
-                    builder: (_, userManager, homeManager, __){
+                    builder: (_, userManager, homeManager, _){
                       if(userManager.adminEnabled && !homeManager.loading) {
                         if(homeManager.editing){
                           return PopupMenuButton(
@@ -74,13 +74,15 @@ class HomeScreen extends StatelessWidget {
                             onPressed: homeManager.enterEditing,
                           );
                         }
-                      } else return Container();
+                      } else {
+                        return Container();
+                      }
                     },
                   ),
                 ],
               ),
               Consumer<HomeManager>(
-                builder: (_, homeManager, __){
+                builder: (_, homeManager, _){
                   if(homeManager.loading){
                     return SliverToBoxAdapter(
                       child: LinearProgressIndicator(
@@ -102,8 +104,9 @@ class HomeScreen extends StatelessWidget {
                       }
                   ).toList();
 
-                  if(homeManager.editing)
+                  if(homeManager.editing) {
                     children.add(AddSectionWidget(homeManager));
+                  }
 
                   return SliverList(
                     delegate: SliverChildListDelegate(children),

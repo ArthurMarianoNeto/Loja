@@ -6,13 +6,16 @@ import 'package:loja/models/app_user.dart';
 
 class AdminOrdersManager extends ChangeNotifier {
 
+  AdminOrdersManager({FirebaseFirestore? firestore})
+      : firestore = firestore ?? FirebaseFirestore.instance;
+
   final List<Order> _orders = [];
 
   AppUser? userFilter;
 //  List<Status> statusFilter = [Status.preparing, Status.transporting, Status.delivered];
   List<Status> statusFilter = [Status.preparing, Status.transporting];
 
-  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+  final FirebaseFirestore firestore;
 
   StreamSubscription? _subscription;
 

@@ -7,12 +7,17 @@ import 'package:loja/models/app_user.dart';
 
 class UserManager extends ChangeNotifier {
 
-  UserManager(){
+  UserManager({FirebaseAuth? auth, FirebaseFirestore? firestore,
+    this._getToken})
+      : auth = auth ?? FirebaseAuth.instance,
+        firestore = firestore ?? FirebaseFirestore.instance {
     _loadCurrentUser();
   }
 
-  final FirebaseAuth auth = FirebaseAuth.instance;
-  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+  final FirebaseAuth auth;
+  final FirebaseFirestore firestore;
+  // token do FCM; injetável para os testes (sem Firebase Messaging)
+  final Future<String?> Function()? _getToken;
 
   AppUser? user;
 
@@ -74,12 +79,13 @@ class UserManager extends ChangeNotifier {
           final newUser = AppUser(
               id: firebaseUser.uid,
               name: firebaseUser.displayName,
-              email: firebaseUser.email
+              email: firebaseUser.email,
+              firestore: firestore,
           );
           user = newUser;
 
           await newUser.saveData();
-          newUser.saveToken();
+          newUser.saveToken(_getToken);
 
           onSuccess();
         }
@@ -106,10 +112,11 @@ class UserManager extends ChangeNotifier {
           email: user.email!, password: user.password!);
 
       user.id = result.user!.uid;
+      user.firestore = firestore;
       this.user = user;
 
       await user.saveData();
-      user.saveToken();
+      user.saveToken(_getToken);
 
       onSuccess();
     } on FirebaseAuthException catch (e){
@@ -136,7 +143,7 @@ class UserManager extends ChangeNotifier {
           .doc(currentUser.uid).get();
       final loadedUser = AppUser.fromDocument(docUser);
       user = loadedUser;
-      loadedUser.saveToken();
+      loadedUser.saveToken(_getToken);
 
       // verificando se é administrador
 

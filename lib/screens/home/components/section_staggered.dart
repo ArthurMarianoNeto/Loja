@@ -4,7 +4,6 @@ import 'package:loja/models/home_manager.dart';
 import 'package:loja/models/section.dart';
 import 'package:loja/screens/home/components/item_tile.dart';
 import 'package:loja/screens/home/components/section_header.dart';
-import 'package:loja/screens/home/home_screen.dart';
 import 'package:loja/screens/home/components/add_tile_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -27,7 +26,7 @@ class SectionStaggered extends StatelessWidget {
           children: <Widget>[
             SectionHeader(),
             Consumer<Section>(
-              builder: (_, section, __){
+              builder: (_, section, _){
                 final itemCount = homeManager.editing
                     ? section.items.length + 1
                     : section.items.length;

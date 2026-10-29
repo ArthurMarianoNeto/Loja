@@ -44,13 +44,15 @@ class CardFront extends StatelessWidget {
                     textInputType: TextInputType.number,
                     bold: true,
                     inputFormatters: [
-                      WhitelistingTextInputFormatter.digitsOnly,
+                      FilteringTextInputFormatter.digitsOnly,
                       CartaoBancarioInputFormatter()
                     ],
                     validator: (number){
-                      if(number == null || number.length != 19) return 'Inválido';
-                      else if(detectCCType(number).isEmpty)
+                      if(number == null || number.length != 19) {
                         return 'Inválido';
+                      } else if(detectCCType(number).isEmpty) {
+                        return 'Inválido';
+                      }
                       return null;
                     },
                     onSubmitted: (_){

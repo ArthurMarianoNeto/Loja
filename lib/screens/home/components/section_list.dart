@@ -3,9 +3,7 @@ import 'package:loja/models/home_manager.dart';
 import 'package:loja/models/section.dart';
 import 'package:loja/screens/home/components/item_tile.dart';
 import 'package:loja/screens/home/components/section_header.dart';
-import 'package:loja/screens/home/home_screen.dart';
 import 'package:loja/screens/home/components/add_tile_widget.dart';
-import 'package:loja/screens/home/components/section_header.dart';
 import 'package:provider/provider.dart';
 
 class SectionList extends StatelessWidget {
@@ -29,16 +27,17 @@ class SectionList extends StatelessWidget {
             SizedBox(
               height: 150,
               child: Consumer<Section>(
-                builder: (_, section, __){
+                builder: (_, section, _){
                   return ListView.separated(
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (_, index){
-                      if(index < section.items.length)
+                      if(index < section.items.length) {
                         return ItemTile(section.items[index]);
-                      else
+                      } else {
                         return AddTileWidget();
+                      }
                     },
-                    separatorBuilder: (_, __) => const SizedBox(width: 4,),
+                    separatorBuilder: (_, _) => const SizedBox(width: 4,),
                     itemCount: homeManager.editing
                         ? section.items.length + 1
                         : section.items.length,

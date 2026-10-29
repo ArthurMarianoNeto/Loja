@@ -8,6 +8,10 @@ import 'package:loja/services/cielo_payment.dart';
 
 class CheckoutManager extends ChangeNotifier {
 
+  CheckoutManager({FirebaseFirestore? firestore, CieloPayment? cieloPayment})
+      : firestore = firestore ?? FirebaseFirestore.instance,
+        cieloPayment = cieloPayment ?? CieloPayment();
+
   late CartManager cartManager;
   bool _loading = false;
   bool get loading => _loading;
@@ -16,8 +20,8 @@ class CheckoutManager extends ChangeNotifier {
     notifyListeners();
   }
 
-  final FirebaseFirestore firestore = FirebaseFirestore.instance;
-  final CieloPayment cieloPayment = CieloPayment();
+  final FirebaseFirestore firestore;
+  final CieloPayment cieloPayment;
 
 
   // ignore: use_setters_to_change_properties

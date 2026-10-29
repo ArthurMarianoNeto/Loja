@@ -12,7 +12,7 @@ class CustomDrawerHeader extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(32, 24, 16, 8),
       height: 180,
       child: Consumer<UserManager>(
-        builder: (_, userManager, __){
+        builder: (_, userManager, _){
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceAround,

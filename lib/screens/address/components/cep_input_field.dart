@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:brasil_fields/brasil_fields.dart';
@@ -14,7 +13,7 @@ class CepInputField extends StatefulWidget {
   final Address address;
 
   @override
-  _CepInputFieldState createState() => _CepInputFieldState();
+  State<CepInputField> createState() => _CepInputFieldState();
 }
 
 class _CepInputFieldState extends State<CepInputField> {
@@ -28,7 +27,7 @@ class _CepInputFieldState extends State<CepInputField> {
 
 //    cepController.text = address.zipCode;
 
-    if(widget.address.zipCode == null)
+    if(widget.address.zipCode == null) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
@@ -41,15 +40,16 @@ class _CepInputFieldState extends State<CepInputField> {
                 hintText: '99.999-999'
             ),
             inputFormatters: [
-              WhitelistingTextInputFormatter.digitsOnly,
+              FilteringTextInputFormatter.digitsOnly,
               CepInputFormatter(),
             ],
             keyboardType: TextInputType.number,
             validator: (cep){
-              if(cep == null || cep.isEmpty)
+              if(cep == null || cep.isEmpty) {
                 return 'Campo obrigatório';
-              else if(cep.length != 10)
+              } else if(cep.length != 10) {
                 return 'CEP número de digitos incorreto';
+              }
               return null;
             },
           ),
@@ -58,13 +58,14 @@ class _CepInputFieldState extends State<CepInputField> {
               valueColor: AlwaysStoppedAnimation(primaryColor),
               backgroundColor: Colors.transparent,
             ),
-          RaisedButton(
+          ElevatedButton(
             onPressed: !cartManager.loading ? () async {
               if(Form.of(context).validate()){
                 try {
                   await context.read<CartManager>().getAddress(cepController.text);
                 } catch (e) {
-                  Scaffold.of(context).showSnackBar(
+                  if(!context.mounted) return;
+                  ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text('$e'),
                         backgroundColor: Colors.red,
@@ -73,14 +74,11 @@ class _CepInputFieldState extends State<CepInputField> {
                 }
               }
             } : null,
-            textColor: Colors.white,
-            color: primaryColor,
-            disabledColor: primaryColor.withAlpha(100),
             child: const Text('Buscar CEP'),
           ),
         ],
       );
-    else
+    } else {
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 4),
         child: Row(
@@ -105,5 +103,6 @@ class _CepInputFieldState extends State<CepInputField> {
           ],
         ),
       );
+    }
   }
 }

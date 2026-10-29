@@ -13,7 +13,7 @@ class AdminOrdersScreen extends StatefulWidget {
 
 
   @override
-  _AdminOrdersScreenState createState() => _AdminOrdersScreenState();
+  State<AdminOrdersScreen> createState() => _AdminOrdersScreenState();
 }
 
 class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
@@ -29,7 +29,7 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
         centerTitle: true,
       ),
       body: Consumer<AdminOrdersManager>(
-        builder: (_, ordersManager, __){
+        builder: (_, ordersManager, _){
           final filteredOrders = ordersManager.filteredOrders;
 
           return SlidingUpPanel(

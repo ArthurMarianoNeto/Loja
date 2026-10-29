@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:loja/common/safe_network_image.dart';
 import 'package:loja/models/home_manager.dart';
 import 'package:loja/models/product.dart';
 import 'package:loja/models/product_manager.dart';
@@ -40,21 +41,21 @@ class ItemTile extends StatelessWidget {
                 content: product != null
                     ? ListTile(
                   contentPadding: EdgeInsets.zero,
-                  leading: Image.network(product.images.first),
+                  leading: SafeNetworkImage(product.images.firstOrNull),
                   title: Text(product.name),
                   subtitle: Text('R\$ ${product.basePrice.toStringAsFixed(2)}'),
                 )
                 : null,
                 actions: [
-                  FlatButton(
+                  TextButton(
+                      style: TextButton.styleFrom(foregroundColor: Colors.red),
                       onPressed: (){
                          context.read<Section>().removeItem(item);
                          Navigator.of(context).pop();
                       },
-                    textColor: Colors.red,
                       child: const Text('Excluir'),
                   ),
-                  FlatButton(
+                  TextButton(
                       onPressed: () async {
                         if(product != null){
                           item.product = null;
@@ -62,6 +63,7 @@ class ItemTile extends StatelessWidget {
                         final Product? product =
                           await Navigator.of(context).pushNamed('/select_product') as Product?;
                         item.product = product?.id;
+                        if(!context.mounted) return;
                         }
                         Navigator.of(context).pop();
                       },
